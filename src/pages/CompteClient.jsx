@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
 import { useCard } from "../context/CardContext";
-import { FiUser, FiMapPin, FiPackage, FiLogOut, FiSave, FiEdit2, FiX } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiPackage, FiLogOut, FiSave, FiEdit2, FiX, FiTrash2 } from 'react-icons/fi';
 
 const Compte = () => {
     const navigate = useNavigate();
@@ -20,6 +20,9 @@ const Compte = () => {
 
     const [showToast, setShowToast] = useState(false);
     const [toastMessage, setToastMessage] = useState("");
+
+    // --- LOGIQUE POUR LES HOVERS ---
+    const [hoveredBtn, setHoveredBtn] = useState(null);
 
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -101,10 +104,42 @@ const Compte = () => {
         }
     };
 
+    const handleDeleteAccount = async () => {
+        const confirmDelete = window.confirm(
+            "Êtes-vous sûr de vouloir supprimer votre compte ? Cette action est irréversible."
+        );
+
+        if (confirmDelete) {
+            const storedToken = localStorage.getItem('token');
+            try {
+                const response = await fetch(`${apiUrl}/api/clients/delete-account`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `Bearer ${storedToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    alert("Votre compte a été supprimé. Retour à l'accueil.");
+                } else {
+                    console.error("Le serveur a répondu avec une erreur.");
+                }
+
+            } catch (error) {
+                console.error("Erreur réseau lors de la suppression:", error);
+            } finally {
+                localStorage.clear();
+                logout();
+                window.location.href = "/";
+            }
+        }
+    };
+
     const handleLogout = () => {
         localStorage.clear();
         logout();
-        navigate('/login');
+        window.location.href = "/";
     };
 
     const handleReorder = async (orderId) => {
@@ -132,35 +167,49 @@ const Compte = () => {
         }
     };
 
-    if (loading) return <div style={styles.loading}>Chargement...</div>;
+    if (loading) return <div style={styles.loading}>Chargement de vos rituels...</div>;
 
     return (
         <div style={styles.page}>
             <div style={styles.container}>
                 <header style={styles.profileBox}>
-                    <h1 style={styles.mainTitle}>Mon espace client</h1>
-                    <p style={{ opacity: 0.8 }}>Bienvenue dans votre espace client. Retrouvez ici l'essence de vos rituels.</p>
-                    <button onClick={handleLogout} style={styles.logoutBtn}>
+                    <div style={{ flex: 1 }}>
+                        <h1 style={styles.mainTitle}>Mon espace client</h1>
+                        <p style={styles.subTitle}>Bienvenue dans votre univers sensoriel. Retrouvez ici l'essence de vos rituels.</p>
+                    </div>
+                    <button
+                        onMouseEnter={() => setHoveredBtn('logout')}
+                        onMouseLeave={() => setHoveredBtn(null)}
+                        onClick={handleLogout}
+                        style={{
+                            ...styles.logoutBtn,
+                            transform: hoveredBtn === 'logout' ? 'scale(1.05)' : 'scale(1)',
+                            backgroundColor: hoveredBtn === 'logout' ? '#d9b35a' : '#C9A24D'
+                        }}
+                    >
                         <FiLogOut /> Déconnexion
                     </button>
                 </header>
 
-                {/* SECTION INFORMATIONS & ADRESSE COMBINÉE POUR PLUS DE FLUIDITÉ */}
                 <section style={styles.daSectionBox}>
                     <div style={styles.sectionHeader}>
                         <h3 style={styles.daSectionTitle}><FiUser /> Mes données personnelles</h3>
                         {!isEditing ? (
-                            <button onClick={() => setIsEditing(true)} style={styles.editBtn}>
+                            <button
+                                onMouseEnter={() => setHoveredBtn('edit')}
+                                onMouseLeave={() => setHoveredBtn(null)}
+                                onClick={() => setIsEditing(true)}
+                                style={{
+                                    ...styles.editBtn,
+                                    backgroundColor: hoveredBtn === 'edit' ? 'rgba(201, 162, 77, 0.1)' : 'transparent'
+                                }}
+                            >
                                 <FiEdit2 /> Modifier le profil
                             </button>
                         ) : (
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <button onClick={() => setIsEditing(false)} style={styles.cancelBtn}>
-                                    <FiX /> Annuler
-                                </button>
-                                <button onClick={handleUpdateProfile} style={styles.saveBtn}>
-                                    <FiSave /> Enregistrer
-                                </button>
+                                <button onClick={() => setIsEditing(false)} style={styles.cancelBtn}><FiX /> Annuler</button>
+                                <button onClick={handleUpdateProfile} style={styles.saveBtn}><FiSave /> Enregistrer</button>
                             </div>
                         )}
                     </div>
@@ -187,7 +236,7 @@ const Compte = () => {
 
                         <div style={styles.formRow}>
                             <div style={styles.formGroup}>
-                                <label style={styles.label}>Email</label>
+                                <label style={styles.label}>Email professionnel</label>
                                 {isEditing ? (
                                     <input style={styles.input} value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} />
                                 ) : (
@@ -204,67 +253,97 @@ const Compte = () => {
                             </div>
                         </div>
 
-                        <div style={{...styles.divider, margin: '20px 0'}} />
+                        <div style={styles.divider} />
 
                         <div style={styles.formGroup}>
-                            <label style={styles.label}><FiMapPin /> Adresse de livraison</label>
+                            <label style={styles.label}><FiMapPin /> Adresse de livraison par défaut</label>
                             {isEditing ? (
-                                <>
-                                    <input style={{...styles.input, marginBottom: '10px'}} value={formData.adresse} onChange={(e) => setFormData({...formData, adresse: e.target.value})} placeholder="N° et nom de rue" />
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    <input style={styles.input} value={formData.adresse} onChange={(e) => setFormData({...formData, adresse: e.target.value})} placeholder="N° et nom de rue" />
                                     <div style={styles.formRow}>
                                         <input style={{...styles.input, flex: 1}} value={formData.cp} onChange={(e) => setFormData({...formData, cp: e.target.value})} placeholder="Code Postal" />
                                         <input style={{...styles.input, flex: 2}} value={formData.ville} onChange={(e) => setFormData({...formData, ville: e.target.value})} placeholder="Ville" />
                                     </div>
-                                </>
+                                </div>
                             ) : (
                                 <p style={styles.staticText}>
                                     {user?.adresse_livraison
                                         ? `${user.adresse_livraison}, ${user.code_postal_livraison} ${user.ville_livraison}`
-                                        : "Aucune adresse enregistrée"}
+                                        : "Aucune adresse enregistrée à ce jour."}
                                 </p>
                             )}
                         </div>
-
-                        {!isEditing && (
-                            <button style={{...styles.daSmallBtn, marginTop: '15px'}}>Modifier le mot de passe</button>
-                        )}
                     </div>
                 </section>
 
                 <section style={styles.daSectionBox}>
                     <div style={styles.sectionHeader}>
-                        <h2 style={{ ...styles.daSectionTitle, margin: 0 }}>Historique des commandes</h2>
+                        <h2 style={{ ...styles.daSectionTitle, margin: 0 }}><FiPackage /> Historique des commandes</h2>
                         {orders.length > 3 && (
-                            <button onClick={() => setShowAllOrders(!showAllOrders)} style={styles.daSmallBtn}>
-                                {showAllOrders ? "Réduire" : `Voir tout (${orders.length})`}
+                            <button
+                                onClick={() => setShowAllOrders(!showAllOrders)}
+                                style={styles.daSmallBtn}
+                            >
+                                {showAllOrders ? "Voir moins" : `Voir tout (${orders.length})`}
                             </button>
                         )}
                     </div>
 
-                    <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
+                    <div style={styles.ordersList}>
                         {orders.length > 0 ? (
                             (showAllOrders ? orders : orders.slice(0, 3)).map((order) => (
-                                <div key={order.numero_commande} style={styles.orderCard}>
-                                    <div>
-                                        <p style={{ margin: 0 }}><strong>Commande #{order.numero_commande}</strong></p>
-                                        <p style={{ fontSize: "13px", color: "#aaa" }}>
-                                            {new Date(order.date_commande).toLocaleDateString()}
-                                        </p>
+                                <div
+                                    key={order.numero_commande}
+                                    style={styles.orderCard}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.06)'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.03)'}
+                                >
+                                    <div style={styles.orderInfo}>
+                                        <span style={styles.orderId}>Commande #{order.numero_commande}</span>
+                                        <span style={styles.orderDate}>{new Date(order.date_commande).toLocaleDateString()}</span>
                                     </div>
-                                    <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                                        <span style={{ fontWeight: "bold", color: '#C9A24D' }}>
-                                            {order.montant_paiement || order.total_ttc} €
-                                        </span>
-                                        <button onClick={() => handleReorder(order.numero_commande)} style={styles.daActionBtn}>
+                                    <div style={styles.orderActions}>
+                                        <span style={styles.orderPrice}>{order.montant_paiement || order.total_ttc} €</span>
+                                        <button
+                                            onMouseEnter={() => setHoveredBtn(`reorder-${order.numero_commande}`)}
+                                            onMouseLeave={() => setHoveredBtn(null)}
+                                            onClick={() => handleReorder(order.numero_commande)}
+                                            style={{
+                                                ...styles.daActionBtn,
+                                                transform: hoveredBtn === `reorder-${order.numero_commande}` ? 'translateY(-2px)' : 'translateY(0)',
+                                                boxShadow: hoveredBtn === `reorder-${order.numero_commande}` ? '0 5px 15px rgba(0,0,0,0.3)' : 'none'
+                                            }}
+                                        >
                                             Recommander
                                         </button>
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <p style={{ opacity: 0.5 }}>Aucune commande passée pour le moment.</p>
+                            <p style={styles.emptyOrders}>Aucune commande pour le moment.</p>
                         )}
                     </div>
+                </section>
+
+                <section style={styles.dangerZone}>
+                    <div style={{ flex: 1 }}>
+                        <h3 style={styles.dangerTitle}><FiTrash2 /> Suppression du compte</h3>
+                        <p style={styles.dangerText}>
+                            La suppression anonymise vos données personnelles.
+                        </p>
+                    </div>
+                    <button
+                        onMouseEnter={() => setHoveredBtn('danger')}
+                        onMouseLeave={() => setHoveredBtn(null)}
+                        onClick={handleDeleteAccount}
+                        style={{
+                            ...styles.dangerBtn,
+                            backgroundColor: hoveredBtn === 'danger' ? '#ff6b6b' : 'transparent',
+                            color: hoveredBtn === 'danger' ? '#373735' : '#ff6b6b'
+                        }}
+                    >
+                        Supprimer le compte
+                    </button>
                 </section>
             </div>
 
@@ -278,35 +357,47 @@ const Compte = () => {
 };
 
 const styles = {
-    page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '60px' },
-    container: { maxWidth: '900px', margin: '0 auto', padding: '0 20px', display: 'flex', flexDirection: 'column', gap: '30px' },
-    profileBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '12px', position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.15)' },
-    mainTitle: { fontFamily: 'Playfair Display, serif', fontSize: '36px', marginBottom: '10px', color: '#C9A24D' },
-    logoutBtn: { position: 'absolute', top: '40px', right: '40px', backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '8px 20px', borderRadius: '25px', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', transition: 'transform 0.2s' },
+    page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '160px', paddingBottom: '80px', fontFamily: "'Inter', sans-serif" },
+    container: { maxWidth: '900px', margin: '0 auto', padding: '0 25px', display: 'flex', flexDirection: 'column', gap: '35px' },
+    profileBox: { padding: '50px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', transition: 'all 0.3s ease' },
+    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '40px', marginBottom: '10px', color: '#C9A24D' },
+    subTitle: { fontSize: '16px', opacity: 0.8, maxWidth: '500px' },
+    logoutBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 24px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease' },
 
-    daSectionBox: { padding: '35px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' },
-    sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' },
-    daSectionTitle: { fontFamily: 'Playfair Display, serif', color: '#C9A24D', fontSize: '26px', display: 'flex', alignItems: 'center', gap: '12px' },
+    daSectionBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
+    sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px' },
+    daSectionTitle: { fontFamily: "'Playfair Display', serif", color: '#C9A24D', fontSize: '24px', display: 'flex', alignItems: 'center', gap: '15px' },
 
-    formContainer: { display: 'flex', flexDirection: 'column', gap: '15px' },
-    formRow: { display: 'flex', gap: '20px', flexWrap: 'wrap' },
-    formGroup: { flex: 1, minWidth: '200px' },
-    label: { display: 'block', fontSize: '13px', color: '#C9A24D', marginBottom: '6px', textTransform: 'uppercase', letterSpacing: '1px' },
-    staticText: { fontSize: '16px', margin: 0, padding: '10px 0', borderBottom: '1px solid rgba(201, 162, 77, 0.1)' },
-    input: { width: '100%', padding: '12px 15px', borderRadius: '8px', border: '1px solid rgba(201, 162, 77, 0.3)', backgroundColor: 'rgba(255, 255, 255, 0.05)', color: '#E9E3E3', outline: 'none', transition: 'border-color 0.3s', boxSizing: 'border-box' },
+    formContainer: { display: 'flex', flexDirection: 'column', gap: '20px' },
+    formRow: { display: 'flex', gap: '25px', flexWrap: 'wrap' },
+    formGroup: { flex: 1, minWidth: '250px' },
+    label: { display: 'block', fontSize: '12px', color: '#C9A24D', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: '600' },
+    staticText: { fontSize: '17px', margin: 0, padding: '8px 0', color: '#E9E3E3' },
+    input: { width: '100%', padding: '14px 18px', borderRadius: '8px', border: '1px solid rgba(201, 162, 77, 0.4)', backgroundColor: 'rgba(255, 255, 255, 0.03)', color: '#E9E3E3', fontSize: '16px', outline: 'none', transition: 'all 0.3s ease', boxSizing: 'border-box' },
 
-    editBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '8px 18px', borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' },
-    saveBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '8px 18px', borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 'bold' },
-    cancelBtn: { backgroundColor: 'transparent', border: '1px solid #ff4d4d', color: '#ff4d4d', padding: '8px 18px', borderRadius: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' },
+    editBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '8px 20px', borderRadius: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600', transition: 'all 0.3s ease' },
+    saveBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700' },
+    cancelBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer' },
 
-    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '6px 16px', borderRadius: '15px', cursor: 'pointer', fontSize: '13px' },
-    divider: { height: '1px', backgroundColor: 'rgba(233, 227, 227, 0.1)' },
+    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid rgba(233, 227, 227, 0.3)', color: '#E9E3E3', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontSize: '13px', transition: 'all 0.3s ease' },
+    divider: { height: '1px', backgroundColor: 'rgba(201, 162, 77, 0.15)', margin: '10px 0' },
 
-    orderCard: { backgroundColor: 'rgba(255,255,255,0.03)', padding: '20px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.05)' },
-    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 22px', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer', transition: 'filter 0.2s' },
+    orderCard: { backgroundColor: 'rgba(255,255,255,0.03)', padding: '25px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.05)', transition: 'all 0.3s ease' },
+    orderInfo: { display: 'flex', flexDirection: 'column', gap: '5px' },
+    orderId: { fontWeight: '700', fontSize: '18px', color: '#E9E3E3' },
+    orderDate: { fontSize: '14px', color: '#aaa' },
+    orderActions: { display: 'flex', alignItems: 'center', gap: '25px' },
+    orderPrice: { fontWeight: '700', fontSize: '20px', color: '#C9A24D' },
+    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease' },
+    emptyOrders: { textAlign: 'center', padding: '40px', opacity: 0.5 },
 
-    loading: { textAlign: 'center', padding: '150px', fontSize: '24px', color: '#373735' },
-    toast: { position: 'fixed', bottom: '30px', right: '30px', backgroundColor: '#C9A24D', color: '#373735', padding: '16px 28px', borderRadius: '50px', boxShadow: '0 10px 30px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 'bold', zIndex: 9999, animation: 'slideIn 0.3s ease-out' }
+    dangerZone: { padding: '35px', backgroundColor: 'rgba(255, 77, 77, 0.05)', borderRadius: '16px', border: '1px solid rgba(255, 77, 77, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' },
+    dangerTitle: { color: '#ff6b6b', fontFamily: "'Playfair Display', serif", fontSize: '22px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' },
+    dangerText: { color: '#373735', fontSize: '14px', maxWidth: '500px' },
+    dangerBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease' },
+
+    loading: { textAlign: 'center', padding: '150px', fontSize: '22px', color: '#373735', fontFamily: "'Playfair Display', serif" },
+    toast: { position: 'fixed', bottom: '40px', right: '40px', backgroundColor: '#C9A24D', color: '#373735', padding: '18px 30px', borderRadius: '50px', boxShadow: '0 15px 35px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '15px', fontWeight: '800', zIndex: 9999, animation: 'slideIn 0.4s ease' }
 };
 
 export default Compte;
