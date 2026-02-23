@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
-// Import des icônes nécessaires
-import { FiUser, FiMapPin, FiPackage, FiTruck } from 'react-icons/fi';
+import { FiUser, FiMapPin, FiPackage, FiTruck, FiLogOut } from 'react-icons/fi';
 
 const Compte = () => {
     const navigate = useNavigate();
     const { logout } = useAuth();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-
-    // États pour l'historique (orders)
     const [orders, setOrders] = useState([]);
     const [showAllOrders, setShowAllOrders] = useState(false);
 
@@ -27,26 +24,25 @@ const Compte = () => {
             }
 
             try {
-                // 1. Récupération profil
-                const response = await fetch(`${apiUrl}/api/clients/${storedUserId}`, {
+                // 1. Infos Client
+                const userRes = await fetch(`${apiUrl}/api/clients/me`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
-                if (response.ok) {
-                    const data = await response.json();
-                    setUser(data.client || data);
+                if (userRes.ok) {
+                    const userData = await userRes.json();
+                    setUser(userData.client);
                 }
 
-                // 2. Récupération historique (ajusté selon ton besoin)
-                const orderRes = await fetch(`${apiUrl}/api/commandes/client/${storedUserId}`, {
+                // 2. Historique des commandes
+                const orderRes = await fetch(`${apiUrl}/api/clients/my-orders`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
                 if (orderRes.ok) {
                     const orderData = await orderRes.json();
                     setOrders(Array.isArray(orderData) ? orderData : []);
                 }
-
             } catch (err) {
-                console.error("Erreur récupération données:", err);
+                console.error("Erreur de chargement:", err);
             } finally {
                 setLoading(false);
             }
@@ -61,64 +57,41 @@ const Compte = () => {
         navigate('/login');
     };
 
-    const handleReorder = (orderId) => {
-        console.log("Recommander la commande :", orderId);
-        // Logique pour ajouter les produits au panier ici
-    };
-
-    if (loading) return <div style={{textAlign: 'center', padding: '100px'}}>Chargement...</div>;
+    if (loading) return <div style={styles.loading}>Chargement...</div>;
 
     return (
         <div style={styles.page}>
             <div style={styles.container}>
 
-                {/* EN-TÊTE PROFIL */}
-                <div style={styles.profileBox}>
-                    <h1 style={{fontFamily: 'Playfair Display', fontSize: '32px', margin: 0}}>Mon espace client</h1>
-                    <p>Bienvenue dans votre espace client. Retrouvez ici l'essence de vos rituels et l'historique de vos découvertes.</p>
+                <header style={styles.profileBox}>
+                    <h1 style={styles.mainTitle}>Mon espace personnel</h1>
+                    <p>Bienvenue, {user?.prenom || "Cher client"}</p>
                     <button onClick={handleLogout} style={styles.logoutBtn}>
-                        Se déconnecter
+                        <FiLogOut /> Déconnexion
                     </button>
-                </div>
+                </header>
 
-                {/* --- SECTION 1 : INFORMATIONS PERSONNELLES --- */}
                 <section style={styles.daSectionBox}>
-                    <h3 style={styles.daSectionTitle}><FiUser /> Mes informations personnelles</h3>
+                    <h3 style={styles.daSectionTitle}><FiUser /> Mes informations</h3>
                     <div style={styles.infoCard}>
-                        <div style={styles.infoRow}><strong>Nom :</strong> {user?.nom_client}</div>
-                        <div style={styles.infoRow}><strong>E-mail :</strong> {user?.email_client}</div>
-                        <div style={styles.infoRow}><strong>Mot de passe :</strong> **********</div>
+                        <p><strong>Email :</strong> {user?.email}</p>
                         <button style={styles.daSmallBtn}>Modifier le mot de passe</button>
                     </div>
                 </section>
 
-                {/* --- SECTION 2 : CARNET D'ADRESSES --- */}
                 <section style={styles.daSectionBox}>
-                    <h3 style={styles.daSectionTitle}><FiMapPin /> Carnet d'adresses</h3>
+                    <h3 style={styles.daSectionTitle}><FiMapPin /> Adresse de livraison</h3>
                     <div style={styles.infoCard}>
-                        <p style={{margin: '0 0 10px 0'}}>{user?.adresse_client || "Aucune adresse enregistrée"}</p>
-                        <div style={{display: 'flex', gap: '10px'}}>
-                            <button style={styles.daSmallBtn}>Modifier l'adresse</button>
-                            <button style={styles.daSmallBtn}>Ajouter une adresse</button>
-                        </div>
+                        <p>{user?.adresse || "Aucune adresse enregistrée"}</p>
                     </div>
                 </section>
 
-                {/* --- SECTION 4 : SUIVI (AJOUTÉ) --- */}
-                <section style={styles.daSectionBox}>
-                    <h3 style={styles.daSectionTitle}><FiTruck /> Suivi de commande en cours</h3>
-                    <div style={styles.infoCard}>
-                        <p style={{fontStyle: 'italic', opacity: 0.8}}>Aucune commande en cours de livraison.</p>
-                    </div>
-                </section>
-
-                {/* --- SECTION 3 : HISTORIQUE COMPLET --- */}
                 <section style={styles.daSectionBox}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                        <h3 style={styles.daSectionTitle}><FiPackage /> Historique des commandes</h3>
+                        <h2 style={{ ...styles.daSectionTitle, margin: 0 }}>Historique des commandes</h2>
                         {orders.length > 3 && (
                             <button onClick={() => setShowAllOrders(!showAllOrders)} style={styles.daSmallBtn}>
-                                {showAllOrders ? "Réduire" : `Tout voir (${orders.length})`}
+                                {showAllOrders ? "Réduire" : `Voir tout (${orders.length})`}
                             </button>
                         )}
                     </div>
@@ -127,33 +100,17 @@ const Compte = () => {
                         {orders.length > 0 ? (
                             (showAllOrders ? orders : orders.slice(0, 3)).map((order) => (
                                 <div key={order.numero_commande} style={styles.orderCard}>
-                                    <div style={{ flex: 1 }}>
-                                        <p style={{ margin: 0, color: '#C9A24D' }}>
-                                            <strong>Commande #{order.numero_commande}</strong>
-                                        </p>
-                                        <p style={{ fontSize: "13px", color: "#888", marginBottom: '10px' }}>
+                                    <div>
+                                        <p style={{ margin: 0 }}><strong>Commande #{order.numero_commande}</strong></p>
+                                        <p style={{ fontSize: "13px", color: "#888" }}>
                                             {new Date(order.date_commande).toLocaleDateString()}
                                         </p>
-
-                                        <div style={styles.contenirDetail}>
-                                            {order.produits && order.produits.map((p, i) => (
-                                                <div key={i} style={{fontSize: '13px', opacity: 0.8}}>
-                                                    • {p.nom_produit} ({p.quantite_gramme}g)
-                                                </div>
-                                            ))}
-                                        </div>
                                     </div>
-
                                     <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-                                        <span style={{ fontWeight: "bold", fontSize: '18px' }}>
-                                            {order.total_ttc || order.montant_paiement} €
+                                        <span style={{ fontWeight: "bold", color: '#C9A24D' }}>
+                                            {order.montant_paiement || order.total_ttc} €
                                         </span>
-                                        <button
-                                            onClick={() => handleReorder(order.numero_commande)}
-                                            style={styles.daActionBtn}
-                                        >
-                                            Recommander
-                                        </button>
+                                        <button style={styles.daActionBtn}>Recommander</button>
                                     </div>
                                 </div>
                             ))
@@ -167,20 +124,19 @@ const Compte = () => {
     );
 };
 
-// Styles regroupés pour la clarté
 const styles = {
-    page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '40px' },
+    page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '60px' },
     container: { maxWidth: '900px', margin: '0 auto', padding: '0 20px', display: 'flex', flexDirection: 'column', gap: '30px' },
-    profileBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '8px' },
+    profileBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '8px', position: 'relative' },
+    mainTitle: { fontFamily: 'Playfair Display, serif', fontSize: '32px', marginBottom: '10px' },
+    logoutBtn: { position: 'absolute', top: '40px', right: '40px', backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '8px 15px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold' },
     daSectionBox: { padding: '30px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '8px' },
-    daSectionTitle: { fontFamily: 'Playfair Display', color: '#C9A24D', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 0 20px 0' },
+    daSectionTitle: { fontFamily: 'Playfair Display, serif', color: '#C9A24D', fontSize: '24px', display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' },
     infoCard: { lineHeight: '1.8' },
-    infoRow: { marginBottom: '5px' },
-    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '5px 15px', borderRadius: '15px', cursor: 'pointer', fontSize: '12px', marginTop: '10px' },
-    orderCard: { backgroundColor: 'rgba(255,255,255,0.05)', padding: '20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.1)' },
-    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 20px', borderRadius: '20px', fontWeight: 'bold', cursor: 'pointer' },
-    logoutBtn: { marginTop: '30px', padding: '10px 20px', backgroundColor: '#C9A24D', border: 'none', color: '#373735', cursor: 'pointer', borderRadius: '20px', fontWeight: 'bold' },
-    contenirDetail: { marginTop: '10px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '10px' }
+    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '5px 15px', borderRadius: '15px', cursor: 'pointer', fontSize: '12px' },
+    orderCard: { backgroundColor: 'rgba(255,255,255,0.05)', padding: '20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
+    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 20px', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer' },
+    loading: { textAlign: 'center', padding: '150px', fontSize: '24px' }
 };
 
 export default Compte;
