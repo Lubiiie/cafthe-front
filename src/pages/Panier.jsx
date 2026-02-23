@@ -1,12 +1,23 @@
 import React from 'react';
 import { useCart } from '../context/CardContext.jsx';
+import { useAuth } from '../context/AuthContext.jsx'; // 1. IMPORT DE L'AUTH
 import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const Panier = () => {
     const { cart, updateQuantity, removeFromCart, getSubTotal } = useCart();
+    const { user } = useAuth(); // 2. RÉCUPÉRATION DE L'UTILISATEUR
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+
+    const handleCheckout = () => {
+        // Redirection vers commande si connecté, sinon login
+        if (user) {
+            navigate('/commande');
+        } else {
+            navigate('/login');
+        }
+    };
 
     return (
         <div style={styles.overlay}>
@@ -35,6 +46,7 @@ const Panier = () => {
                         </div>
                     ) : (
                         cart.map((item) => {
+                            // On s'assure d'avoir l'ID correct selon votre structure
                             const itemId = item.id_produit || item.numero_produit;
                             return (
                                 <div key={itemId} style={styles.itemRow} className="item-row">
@@ -62,15 +74,24 @@ const Panier = () => {
                 <div style={styles.footer}>
                     <div style={styles.totalBlock}>
                         <span style={styles.totalPrice}>{getSubTotal().toFixed(2)} €</span>
-                        <span style={{color: '#FFF', display: 'block', fontSize: '12px'}}>Livraison offerte</span>
+                        <span style={{color: '#FFF', display: 'block', fontSize: '12px'}}>Livraison offerte dès 45€</span>
                     </div>
-                    <button style={styles.validateBtn} className="validate-btn"><FiShoppingBag size={24} /> Valider</button>
+                    {/* 3. APPEL DE HANDLECHECKOUT SUR LE CLIC */}
+                    <button
+                        onClick={handleCheckout}
+                        style={styles.validateBtn}
+                        className="validate-btn"
+                        disabled={cart.length === 0}
+                    >
+                        <FiShoppingBag size={24} /> Valider
+                    </button>
                 </div>
             </div>
         </div>
     );
 };
 
+// ... Les styles restent identiques à votre version
 const styles = {
     overlay: { backgroundColor: '#1a1a1a', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
     modal: { width: '850px', backgroundColor: '#E9E3E3', borderRadius: '20px', overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '90vh' },
@@ -84,22 +105,19 @@ const styles = {
     itemName: { color: '#C9A24D', fontSize: '22px', fontFamily: "'Playfair Display', serif" },
     itemPrice: { fontSize: '18px' },
     removeBtn: { background: 'none', border: 'none', color: '#C9A24D', textDecoration: 'underline', cursor: 'pointer', marginTop: '10px', transition: '0.3s' },
-
-    // MODIFICATION ICI : Sélecteur aligné
     qtySelector: {
         backgroundColor: '#FFF',
         borderRadius: '30px',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'center', // Centre le contenu
-        width: '120px',           // Largeur fixe pour stabiliser l'alignement
+        justifyContent: 'center',
+        width: '120px',
         padding: '5px 15px',
         gap: '15px',
         color: '#373735'
     },
     qtyOp: { border: 'none', background: 'none', fontSize: '20px', cursor: 'pointer', color: '#C9A24D', transition: '0.2s', padding: '0 5px' },
-    qtyVal: { fontWeight: 'bold', minWidth: '25px', textAlign: 'center' }, // minWidth pour que le chiffre ne décale pas les boutons
-
+    qtyVal: { fontWeight: 'bold', minWidth: '25px', textAlign: 'center' },
     emptyPrompt: { padding: '30px', textAlign: 'center' },
     miniLogo: { width: '40px', marginBottom: '10px' },
     continueBtn: { background: 'none', border: 'none', color: '#373735', textDecoration: 'underline', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto', transition: '0.3s' },

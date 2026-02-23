@@ -18,6 +18,7 @@ import NosEngagements from "./pages/NosEngagements.jsx";
 import Contact from "./pages/Contact.jsx";
 import Comptes from "./pages/CompteClient.jsx";
 import CompteClient from "./pages/CompteClient.jsx";
+import Commande from "./pages/Commande";
 
 function App() {
     return (
@@ -65,6 +66,9 @@ function App() {
 
                             {/* Page Compte Client */}
                             <Route path="/compte" element={<CompteClient />} />
+
+                            {/* Page Commande */}
+                            <Route path="/commande" element={<Commande />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
