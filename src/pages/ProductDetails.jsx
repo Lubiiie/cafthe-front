@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FiX, FiShoppingBag, FiMapPin, FiHeart, FiStar, FiPlus, FiMinus } from "react-icons/fi";
-import { useCart } from "../context/CardContext.jsx";
+import { useCard } from "../context/CardContext.jsx";
 
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL;
-    const { addToCart } = useCart();
+    const { addToCart } = useCard();
 
     const [produit, setProduit] = useState(null);
     const [similaires, setSimilaires] = useState([]);

@@ -49,20 +49,40 @@ const Commande = () => {
 
     const handlePaymentSuccess = async (details) => {
         const token = localStorage.getItem('token');
+
+        // 1. Préparation propre des données
+        const orderData = {
+            items: cart,
+            total: totalTTC,
+            deliveryMethod: deliveryMethod,
+            relayInfo: selectedRelay, // Sera null si Click & Collect
+            paypalDetails: details
+        };
+
         try {
+            // 2. Un seul appel fetch propre
             const response = await fetch(`${apiUrl}/api/orders/create`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({
-                    items: cart,
-                    total: totalTTC,
-                    deliveryMethod: deliveryMethod,
-                    relayInfo: selectedRelay,
-                    paypalDetails: details
-                })
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(orderData)
             });
-            if (response.ok) window.location.href = "/merci";
-        } catch (error) { console.error(error); }
+
+            if (response.ok) {
+                // Si le serveur répond 201 ou 200
+                console.log("Commande enregistrée avec succès !");
+                window.location.href = "/merci";
+            } else {
+                // Si le serveur renvoie une erreur (401, 500, etc.)
+                const errorData = await response.json();
+                console.error("Erreur serveur :", errorData.message || errorData.error);
+                alert("Erreur lors de la validation : " + (errorData.message || "Vérifiez votre connexion"));
+            }
+        } catch (error) {
+            console.error("Erreur réseau (le serveur est peut-être éteint) :", error);
+        }
     };
 
     const canPay = cgvAccepted && (deliveryMethod === 'click_collect' || selectedRelay);

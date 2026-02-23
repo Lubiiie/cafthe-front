@@ -1,11 +1,11 @@
 import React from 'react';
-import { useCart } from '../context/CardContext.jsx';
+import { useCard } from '../context/CardContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx'; // 1. IMPORT DE L'AUTH
 import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const Panier = () => {
-    const { cart, updateQuantity, removeFromCart, getSubTotal } = useCart();
+    const { cart, updateQuantity, removeFromCart, getSubTotal } = useCard();
     const { user } = useAuth(); // 2. RÉCUPÉRATION DE L'UTILISATEUR
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";

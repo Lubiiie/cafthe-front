@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiChevronDown, FiChevronUp, FiX, FiPlus, FiMinus, FiShoppingBag, FiRefreshCw } from "react-icons/fi";
-import { useCart } from "../context/CardContext.jsx";
+import { useCard } from "../context/CardContext.jsx";
 
 const Catalogue = () => {
     const [produits, setProduits] = useState([]);
@@ -12,7 +12,7 @@ const Catalogue = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { addToCart } = useCart();
+    const { addToCart } = useCard();
     const apiUrl = "http://localhost:3000";
 
     useEffect(() => {

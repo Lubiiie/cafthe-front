@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
-import { useCart } from "../context/CardContext.jsx";
+import { useCard } from "../context/CardContext.jsx";
 
 const Promotions = () => {
     const [promos, setPromos] = useState([]);
     const [quantities, setQuantities] = useState({});
     const scrollRef = useRef(null);
     const navigate = useNavigate();
-    const { addToCart } = useCart();
+    const { addToCart } = useCard();
     const apiUrl = "http://localhost:3000";
 
     useEffect(() => {

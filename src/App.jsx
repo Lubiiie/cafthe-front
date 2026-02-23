@@ -19,6 +19,7 @@ import NosEngagements from "./pages/NosEngagements.jsx";
 import Contact from "./pages/Contact.jsx";
 import CompteClient from "./pages/CompteClient.jsx";
 import Commande from "./pages/Commande";
+import Merci from "./pages/Merci";
 
 
 const initialOptions = {
@@ -78,6 +79,8 @@ function App() {
 
                                 {/* Page Commande */}
                                 <Route path="/commande" element={<Commande />} />
+
+                                <Route path="/merci" element={<Merci />} />
                             </Route>
                         </Routes>
                     </BrowserRouter>
