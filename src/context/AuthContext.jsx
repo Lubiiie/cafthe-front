@@ -1,76 +1,67 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+    // 1. On initialise l'utilisateur DIRECTEMENT depuis le stockage local
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem('userData');
+        return savedUser ? JSON.parse(savedUser) : null;
+    });
 
+    const [loading, setLoading] = useState(true);
     const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     useEffect(() => {
         const checkSession = async () => {
+            const token = localStorage.getItem('token');
+
+            // S'il n'y a pas de token, on ne fait pas l'appel pour éviter la 401
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                const response = await fetch(
-                    `${baseUrl}/api/clients/me`,
-                    { credentials: "include" }
-                );
+                const response = await fetch(`${baseUrl}/api/clients/me`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`, // CRUCIAL pour éviter la 401
+                        'Content-Type': 'application/json'
+                    }
+                });
 
                 if (response.ok) {
                     const data = await response.json();
                     setUser(data.client);
                 } else {
-                    // CORRECTIF : Restauration de session via localStorage si le cookie échoue
-                    const savedId = localStorage.getItem('userId');
-                    const savedPrenom = localStorage.getItem('userPrenom');
-                    if (savedId && savedPrenom) {
-                        setUser({ numero_client: savedId, prenom_client: savedPrenom });
-                    }
+                    // Si le serveur répond 401
+                    localStorage.removeItem('token');
+                    setUser(null);
                 }
             } catch (error) {
-                console.error("Erreur vérification session:", error);
+                console.error("Erreur session:", error);
             } finally {
                 setLoading(false);
             }
         };
-
         checkSession();
     }, [baseUrl]);
 
     const login = (token, userData) => {
-        if (token) localStorage.setItem("token", token);
+        localStorage.setItem("token", token);
+        localStorage.setItem("userData", JSON.stringify(userData));
+        localStorage.setItem("userPrenom", userData.prenom_client || userData.prenom);
         setUser(userData);
     };
 
-    const logout = async () => {
-        try {
-            await fetch(`${baseUrl}/api/clients/logout`, {
-                method: "POST",
-                credentials: "include",
-            });
-        } catch (error) {
-            console.error("Erreur lors de la déconnexion:", error);
-        }
-        // CORRECTIF : Nettoyage complet pour assurer une reconnexion sans erreur
+    const logout = () => {
         localStorage.clear();
         setUser(null);
     };
 
-    const value = {
-        user,
-        login,
-        logout,
-        loading,
-        isAuthenticated: !!user,
-    };
-
+    const value = { user, login, logout, loading, isAuthenticated: !!user };
     return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const useAuth = () => {
-    const context = React.useContext(AuthContext);
-    if (!context) {
-        throw new Error("useAuth doit être utilisé à l'intérieur d'un AuthProvider");
-    }
-    return context;
-};
+export const useAuth = () => useContext(AuthContext);

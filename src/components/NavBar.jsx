@@ -13,14 +13,17 @@ const Header = () => {
     const [hvrUser, setHvrUser] = useState(false);
     const [hvrOut, setHvrOut] = useState(false);
 
-    // CORRECTIF : On cherche le prénom dans le contexte OU dans le localStorage pour le refresh
+    // On récupère le prénom de manière prioritaire :
+    // 1. Context (user) 2. LocalStorage (userPrenom) 3. Valeur par défaut
     const prenomAffiche = user?.prenom_client || user?.prenom || localStorage.getItem('userPrenom');
+
+    // Vérification hybride pour éviter le flash au rafraîchissement
+    const isConnected = !!user || !!localStorage.getItem('token');
 
     const totalArticles = cart.reduce((acc, item) => acc + item.quantite, 0);
 
-    // Fonction de déconnexion propre
     const handleLogout = () => {
-        logout(); // Appelle la fonction du AuthContext qui doit vider le localStorage
+        logout();
         navigate("/login");
     };
 
@@ -55,15 +58,16 @@ const Header = () => {
                         style={{...styles.iconWrapper, color: hvrUser ? "#C9A24D" : "#E9E3E3"}}
                         onMouseEnter={() => setHvrUser(true)}
                         onMouseLeave={() => setHvrUser(false)}
-                        onClick={() => navigate(user || localStorage.getItem('token') ? "/compte" : "/login")}
+                        onClick={() => navigate(isConnected ? "/compte" : "/login")}
                     >
                         <FiUser size={28} />
                     </div>
 
-                    {/* CORRECTIF : On vérifie l'user OU le token pour l'affichage permanent */}
-                    {(user || localStorage.getItem('token')) && (
+                    {isConnected && (
                         <div style={styles.userControls}>
-                            <span style={styles.welcomeText}>Bonjour, {prenomAffiche || 'Client'}</span>
+                            <span style={styles.welcomeText}>
+                                Bonjour, {prenomAffiche || 'Client'}
+                            </span>
                             <FiLogOut
                                 size={22}
                                 style={{...styles.logoutIcon, color: hvrOut ? "#C9A24D" : "#E9E3E3"}}
