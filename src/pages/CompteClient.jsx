@@ -1,17 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
-import { useCard } from "../context/CardContext"; // Import du Panier
+import { useCard } from "../context/CardContext";
 import { FiUser, FiMapPin, FiPackage, FiTruck, FiLogOut } from 'react-icons/fi';
 
 const Compte = () => {
     const navigate = useNavigate();
     const { logout } = useAuth();
-    const { addToCart } = useCard(); // Récupération de la fonction d'ajout
+    const { addToCart } = useCard();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
     const [showAllOrders, setShowAllOrders] = useState(false);
+
+    // État pour la notification Toast
+    const [showToast, setShowToast] = useState(false);
 
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
@@ -57,11 +60,9 @@ const Compte = () => {
         navigate('/login');
     };
 
-    // --- FONCTION RECOMMANDER BRANCHÉE AU CONTEXT ---
     const handleReorder = async (orderId) => {
         const storedToken = localStorage.getItem('token');
         try {
-            // URL avec "s" à clients pour correspondre à ton server.js
             const response = await fetch(`${apiUrl}/api/clients/order-items/${orderId}`, {
                 headers: { 'Authorization': `Bearer ${storedToken}` }
             });
@@ -69,24 +70,17 @@ const Compte = () => {
             if (response.ok) {
                 const items = await response.json();
 
-                if (items.length === 0) {
-                    alert("Cette commande ne contient plus d'articles disponibles.");
-                    return;
-                }
-
                 items.forEach(item => {
-                    // On adapte les données reçues au format attendu par ton CardContext
                     addToCart({
                         ...item,
                         id_produit: item.numero_produit,
-                        prix_ttc: item.prix_unitaire || item.prix_produit // Ajuste selon ta table produits
+                        prix_ttc: item.prix_ttc
                     }, 1);
                 });
 
-                alert("Articles ajoutés au panier !");
-                navigate('/panier');
-            } else {
-                console.error("Erreur réponse serveur:", response.status);
+                // On affiche le toast au lieu de l'alert
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
             }
         } catch (error) {
             console.error("Erreur lors de la recommandation:", error);
@@ -161,6 +155,13 @@ const Compte = () => {
                     </div>
                 </section>
             </div>
+
+            {/* Notification Toast */}
+            {showToast && (
+                <div style={styles.toast}>
+                    <FiPackage /> Articles ajoutés au panier !
+                </div>
+            )}
         </div>
     );
 };
@@ -177,7 +178,23 @@ const styles = {
     daSmallBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '5px 15px', borderRadius: '15px', cursor: 'pointer', fontSize: '12px' },
     orderCard: { backgroundColor: 'rgba(255,255,255,0.05)', padding: '20px', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
     daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 20px', borderRadius: '25px', fontWeight: 'bold', cursor: 'pointer' },
-    loading: { textAlign: 'center', padding: '150px', fontSize: '24px' }
+    loading: { textAlign: 'center', padding: '150px', fontSize: '24px' },
+    toast: {
+        position: 'fixed',
+        bottom: '30px',
+        right: '30px',
+        backgroundColor: '#C9A24D',
+        color: '#373735',
+        padding: '15px 25px',
+        borderRadius: '50px',
+        boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px',
+        fontWeight: 'bold',
+        zIndex: 9999,
+        transition: 'all 0.3s ease'
+    }
 };
 
 export default Compte;
