@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
+import { useCard } from "../context/CardContext"; // Import du Panier
 import { FiUser, FiMapPin, FiPackage, FiTruck, FiLogOut } from 'react-icons/fi';
 
 const Compte = () => {
     const navigate = useNavigate();
     const { logout } = useAuth();
+    const { addToCart } = useCard(); // Récupération de la fonction d'ajout
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [orders, setOrders] = useState([]);
@@ -24,7 +26,6 @@ const Compte = () => {
             }
 
             try {
-                // 1. Infos Client
                 const userRes = await fetch(`${apiUrl}/api/clients/me`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
@@ -33,7 +34,6 @@ const Compte = () => {
                     setUser(userData.client);
                 }
 
-                // 2. Historique des commandes
                 const orderRes = await fetch(`${apiUrl}/api/clients/my-orders`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
@@ -55,6 +55,42 @@ const Compte = () => {
         localStorage.clear();
         logout();
         navigate('/login');
+    };
+
+    // --- FONCTION RECOMMANDER BRANCHÉE AU CONTEXT ---
+    const handleReorder = async (orderId) => {
+        const storedToken = localStorage.getItem('token');
+        try {
+            // URL avec "s" à clients pour correspondre à ton server.js
+            const response = await fetch(`${apiUrl}/api/clients/order-items/${orderId}`, {
+                headers: { 'Authorization': `Bearer ${storedToken}` }
+            });
+
+            if (response.ok) {
+                const items = await response.json();
+
+                if (items.length === 0) {
+                    alert("Cette commande ne contient plus d'articles disponibles.");
+                    return;
+                }
+
+                items.forEach(item => {
+                    // On adapte les données reçues au format attendu par ton CardContext
+                    addToCart({
+                        ...item,
+                        id_produit: item.numero_produit,
+                        prix_ttc: item.prix_unitaire || item.prix_produit // Ajuste selon ta table produits
+                    }, 1);
+                });
+
+                alert("Articles ajoutés au panier !");
+                navigate('/panier');
+            } else {
+                console.error("Erreur réponse serveur:", response.status);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la recommandation:", error);
+        }
     };
 
     if (loading) return <div style={styles.loading}>Chargement...</div>;
@@ -110,7 +146,12 @@ const Compte = () => {
                                         <span style={{ fontWeight: "bold", color: '#C9A24D' }}>
                                             {order.montant_paiement || order.total_ttc} €
                                         </span>
-                                        <button style={styles.daActionBtn}>Recommander</button>
+                                        <button
+                                            onClick={() => handleReorder(order.numero_commande)}
+                                            style={styles.daActionBtn}
+                                        >
+                                            Recommander
+                                        </button>
                                     </div>
                                 </div>
                             ))
