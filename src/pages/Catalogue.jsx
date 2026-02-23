@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { FiChevronDown, FiChevronUp, FiX, FiPlus, FiMinus, FiShoppingBag, FiRefreshCw } from "react-icons/fi";
+import { FiChevronDown, FiChevronUp, FiX, FiPlus, FiMinus, FiShoppingBag, FiRefreshCw, FiSearch } from "react-icons/fi";
 import { useCard } from "../context/CardContext.jsx";
 
 const Catalogue = () => {
@@ -14,6 +14,11 @@ const Catalogue = () => {
     const location = useLocation();
     const { addToCart } = useCard();
     const apiUrl = "http://localhost:3000";
+
+    // --- LOGIQUE DE RECHERCHE ---
+    const queryParams = new URLSearchParams(location.search);
+    const searchTerm = queryParams.get("search") || "";
+    // ----------------------------
 
     useEffect(() => {
         const fetchProduits = async () => {
@@ -45,7 +50,13 @@ const Catalogue = () => {
     };
 
     const renderSection = (title, filterFn, sectionKey) => {
-        const list = produits.filter(filterFn);
+        // On combine le filtre de catégorie ET le filtre de recherche
+        const list = produits.filter(item => {
+            const matchesCategory = filterFn(item);
+            const matchesSearch = item.nom_produit.toLowerCase().includes(searchTerm.toLowerCase());
+            return matchesCategory && matchesSearch;
+        });
+
         if (list.length === 0) return null;
 
         const normalizedFilter = filter.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -54,7 +65,8 @@ const Catalogue = () => {
         if (filter !== "Tous" && normalizedKey !== normalizedFilter) return null;
 
         const isExpanded = expandedSections[sectionKey];
-        const displayedList = (isExpanded || filter !== "Tous") ? list : list.slice(0, 8);
+        // Si on recherche, on affiche tout (pas de limite à 8)
+        const displayedList = (isExpanded || filter !== "Tous" || searchTerm !== "") ? list : list.slice(0, 8);
 
         return (
             <section style={styles.section}>
@@ -99,7 +111,8 @@ const Catalogue = () => {
                         );
                     })}
                 </div>
-                {list.length > 8 && filter === "Tous" && (
+                {/* On n'affiche le bouton "Voir tous" que si on n'est pas déjà en train de rechercher */}
+                {list.length > 8 && filter === "Tous" && searchTerm === "" && (
                     <div style={styles.viewMoreContainer}>
                         <button
                             style={isExpanded ? styles.viewMoreButtonActive : styles.viewMoreButton}
@@ -124,18 +137,24 @@ const Catalogue = () => {
                 .catalogue-card:hover .catalogue-img { transform: scale(1.1); }
                 .add-btn-cat:hover { background-color: #FFF !important; transform: scale(1.1); color: #373735 !important; }
                 
-                /* Filtres stylisés comme l'accueil */
                 .filter-card { transition: all 0.3s ease; cursor: pointer; border-radius: 20px; }
                 .filter-card:hover { transform: translateY(-5px); background-color: #FFF !important; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
                 .bubble-active { border-bottom: 4px solid #C9A24D !important; background-color: #FFF !important; }
 
-                /* Hover simple bouton réinitialiser */
                 .reset-btn-simple:hover { opacity: 0.8; transform: scale(0.98); transition: 0.3s; }
                 `}
             </style>
 
             <div style={styles.filterArea}>
                 <h3 style={styles.filterTitle}>Explorez notre catalogue</h3>
+
+                {/* Message informatif si une recherche est en cours */}
+                {searchTerm && (
+                    <div style={styles.searchResultInfo}>
+                        <FiSearch /> Résultats pour : "<strong>{searchTerm}</strong>"
+                    </div>
+                )}
+
                 <div style={styles.bubbleGroup}>
                     {[
                         { label: "Café", img: "/cafe_icon.webp" },
@@ -155,12 +174,23 @@ const Catalogue = () => {
                         </div>
                     ))}
                 </div>
-                {filter !== "Tous" && (
-                    <button className="reset-btn-simple" style={styles.resetFilter} onClick={() => setFilter("Tous")}>
+                {(filter !== "Tous" || searchTerm !== "") && (
+                    <button className="reset-btn-simple" style={styles.resetFilter} onClick={() => {
+                        setFilter("Tous");
+                        navigate("/catalogue"); // Réinitialise aussi l'URL
+                    }}>
                         <FiRefreshCw /> Réinitialiser les filtres
                     </button>
                 )}
             </div>
+
+            {/* Si aucun produit n'est trouvé globalement */}
+            {produits.filter(p => p.nom_produit.toLowerCase().includes(searchTerm.toLowerCase())).length === 0 && (
+                <div style={{ textAlign: 'center', padding: '50px', color: '#373735' }}>
+                    <FiSearch size={50} style={{ opacity: 0.2, marginBottom: '20px' }} />
+                    <p>Aucun produit ne correspond à votre recherche.</p>
+                </div>
+            )}
 
             {filter === "Tous" && renderSection("Nos offres et promotions",
                 p => p.numero_promotion && p.numero_promotion !== "NO_PROMO",
@@ -174,6 +204,7 @@ const Catalogue = () => {
 };
 
 const styles = {
+    // ... tes styles existants ...
     section: { width: "100%", padding: "40px 0" },
     titleSection: { marginLeft: "5%", fontFamily: "'Playfair Display', serif", color: "#373735", fontSize: "30px", marginBottom: "30px" },
     gridContainer: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "35px", padding: "0 5%" },
@@ -190,19 +221,18 @@ const styles = {
     miniQtyBtn: { border: "none", background: "none", cursor: "pointer", color: "#373735", display: "flex" },
     miniQtyVal: { color: "#373735", fontWeight: "bold" },
     addToCartBtn: { backgroundColor: "#C9A24D", border: "none", borderRadius: "50%", width: "40px", height: "40px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#373735", transition: "0.3s" },
-
-    // FILTRES
     filterArea: { display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", marginBottom: "40px" },
     filterTitle: { fontFamily: "'Playfair Display', serif", fontSize: "28px", color: "#373735", fontWeight: 'bold' },
+
+    // NOUVEAU STYLE INFO RECHERCHE
+    searchResultInfo: { fontSize: "18px", color: "#373735", display: "flex", alignItems: "center", gap: "10px", backgroundColor: "rgba(201, 162, 77, 0.2)", padding: "10px 20px", borderRadius: "30px" },
+
     bubbleGroup: { display: "flex", gap: "30px" },
     bubble: { width: "150px", padding: "20px", backgroundColor: "rgba(255,255,255,0.4)", display: "flex", flexDirection: "column", alignItems: "center", gap: "10px" },
     bubbleImgContainer: { width: "80px", height: "80px", borderRadius: "50%", backgroundColor: "#FFF", border: "2px solid #C9A24D", display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' },
     bubbleImg: { width: "70%", height: "70%", objectFit: "contain" },
     bubbleLabel: { fontFamily: "'Playfair Display', serif", fontSize: "16px", fontWeight: "bold", color: "#373735" },
-
-    // RÉINITIALISER
     resetFilter: { backgroundColor: "#373735", color: "#FFF", border: "none", borderRadius: "30px", padding: "10px 25px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px", fontSize: "14px", fontWeight: "bold" },
-
     viewMoreContainer: { display: "flex", justifyContent: "center", marginTop: "40px" },
     viewMoreButton: { backgroundColor: "#373735", color: "#C9A24D", border: "1.5px solid #C9A24D", padding: "12px 35px", borderRadius: "30px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" },
     viewMoreButtonActive: { backgroundColor: "#C9A24D", color: "#373735", border: "1.5px solid #C9A24D", padding: "12px 35px", borderRadius: "30px", cursor: "pointer", display: "flex", alignItems: "center", gap: "10px" },
