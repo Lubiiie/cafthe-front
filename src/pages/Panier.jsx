@@ -1,17 +1,16 @@
 import React from 'react';
 import { useCard } from '../context/CardContext.jsx';
-import { useAuth } from '../context/AuthContext.jsx'; // 1. IMPORT DE L'AUTH
+import { useAuth } from '../context/AuthContext.jsx';
 import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const Panier = () => {
     const { cart, updateQuantity, removeFromCart, getSubTotal } = useCard();
-    const { user } = useAuth(); // 2. RÉCUPÉRATION DE L'UTILISATEUR
+    const { user } = useAuth();
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
     const handleCheckout = () => {
-        // Redirection vers commande si connecté, sinon login
         if (user) {
             navigate('/commande');
         } else {
@@ -46,14 +45,14 @@ const Panier = () => {
                         </div>
                     ) : (
                         cart.map((item) => {
-                            // On s'assure d'avoir l'ID correct selon votre structure
                             const itemId = item.id_produit || item.numero_produit;
                             return (
                                 <div key={itemId} style={styles.itemRow} className="item-row">
                                     <img src={`${apiUrl}/images/${item.image}`} alt={item.nom_produit} style={styles.itemImg} />
                                     <div style={styles.itemInfo}>
                                         <h3 style={styles.itemName}>{item.nom_produit}</h3>
-                                        <p style={styles.itemPrice}>{item.prix_ttc} €</p>
+                                        {/* CORRECTION ICI : Ajout de Number().toFixed(2) */}
+                                        <p style={styles.itemPrice}>{Number(item.prix_ttc).toFixed(2)} €</p>
                                         <button onClick={() => removeFromCart(itemId)} style={styles.removeBtn} className="remove-btn">Supprimer</button>
                                     </div>
                                     <div style={styles.qtySelector}>
@@ -73,10 +72,10 @@ const Panier = () => {
 
                 <div style={styles.footer}>
                     <div style={styles.totalBlock}>
+                        {/* Le total était déjà bien formaté ici */}
                         <span style={styles.totalPrice}>{getSubTotal().toFixed(2)} €</span>
                         <span style={{color: '#FFF', display: 'block', fontSize: '12px'}}>Livraison offerte dès 45€</span>
                     </div>
-                    {/* 3. APPEL DE HANDLECHECKOUT SUR LE CLIC */}
                     <button
                         onClick={handleCheckout}
                         style={styles.validateBtn}
@@ -91,7 +90,6 @@ const Panier = () => {
     );
 };
 
-// ... Les styles restent identiques à votre version
 const styles = {
     overlay: { backgroundColor: '#1a1a1a', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 0' },
     modal: { width: '850px', backgroundColor: '#E9E3E3', borderRadius: '20px', overflow: 'hidden', display: 'flex', flexDirection: 'column', maxHeight: '90vh' },

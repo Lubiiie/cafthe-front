@@ -86,7 +86,7 @@ const Catalogue = () => {
                                     <div style={styles.infoContainer}>
                                         <h4 style={styles.productName}>{item.nom_produit}</h4>
                                         <p style={styles.productDesc}>{item.description}</p>
-                                        <span style={styles.price}>{item.prix_ttc} €</span>
+                                        <span style={styles.price}>{Number(item.prix_ttc).toFixed(2)} €</span>
                                     </div>
                                 </div>
 
