@@ -61,7 +61,7 @@ const Contact = () => {
                             </div>
                         </div>
                         <div style={styles.imageBlock}>
-                            <img src="/logo2.webp" alt="Support" style={styles.image} />
+                            <img src="/logo2.webp" alt="" style={styles.image} />
                         </div>
                     </div>
                 </div>

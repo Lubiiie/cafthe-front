@@ -27,7 +27,7 @@ const NosEngagements = () => {
                             </p>
                         </div>
                         <div style={styles.imageBlock}>
-                            <img src="/img2.webp" alt="Qualité sélection" style={styles.image} />
+                            <img src="/img2.webp" alt="Sélection artisanale de grains de café vert chez CafThé" style={styles.image} />
                         </div>
                     </div>
                 </div>
