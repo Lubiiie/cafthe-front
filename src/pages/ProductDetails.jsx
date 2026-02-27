@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { FiX, FiShoppingBag, FiMapPin, FiHeart, FiStar, FiPlus, FiMinus } from "react-icons/fi";
+import { FiX, FiShoppingBag, FiMapPin, FiPlus, FiMinus } from "react-icons/fi";
 import { useCard } from "../context/CardContext.jsx";
 
 const ProductDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL;
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
     const { addToCart } = useCard();
 
     const [produit, setProduit] = useState(null);
@@ -14,7 +14,6 @@ const ProductDetails = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [quantite, setQuantite] = useState(1);
     const [isHovered, setIsHovered] = useState(false);
-
     const [quantitesSimilaires, setQuantitesSimilaires] = useState({});
 
     useEffect(() => {
@@ -49,42 +48,61 @@ const ProductDetails = () => {
         fetchProduit();
     }, [id, apiUrl]);
 
-    const handleQtySim = (prodId, delta) => {
-        setQuantitesSimilaires(prev => ({
-            ...prev,
-            [prodId]: Math.max(1, (prev[prodId] || 1) + delta)
-        }));
+    const handleMainQtyChange = (delta) => {
+        const next = (parseInt(quantite, 10) || 1) + delta;
+        if (next >= 1 && next <= produit.stock) setQuantite(next);
     };
 
-    if (isLoading) return <div style={{textAlign: 'center', padding: '100px', color: '#FFF'}}>Chargement...</div>;
+    const handleMainInputChange = (value) => {
+        if (value === "") { setQuantite(""); return; }
+        const val = parseInt(value, 10);
+        if (!isNaN(val)) {
+            setQuantite(Math.max(1, Math.min(val, produit.stock)));
+        }
+    };
+
+    const handleQtySim = (prodId, delta, stockMax) => {
+        setQuantitesSimilaires(prev => {
+            const current = parseInt(prev[prodId], 10) || 1;
+            const next = current + delta;
+            if (next >= 1 && next <= stockMax) {
+                return { ...prev, [prodId]: next };
+            }
+            return prev;
+        });
+    };
+
+    const handleInputSim = (prodId, value, stockMax) => {
+        if (value === "") {
+            setQuantitesSimilaires(prev => ({ ...prev, [prodId]: "" }));
+            return;
+        }
+        const val = parseInt(value, 10);
+        if (!isNaN(val)) {
+            const safeVal = Math.max(1, Math.min(val, stockMax));
+            setQuantitesSimilaires(prev => ({ ...prev, [prodId]: safeVal }));
+        }
+    };
+
+    if (isLoading) return <div style={{textAlign: 'center', padding: '100px', color: '#FFF', fontFamily: 'Playfair Display', fontSize: '24px'}}>Chargement de l'univers...</div>;
     if (!produit) return null;
+
+    const isOutOfStock = produit.stock <= 0;
 
     return (
         <div style={styles.overlay}>
             <style>
                 {`
                 .close-btn:hover { color: #C9A24D !important; transform: rotate(90deg); transition: 0.3s; }
-                .avis-card:hover { transform: translateY(-5px); border: 1px solid #C9A24D; transition: 0.4s; }
-                .sim-card { transition: all 0.4s ease; cursor: pointer; }
-                .sim-card:hover { transform: translateY(-8px); transition: 0.4s; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
+                .sim-card { transition: all 0.4s ease; border: 2px solid transparent; }
+                .sim-card:hover { transform: translateY(-8px); border-color: #C9A24D; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
+                .sim-card-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
                 
-                /* HOVERS BARRE PANIER */
-                .qty-hover:hover { color: #C9A24D !important; transform: scale(1.2); transition: 0.2s; }
+                .qty-input-main { width: 50px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #373735; outline: none; background: transparent; }
+                .qty-input-sim { width: 30px; border: none; background: transparent; text-align: center; font-weight: 800; font-size: 14px; color: #FFF; outline: none; }
                 
-                .cart-btn-premium { 
-                    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
-                }
-                .cart-btn-premium:hover { 
-                    transform: scale(1.05); 
-                    background-color: #C9A24D !important; 
-                    box-shadow: 0 8px 25px rgba(201, 162, 77, 0.4);
-                }
-                .cart-btn-premium:hover svg {
-                    transform: rotate(-12deg) scale(1.2);
-                    transition: 0.3s;
-                }
-
-                .sim-qty-box:hover { background-color: rgba(255, 255, 255, 0.2) !important; transition: 0.3s; }
+                .cart-btn-premium { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; white-space: nowrap; flex-shrink: 0; }
+                .cart-btn-premium:disabled { background-color: #666 !important; cursor: not-allowed; opacity: 0.7; }
                 .plus-circle:hover { background-color: #C9A24D; color: #373735 !important; transition: 0.3s; }
                 `}
             </style>
@@ -93,43 +111,33 @@ const ProductDetails = () => {
                 <FiX style={styles.closeBtn} className="close-btn" onClick={() => navigate(-1)} />
 
                 <div style={styles.imageWrapper}>
-                    <img src={`${apiUrl}/images/${produit.image}`} alt={produit.nom_produit} style={styles.mainImage} />
+                    {isOutOfStock && <div style={styles.ruptureBadge}>RUPTURE DE STOCK</div>}
+                    <img src={`${apiUrl}/images/${produit.image}`} alt={produit.nom_produit} style={{...styles.mainImage, opacity: isOutOfStock ? 0.5 : 1}} />
                 </div>
 
                 <div style={styles.content}>
                     <h1 style={styles.title}>{produit.nom_produit}</h1>
+                    <div style={{textAlign: 'center', marginBottom: '20px'}}>
+                        <span style={{
+                            padding: '5px 15px',
+                            borderRadius: '20px',
+                            backgroundColor: isOutOfStock ? '#E63946' : '#2A9D8F',
+                            color: '#FFF',
+                            fontWeight: 'bold',
+                            fontSize: '14px'
+                        }}>
+                            {isOutOfStock ? "Indisponible actuellement" : `En stock : ${produit.stock} unités`}
+                        </span>
+                    </div>
+
                     <hr style={styles.divider} />
                     <p style={styles.description}>{produit.description}</p>
 
                     <div style={styles.infoSection}>
-                        <h3 style={styles.subTitle}>Note aromatique</h3>
-                        <div style={styles.iconRow}>
-                            <img src="/nature.webp" alt="Notes" style={styles.detailIcon} />
-                            <img src="/aromatique.webp" alt="Arome" style={styles.detailIcon} />
-                        </div>
-                    </div>
-
-                    <div style={styles.infoSection}>
                         <h3 style={styles.subTitle}>Origines</h3>
                         <div style={styles.originBox}>
-                            <FiMapPin size={24} color="#373735" />
-                            <span style={styles.originText}>{produit.origine}</span>
-                        </div>
-                    </div>
-
-                    <hr style={styles.divider} />
-
-                    <h3 style={styles.subTitle}>Avis client</h3>
-                    <div style={styles.avisGrid}>
-                        <div style={styles.avisCard} className="avis-card">
-                            <div style={styles.stars}><FiStar fill="#C9A24D" color="#C9A24D" /><FiStar fill="#C9A24D" color="#C9A24D" /><FiStar fill="#C9A24D" color="#C9A24D" /></div>
-                            <p style={styles.avisAuthor}>Marc-Antoine Vallet</p>
-                            <p style={styles.avisText}>"Un plaisir simple mais touchant."</p>
-                        </div>
-                        <div style={styles.avisCard} className="avis-card">
-                            <div style={styles.stars}><FiStar fill="#C9A24D" color="#C9A24D" /><FiStar fill="#C9A24D" color="#C9A24D" /></div>
-                            <p style={styles.avisAuthor}>Jean-Baptiste Huet</p>
-                            <p style={styles.avisText}>"Un voyage sensoriel exceptionnel."</p>
+                            <FiMapPin size={24} color="#C9A24D" />
+                            <span style={styles.originText}>{produit.origine || "Sélection Cafthé"}</span>
                         </div>
                     </div>
 
@@ -137,53 +145,77 @@ const ProductDetails = () => {
 
                     <h3 style={styles.subTitle}>Produits similaires</h3>
                     <div style={styles.similarGrid}>
-                        {similaires.map((sim) => (
-                            <div key={sim.numero_produit} style={styles.similarCard} className="sim-card">
-                                <div style={styles.similarImgBg} onClick={() => { navigate(`/produit/${sim.numero_produit}`); window.scrollTo(0,0); }}>
-                                    <img src={`${apiUrl}/images/${sim.image}`} alt={sim.nom_produit} style={styles.similarImg} />
-                                </div>
-                                <div style={styles.similarInfo}>
-                                    <p style={styles.similarName} onClick={() => navigate(`/produit/${sim.numero_produit}`)}>{sim.nom_produit}</p>
-                                    <div style={styles.simActionRow}>
-                                        <span style={{color: '#C9A24D', fontWeight: 'bold'}}>{sim.prix_ttc} €</span>
-
-                                        <div style={styles.simQtyBox} className="sim-qty-box">
-                                            <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, -1)}><FiMinus size={12}/></button>
-                                            <span style={styles.simQtyVal}>{quantitesSimilaires[sim.numero_produit] || 1}</span>
-                                            <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, 1)}><FiPlus size={12}/></button>
-                                        </div>
-
-                                        <div style={styles.plusCircle} className="plus-circle" onClick={() => addToCart({ ...sim, id_produit: sim.numero_produit }, quantitesSimilaires[sim.numero_produit])}>
-                                            <FiPlus />
+                        {similaires.map((sim) => {
+                            const simOut = sim.stock <= 0;
+                            return (
+                                <div key={sim.numero_produit} style={styles.similarCard} className={`sim-card ${simOut ? "sim-card-out" : ""}`}>
+                                    <div style={styles.similarImgBg} onClick={() => { navigate(`/produit/${sim.numero_produit}`); window.scrollTo(0,0); }}>
+                                        <img src={`${apiUrl}/images/${sim.image}`} alt={sim.nom_produit} style={styles.similarImg} />
+                                    </div>
+                                    <div style={styles.similarInfo}>
+                                        <p style={styles.similarName}>{sim.nom_produit}</p>
+                                        <div style={styles.simActionRow}>
+                                            <span style={{color: '#C9A24D', fontWeight: 'bold'}}>{Number(sim.prix_ttc).toFixed(2)} €</span>
+                                            {!simOut && (
+                                                <>
+                                                    <div style={styles.simQtyBox}>
+                                                        <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, -1, sim.stock)}><FiMinus size={12}/></button>
+                                                        <input
+                                                            type="text"
+                                                            className="qty-input-sim"
+                                                            value={quantitesSimilaires[sim.numero_produit] || 1}
+                                                            onChange={(e) => handleInputSim(sim.numero_produit, e.target.value, sim.stock)}
+                                                            onBlur={() => { if(!quantitesSimilaires[sim.numero_produit]) setQuantitesSimilaires(p => ({...p, [sim.numero_produit]: 1})) }}
+                                                        />
+                                                        <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, 1, sim.stock)}><FiPlus size={12}/></button>
+                                                    </div>
+                                                    <div style={styles.plusCircle} className="plus-circle" onClick={() => addToCart({ ...sim, id_produit: sim.numero_produit }, quantitesSimilaires[sim.numero_produit])}>
+                                                        <FiShoppingBag size={16} />
+                                                    </div>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 
+                {/* FOOTER CORRIGÉ ICI */}
                 <div style={styles.stickyFooter}>
                     <div style={styles.priceContainer}>
                         <p style={{color: '#E9E3E3', fontSize: '12px', margin: 0, opacity: 0.6}}>Prix TTC</p>
-                        <span style={styles.priceValue}>{produit.prix_ttc} €</span>
+                        <span style={styles.priceValue}>{Number(produit.prix_ttc).toFixed(2)} €</span>
                     </div>
                     <div style={styles.actions}>
-                        <div style={styles.qtySelector}>
-                            <button style={styles.qtyBtn} className="qty-hover" onClick={() => setQuantite(Math.max(1, quantite - 1))}>-</button>
-                            <span style={styles.qtyVal}>{quantite}</span>
-                            <button style={styles.qtyBtn} className="qty-hover" onClick={() => setQuantite(quantite + 1)}>+</button>
-                        </div>
-                        <button
-                            className="cart-btn-premium"
-                            style={{ ...styles.cartBtn, backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3" }}
-                            onMouseEnter={() => setIsHovered(true)}
-                            onMouseLeave={() => setIsHovered(false)}
-                            onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantite)}
-                        >
-                            <FiShoppingBag size={22} />
-                            <span style={{marginLeft: '10px'}}>AJOUTER AU PANIER</span>
-                        </button>
+                        {!isOutOfStock ? (
+                            <>
+                                <div style={styles.qtySelector}>
+                                    <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(-1)}><FiMinus /></button>
+                                    <input
+                                        type="text"
+                                        className="qty-input-main"
+                                        value={quantite}
+                                        onChange={(e) => handleMainInputChange(e.target.value)}
+                                        onBlur={() => { if(!quantite) setQuantite(1) }}
+                                    />
+                                    <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(1)}><FiPlus /></button>
+                                </div>
+                                <button
+                                    className="cart-btn-premium"
+                                    style={{ ...styles.cartBtn, backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3" }}
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                    onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantite)}
+                                >
+                                    <FiShoppingBag size={20} />
+                                    <span style={{marginLeft: '10px'}}>AJOUTER AU PANIER</span>
+                                </button>
+                            </>
+                        ) : (
+                            <button disabled style={styles.cartBtn}>VICTIME DE SON SUCCÈS</button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -193,46 +225,38 @@ const ProductDetails = () => {
 
 const styles = {
     overlay: { width: "100%", backgroundColor: "#1a1a1a", minHeight: "100vh", padding: "120px 0", display: "flex", justifyContent: "center" },
-    container: { width: "950px", backgroundColor: "#E9E3E3", borderRadius: "15px", padding: "60px 80px 180px", position: "relative", overflow: 'hidden' },
+    container: { width: "950px", backgroundColor: "#E9E3E3", borderRadius: "25px", padding: "60px 80px 180px", position: "relative", overflow: 'hidden', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' },
     closeBtn: { position: "absolute", right: "30px", top: "30px", fontSize: "35px", cursor: "pointer", color: "#373735", zIndex: 10 },
-    imageWrapper: { width: "100%", display: "flex", justifyContent: "center", marginBottom: "40px" },
-    mainImage: { width: "100%", maxWidth: "350px", objectFit: "contain" },
+    imageWrapper: { width: "100%", display: "flex", justifyContent: "center", marginBottom: "40px", position: 'relative' },
+    ruptureBadge: { position: 'absolute', top: '50%', background: '#E63946', color: '#FFF', padding: '10px 30px', fontWeight: '900', transform: 'rotate(-10deg)', zIndex: 5, border: '2px solid white' },
+    mainImage: { width: "100%", maxWidth: "380px", objectFit: "contain", transition: '0.3s' },
     content: { width: "100%" },
-    title: { fontFamily: "'Playfair Display', serif", fontSize: "42px", color: "#373735", textAlign: "center" },
+    title: { fontFamily: "'Playfair Display', serif", fontSize: "48px", color: "#373735", textAlign: "center", marginBottom: '10px' },
     divider: { border: "none", borderTop: "1.5px solid #373735", opacity: 0.15, margin: "30px 0" },
-    description: { fontSize: "16px", color: "#373735", textAlign: "justify", lineHeight: '1.6' },
-    subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "24px", color: "#373735", marginBottom: "20px" },
-    infoSection: { marginBottom: "30px" },
-    iconRow: { display: "flex", gap: "20px" },
-    detailIcon: { width: "45px", height: "45px" },
-    originBox: { display: "flex", alignItems: "center", gap: "10px" },
-    originText: { fontSize: "18px", color: "#373735" },
-    avisGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" },
-    avisCard: { backgroundColor: "#373735", borderRadius: "20px", padding: "20px", color: "#FFF" },
-    stars: { display: "flex", gap: "5px", marginBottom: "10px" },
-    avisAuthor: { fontWeight: "bold", color: "#C9A24D", fontSize: "14px" },
-    avisText: { fontStyle: "italic", fontSize: "13px" },
-
-    similarGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "15px" },
-    similarCard: { backgroundColor: "#373735", borderRadius: "20px", overflow: "hidden", color: "#FFF", width: "100%", height: "400px", display: "flex", flexDirection: "column" },
-    similarImgBg: { backgroundColor: "#FFF", padding: "0px", display: "flex", justifyContent: "center", height: "220px", width: "100%" },
+    description: { fontSize: "17px", color: "#373735", textAlign: "justify", lineHeight: '1.7', opacity: 0.9 },
+    subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "26px", color: "#373735", marginBottom: "25px", fontWeight: 'bold' },
+    infoSection: { marginBottom: "35px" },
+    originBox: { display: "flex", alignItems: "center", gap: "12px", background: 'rgba(55,55,53,0.05)', padding: '15px', borderRadius: '15px', width: 'fit-content' },
+    originText: { fontSize: "20px", color: "#373735", fontWeight: '500' },
+    similarGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" },
+    similarCard: { backgroundColor: "#373735", borderRadius: "20px", overflow: "hidden", color: "#FFF", display: "flex", flexDirection: "column" },
+    similarImgBg: { backgroundColor: "#FFF", display: "flex", justifyContent: "center", height: "180px" },
     similarImg: { width: "100%", height: "100%", objectFit: "cover" },
-    similarInfo: { padding: "15px", display: "flex", flexDirection: "column", justifyContent: "space-between", flexGrow: 1 },
-    similarName: { fontSize: "16px", fontWeight: "bold", margin: "0", minHeight: '40px' },
+    similarInfo: { padding: "15px", flexGrow: 1, display: 'flex', flexDirection: 'column' },
+    similarName: { fontSize: "16px", fontWeight: "bold", margin: "0 0 10px 0", color: '#C9A24D' },
     simActionRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" },
-    simQtyBox: { display: "flex", alignItems: "center", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "4px 10px", gap: "8px" },
-    simMiniBtn: { background: "none", border: "none", color: "#FFF", cursor: "pointer", padding: "2px" },
-    simQtyVal: { fontSize: "14px", fontWeight: "bold", minWidth: "15px", textAlign: "center" },
-    plusCircle: { width: "35px", height: "35px", border: "1px solid #C9A24D", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A24D", cursor: 'pointer' },
+    simQtyBox: { display: "flex", alignItems: "center", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "4px 8px" },
+    simMiniBtn: { background: "none", border: "none", color: "#FFF", cursor: "pointer" },
+    plusCircle: { width: "38px", height: "38px", border: "1.5px solid #C9A24D", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A24D", cursor: 'pointer' },
 
-    stickyFooter: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "130px", backgroundColor: "#373735", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 60px", boxSizing: "border-box" },
+    // MODIFICATIONS ICI
+    stickyFooter: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "120px", backgroundColor: "#373735", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 40px", boxSizing: "border-box" },
     priceContainer: { display: 'flex', flexDirection: 'column' },
-    priceValue: { color: "#C9A24D", fontSize: "42px", fontWeight: "bold" },
-    actions: { display: "flex", gap: "25px" },
-    qtySelector: { backgroundColor: "#FFF", borderRadius: "30px", height: "55px", display: "flex", alignItems: "center", padding: "0 10px" },
-    qtyBtn: { background: "none", border: "none", fontSize: "24px", cursor: "pointer" },
-    qtyVal: { fontSize: "20px", fontWeight: "bold", minWidth: "30px", textAlign: "center", color: '#373735' },
-    cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 35px", fontWeight: "bold", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735' }
+    priceValue: { color: "#C9A24D", fontSize: "42px", fontWeight: "900" },
+    actions: { display: "flex", gap: "15px", alignItems: "center" },
+    qtySelector: { backgroundColor: "#FFF", borderRadius: "30px", height: "55px", display: "flex", alignItems: "center", padding: "0 15px" },
+    qtyBtn: { background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: '#373735', fontWeight: 'bold' },
+    cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 25px", fontWeight: "900", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735', fontSize: '14px', letterSpacing: '0.5px' }
 };
 
 export default ProductDetails;

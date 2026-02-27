@@ -6,15 +6,15 @@ const ProductCard = ({ produit }) => {
 
     const imageFileName = produit.images || produit.image || produit.image_url;
 
-    const imageUrl = imageFileName 
+    const imageUrl = imageFileName
         ? `${apiUrl}/images/${imageFileName}`
         : "https://placehold.co/300x200?text=Image+Indisponible";
 
     return (
         <div className="product-card" style={{ border: '1px solid #eee', padding: '15px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-            <img 
-                src={imageUrl} 
-                alt={produit.nom_produit} 
+            <img
+                src={imageUrl}
+                alt={produit.nom_produit}
                 className="product-card-image"
                 style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '8px' }}
                 onError={(e) => {
