@@ -27,13 +27,44 @@ const AvisClients = () => {
 
     return (
         <section style={styles.section}>
-            <h2 style={styles.titleSection}>Avis récents</h2>
-            <div style={styles.container}>
+            {/* Injection du Responsive sans toucher aux objets styles */}
+            <style>
+                {`
+                @media (max-width: 992px) {
+                    .avis-container {
+                        gap: 20px !important;
+                    }
+                    .avis-card {
+                        width: calc(50% - 20px) !important; /* 2 colonnes sur tablette */
+                        min-width: 300px !important;
+                    }
+                }
+                @media (max-width: 768px) {
+                    .avis-title {
+                        text-align: center !important;
+                        margin-left: 0 !important;
+                        font-size: 1.8rem !important;
+                    }
+                    .avis-container {
+                        flex-direction: column !important;
+                        align-items: center !important;
+                    }
+                    .avis-card {
+                        width: 100% !important;
+                        max-width: 400px !important;
+                    }
+                }
+                `}
+            </style>
+
+            <h2 style={styles.titleSection} className="avis-title">Avis récents</h2>
+            <div style={styles.container} className="avis-container">
                 {avis.map((item) => {
                     const isHovered = hoveredId === item.id;
                     return (
                         <div
                             key={item.id}
+                            className="avis-card"
                             style={{
                                 ...styles.card,
                                 transform: isHovered ? "translateY(-12px)" : "translateY(0)",
@@ -69,7 +100,6 @@ const styles = {
         marginLeft: "5%",
         fontFamily: "'Playfair Display', serif",
         color: "#373735",
-        // Ajustement : passage de 30px à 2.25rem (~36px) pour affirmer le titre
         fontSize: "2.25rem",
         marginBottom: "30px"
     },
@@ -78,7 +108,8 @@ const styles = {
         justifyContent: "center",
         gap: "30px",
         padding: "0 5%",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        boxSizing: "border-box"
     },
     card: {
         width: "350px",
@@ -87,7 +118,8 @@ const styles = {
         padding: "30px",
         color: "#E9E3E3",
         transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        cursor: "default"
+        cursor: "default",
+        boxSizing: "border-box"
     },
     starsContainer: {
         display: "flex",
@@ -96,17 +128,15 @@ const styles = {
     },
     icon: {
         color: "#C9A24D",
-        fontSize: "1.2rem" // Légèrement agrandi pour suivre le reste
+        fontSize: "1.2rem"
     },
     userName: {
         color: "#C9A24D",
-        // Ajustement : passage de 18px à 1.4rem (~22px) pour le nom du client
         fontSize: "1.4rem",
         margin: "0 0 15px 0",
         fontFamily: "'Playfair Display', serif"
     },
     comment: {
-        // Ajustement : passage de 14px à 1.1rem (~17.5px) pour le confort de lecture
         fontSize: "1.1rem",
         fontStyle: "italic",
         lineHeight: "1.6",

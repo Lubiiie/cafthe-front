@@ -3,21 +3,77 @@ import React from 'react';
 const NosEngagements = () => {
     return (
         <div style={styles.pageWrapper}>
+            <style>
+                {`
+                @media (max-width: 992px) {
+                    .content-row-res { 
+                        flex-direction: column !important; 
+                        gap: 40px !important; 
+                    }
+                    .content-row-reverse-res { 
+                        flex-direction: column !important; 
+                        gap: 40px !important; 
+                    }
+                    .text-block-res { 
+                        width: 100% !important; 
+                        text-align: center !important;
+                    }
+                    .image-block-res { 
+                        width: 100% !important; 
+                    }
+                    .image-res {
+                        width: 80% !important; /* Image plus large sur mobile pour la visibilité */
+                    }
+                    .quote-res {
+                        text-align: left;
+                        display: inline-block;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .page-wrapper-res {
+                        padding-top: 100px !important;
+                    }
+                    .main-title-res {
+                        font-size: 2.2rem !important;
+                    }
+                    .section-dark-res {
+                        padding: 60px 0 !important;
+                    }
+                    .section-title-res {
+                        font-size: 1.8rem !important;
+                    }
+                    .hero-subtitle-res {
+                        font-size: 1rem !important;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .main-title-res {
+                        font-size: 1.8rem !important;
+                    }
+                    .container-res {
+                        padding: 0 20px !important;
+                    }
+                }
+                `}
+            </style>
+
             {/* Header / Hero Section */}
             <header style={styles.heroSection}>
-                <h1 style={styles.mainTitle}>Nos engagements</h1>
-                <p style={styles.heroSubtitle}>
+                <h1 style={styles.mainTitle} className="main-title-res">Nos engagements</h1>
+                <p style={styles.heroSubtitle} className="hero-subtitle-res">
                     Parce que l'excellence ne s'arrête pas à la qualité du grain ou de la feuille,
                     nous plaçons l'éthique et la transparence au cœur de chaque décision.
                 </p>
             </header>
 
-            {/* Engagement 1 : Sélection (Texte à gauche, Image à droite) */}
-            <section style={styles.sectionDark}>
-                <div style={styles.container}>
-                    <div style={styles.contentRow}>
-                        <div style={styles.textBlock}>
-                            <h2 style={styles.sectionTitle}>Une sélection sans compromis</h2>
+            {/* Engagement 1 : Sélection */}
+            <section style={styles.sectionDark} className="section-dark-res">
+                <div style={styles.container} className="container-res">
+                    <div style={styles.contentRow} className="content-row-res">
+                        <div style={styles.textBlock} className="text-block-res">
+                            <h2 style={styles.sectionTitle} className="section-title-res">Une sélection sans compromis</h2>
                             <p style={styles.paragraph}>
                                 Nous parcourons le monde pour dénicher des terroirs confidentiels. Chaque produit de notre catalogue
                                 répond à un cahier des charges strict garantissant une pureté et une fraîcheur absolue.
@@ -26,47 +82,47 @@ const NosEngagements = () => {
                                 Nos torréfacteurs et experts en thé travaillent main dans la main pour sublimer les arômes originels.
                             </p>
                         </div>
-                        <div style={styles.imageBlock}>
-                            <img src="/img2.webp" alt="Sélection artisanale de grains de café vert chez CafThé" style={styles.image} />
+                        <div style={styles.imageBlock} className="image-block-res">
+                            <img src="/img2.webp" alt="Sélection artisanale" style={styles.image} className="image-res" />
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Engagement 2 : Éthique (Image à gauche, Texte à droite) */}
-            <section style={styles.sectionDark}>
-                <div style={styles.container}>
-                    <div style={styles.contentRowReverse}>
-                        <div style={styles.textBlock}>
-                            <h2 style={styles.sectionTitle}>Sourcing éthique & durable</h2>
+            {/* Engagement 2 : Éthique */}
+            <section style={styles.sectionDark} className="section-dark-res">
+                <div style={styles.container} className="container-res">
+                    <div style={styles.contentRowReverse} className="content-row-reverse-res">
+                        <div style={styles.textBlock} className="text-block-res">
+                            <h2 style={styles.sectionTitle} className="section-title-res">Sourcing éthique & durable</h2>
                             <p style={styles.paragraph}>
                                 Nous privilégions le commerce direct avec les petits producteurs. En supprimant les intermédiaires inutiles,
                                 nous assurons une juste rémunération à ceux qui font la noblesse de nos produits.
                             </p>
-                            <blockquote style={styles.quote}>
+                            <blockquote style={styles.quote} className="quote-res">
                                 "Respecter la terre et ceux qui la travaillent."
                             </blockquote>
                         </div>
-                        <div style={styles.imageBlock}>
-                            <img src="/img1.webp" alt="Sourcing éthique" style={styles.image} />
+                        <div style={styles.imageBlock} className="image-block-res">
+                            <img src="/img1.webp" alt="Sourcing éthique" style={styles.image} className="image-res" />
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Engagement 3 : Accompagnement (Texte à gauche, Image à droite) */}
-            <section style={styles.sectionDark}>
-                <div style={styles.container}>
-                    <div style={styles.contentRow}>
-                        <div style={styles.textBlock}>
-                            <h2 style={styles.sectionTitle}>Un service d'exception</h2>
+            {/* Engagement 3 : Accompagnement */}
+            <section style={styles.sectionDark} className="section-dark-res">
+                <div style={styles.container} className="container-res">
+                    <div style={styles.contentRow} className="content-row-res">
+                        <div style={styles.textBlock} className="text-block-res">
+                            <h2 style={styles.sectionTitle} className="section-title-res">Un service d'exception</h2>
                             <p style={styles.paragraph}>
                                 Votre expérience CafThé ne s'arrête pas à la commande. Notre équipe est là pour vous conseiller
                                 sur les méthodes de préparation et l'entretien de vos accessoires pour une dégustation optimale.
                             </p>
                         </div>
-                        <div style={styles.imageBlock}>
-                            <img src="/img2.webp" alt="Service client" style={styles.image} />
+                        <div style={styles.imageBlock} className="image-block-res">
+                            <img src="/img2.webp" alt="Service client" style={styles.image} className="image-res" />
                         </div>
                     </div>
                 </div>
@@ -87,14 +143,12 @@ const styles = {
         textAlign: "center",
         padding: "0 20px",
     },
-    // Titre principal harmonisé à 3rem (~48px)
     mainTitle: {
         fontFamily: "'Playfair Display', serif",
         fontSize: "3rem",
         color: "#373735",
         marginBottom: "25px",
     },
-    // Sous-titre monté à 1.15rem (~18.5px) pour le confort
     heroSubtitle: {
         fontSize: "1.15rem",
         lineHeight: "1.6",
@@ -129,21 +183,18 @@ const styles = {
         minWidth: "300px",
         color: "#E9E3E3",
     },
-    // Titres de section à 2.25rem (~36px) pour la cohérence
     sectionTitle: {
         fontFamily: "'Playfair Display', serif",
         fontSize: "2.25rem",
         color: "#C9A24D",
         marginBottom: "20px",
     },
-    // Corps de texte à 1.1rem (~17.5px)
     paragraph: {
         fontSize: "1.1rem",
         lineHeight: "1.7",
         marginBottom: "15px",
         opacity: 0.8,
     },
-    // Citation mise en valeur à 1.4rem (~22px)
     quote: {
         fontStyle: "italic",
         fontSize: "1.4rem",

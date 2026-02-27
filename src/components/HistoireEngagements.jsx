@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import pour la navigation
+import { useNavigate } from "react-router-dom";
 
 const HistoireEngagements = () => {
     const [hoveredSection, setHoveredSection] = useState(null);
@@ -24,27 +24,62 @@ const HistoireEngagements = () => {
 
     return (
         <section style={styles.section}>
-            <div style={styles.container}>
+            {/* Injection du Responsive sans modifier tes objets styles */}
+            <style>
+                {`
+                @media (max-width: 992px) {
+                    .engagement-container {
+                        gap: 40px !important;
+                    }
+                    .engagement-img-wrapper {
+                        height: 350px !important;
+                    }
+                }
+                @media (max-width: 768px) {
+                    .engagement-container {
+                        flex-direction: column !important;
+                        align-items: center !important;
+                        gap: 50px !important;
+                    }
+                    .engagement-block {
+                        width: 100% !important;
+                        max-width: 500px !important;
+                    }
+                    .engagement-img-wrapper {
+                        height: 300px !important;
+                    }
+                    .engagement-title {
+                        font-size: 1.75rem !important;
+                        margin-bottom: 20px !important;
+                    }
+                }
+                `}
+            </style>
+
+            <div style={styles.container} className="engagement-container">
                 {sections.map((sec) => {
                     const isHovered = hoveredSection === sec.id;
                     return (
                         <div
                             key={sec.id}
+                            className="engagement-block"
                             style={{
                                 ...styles.block,
                                 transform: isHovered ? "translateY(-10px)" : "translateY(0)"
                             }}
                             onMouseEnter={() => setHoveredSection(sec.id)}
                             onMouseLeave={() => setHoveredSection(null)}
-                            // Redirection au clic sur tout le bloc
                             onClick={() => navigate(sec.lien)}
                         >
-                            <h2 style={styles.title}>{sec.titre}</h2>
+                            <h2 style={styles.title} className="engagement-title">{sec.titre}</h2>
 
-                            <div style={{
-                                ...styles.imageWrapper,
-                                border: isHovered ? "2px solid #C9A24D" : "2px solid transparent"
-                            }}>
+                            <div
+                                className="engagement-img-wrapper"
+                                style={{
+                                    ...styles.imageWrapper,
+                                    border: isHovered ? "2px solid #C9A24D" : "2px solid transparent"
+                                }}
+                            >
                                 <img
                                     src={sec.image}
                                     alt={sec.titre}
@@ -80,7 +115,8 @@ const styles = {
         width: "100%",
         backgroundColor: "#373735",
         padding: "100px 0",
-        color: "#E9E3E3"
+        color: "#E9E3E3",
+        boxSizing: "border-box"
     },
     container: {
         display: "flex",
@@ -88,18 +124,19 @@ const styles = {
         maxWidth: "1200px",
         margin: "0 auto",
         gap: "60px",
-        padding: "0 20px"
+        padding: "0 20px",
+        boxSizing: "border-box"
     },
     block: {
         flex: 1,
         textAlign: "center",
         transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
-        cursor: "pointer"
+        cursor: "pointer",
+        boxSizing: "border-box"
     },
     title: {
         fontFamily: "'Playfair Display', serif",
         color: "#C9A24D",
-        // Ajustement : passage de 28px à 2rem (~32px) pour la cohérence avec le Hero
         fontSize: "2rem",
         marginBottom: "30px",
         letterSpacing: "2px"
@@ -137,12 +174,10 @@ const styles = {
         color: "#C9A24D",
         fontWeight: "bold",
         backgroundColor: "rgba(55, 55, 53, 0.8)",
-        // Ajustement : passage à 1.1rem pour être raccord avec les boutons/liens
         fontSize: "1.1rem"
     },
     description: {
         marginTop: "25px",
-        // Ajustement : passage de 16px à 1.15rem (~18.5px) pour le confort de lecture sur fond sombre
         fontSize: "1.15rem",
         lineHeight: "1.6",
         fontStyle: "italic",

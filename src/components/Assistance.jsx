@@ -10,27 +10,50 @@ const Assistance = () => {
             id: "aide",
             titre: "Besoin d’aide",
             image: "/besoin.webp",
-            // On envoie vers la section "message" de la page contact
             path: "/contact?section=message"
         },
         {
             id: "faq",
             titre: "FAQ",
             image: "/faq.webp",
-            // On envoie vers la section "faq" de la page contact
             path: "/contact?section=faq"
         }
     ];
 
     const handleNavigation = (path) => {
         navigate(path);
-        // On force le scroll en haut au cas où, la page Contact gérera l'ancrage ensuite
         window.scrollTo(0, 0);
     };
 
     return (
         <section style={styles.section}>
-            <div style={styles.container}>
+            {/* Injection du Responsive sans toucher aux objets styles */}
+            <style>
+                {`
+                @media (max-width: 768px) {
+                    .assistance-container {
+                        gap: 40px !important; /* On réduit le gap de 100px à 40px */
+                        flex-direction: row !important;
+                    }
+                    .assistance-circle {
+                        width: 130px !important; /* Cercles un peu plus petits sur mobile */
+                        height: 130px !important;
+                    }
+                    .assistance-text {
+                        font-size: 1.4rem !important; /* Texte ajusté pour mobile */
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .assistance-container {
+                        flex-direction: column !important; /* Empilement sur très petits écrans */
+                        gap: 50px !important;
+                    }
+                }
+                `}
+            </style>
+
+            <div style={styles.container} className="assistance-container">
                 {liens.map((item) => {
                     const isHovered = hovered === item.id;
                     return (
@@ -41,18 +64,24 @@ const Assistance = () => {
                             onMouseLeave={() => setHovered(null)}
                             onClick={() => handleNavigation(item.path)}
                         >
-                            <div style={{
-                                ...styles.circle,
-                                transform: isHovered ? "scale(1.1)" : "scale(1)",
-                                boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.2)" : "0 4px 10px rgba(0,0,0,0.1)"
-                            }}>
+                            <div
+                                className="assistance-circle"
+                                style={{
+                                    ...styles.circle,
+                                    transform: isHovered ? "scale(1.1)" : "scale(1)",
+                                    boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.2)" : "0 4px 10px rgba(0,0,0,0.1)"
+                                }}
+                            >
                                 <img src={item.image} alt={item.titre} style={styles.icon} />
                             </div>
-                            <span style={{
-                                ...styles.text,
-                                textDecoration: isHovered ? "underline" : "none",
-                                color: isHovered ? "#C9A24D" : "#373735"
-                            }}>
+                            <span
+                                className="assistance-text"
+                                style={{
+                                    ...styles.text,
+                                    textDecoration: isHovered ? "underline" : "none",
+                                    color: isHovered ? "#C9A24D" : "#373735"
+                                }}
+                            >
                                 {item.titre}
                             </span>
                         </div>
@@ -68,11 +97,15 @@ const styles = {
         width: "100%",
         backgroundColor: "#E9E3E3",
         padding: "60px 0",
+        boxSizing: "border-box",
+        overflow: "hidden" // Sécurité anti-débordement
     },
     container: {
         display: "flex",
         justifyContent: "center",
         gap: "100px",
+        boxSizing: "border-box",
+        padding: "0 20px"
     },
     itemWrapper: {
         display: "flex",
@@ -92,19 +125,21 @@ const styles = {
         alignItems: "center",
         transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
         marginBottom: "15px",
-        overflow: "visible"
+        overflow: "visible",
+        boxSizing: "border-box"
     },
     icon: {
-        width: "250px",
-        height: "250px",
-        objectFit: "contain"
+        width: "80%",      // L'icône prendra 80% de la place dans le cercle
+        height: "80%",     // Elle restera centrée sans déborder
+        objectFit: "contain",
+        transition: "transform 0.3s ease"
     },
     text: {
-        // Ajustement : passage de 24px à 1.75rem (~28px) pour une meilleure lisibilité
         fontSize: "1.75rem",
         lineHeight: "1.2",
         fontFamily: "'Playfair Display', serif",
-        transition: "all 0.3s ease"
+        transition: "all 0.3s ease",
+        textAlign: "center"
     }
 };
 

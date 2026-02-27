@@ -4,16 +4,15 @@ import { useNavigate } from "react-router-dom";
 const Register = () => {
     const navigate = useNavigate();
 
-    // 1. État synchronisé avec les colonnes de ta BDD (image_846fa2.png)
     const [formData, setFormData] = useState({
-        nom_client: "",           // Null: Non (image_846fa2.png)
-        prenom_client: "",        // Null: Oui
-        adresse_livraison: "",    // Null: Oui
-        code_postal_livraison: "",// Null: Oui
-        ville_livraison: "",      // Null: Oui
-        email_client: "",         // Null: Non (image_846fa2.png)
-        telephone: "",            // Null: Oui
-        mdp_client: ""            // Null: Non (image_846fa2.png)
+        nom_client: "",
+        prenom_client: "",
+        adresse_livraison: "",
+        code_postal_livraison: "",
+        ville_livraison: "",
+        email_client: "",
+        telephone: "",
+        mdp_client: ""
     });
 
     const [isHovered, setIsHovered] = useState(false);
@@ -25,7 +24,6 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // 2. Préparation des données pour inclure la facturation (image_846fa2.png)
         const dataToSend = {
             ...formData,
             adresse_facturation: formData.adresse_livraison,
@@ -51,17 +49,57 @@ const Register = () => {
     };
 
     return (
-        <div style={styles.overlay}>
-            <div style={styles.modal}>
-                {/* Header affiné avec logo agrandi (image_846800.png) */}
+        <div style={styles.overlay} className="register-overlay-res">
+            <style>
+                {`
+                /* Correction Desktop : On descend le modal sous le header */
+                @media (min-width: 921px) {
+                    .register-overlay-res {
+                        padding-top: 140px !important;
+                        align-items: flex-start !important;
+                    }
+                }
+
+                @media (max-width: 920px) {
+                    .register-overlay-res {
+                        padding-top: 100px !important; 
+                        align-items: flex-start !important;
+                    }
+                    .register-modal {
+                        width: 95% !important;
+                        margin-bottom: 40px !important;
+                    }
+                    .register-dark-section {
+                        padding: 40px 30px !important;
+                    }
+                    .register-footer {
+                        padding: 30px 20px !important;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .register-logo {
+                        width: 180px !important;
+                    }
+                    .register-submit-btn {
+                        width: 100% !important;
+                        padding: 14px 20px !important;
+                    }
+                    .register-footer-action {
+                        justify-content: center !important;
+                    }
+                }
+                `}
+            </style>
+
+            <div style={styles.modal} className="register-modal">
                 <div style={styles.header}>
-                    <img src="/logo2.webp" alt="CafThé" style={styles.logo} />
+                    <img src="/logo2.webp" alt="CafThé" style={styles.logo} className="register-logo" />
                 </div>
 
-                <div style={styles.darkSection}>
+                <div style={styles.darkSection} className="register-dark-section">
                     <form onSubmit={handleSubmit} style={styles.form}>
 
-                        {/* Section Identité */}
                         <div style={styles.inputGroup}>
                             <input name="prenom_client" placeholder="Prénom" style={styles.input} onChange={handleChange} />
                             <input name="nom_client" placeholder="Nom" style={styles.input} onChange={handleChange} required />
@@ -71,7 +109,6 @@ const Register = () => {
 
                         <hr style={styles.divider} />
 
-                        {/* Section Livraison (image_846fa2.png) */}
                         <div style={styles.inputGroup}>
                             <input name="adresse_livraison" placeholder="Adresse de livraison" style={styles.input} onChange={handleChange} />
                             <input name="ville_livraison" placeholder="Ville" style={styles.input} onChange={handleChange} />
@@ -81,9 +118,10 @@ const Register = () => {
 
                         <hr style={styles.divider} />
 
-                        <div style={styles.footerAction}>
+                        <div style={styles.footerAction} className="register-footer-action">
                             <button
                                 type="submit"
+                                className="register-submit-btn"
                                 style={{
                                     ...styles.submitBtn,
                                     backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3",
@@ -99,7 +137,7 @@ const Register = () => {
                     </form>
                 </div>
 
-                <div style={styles.footer}>
+                <div style={styles.footer} className="register-footer">
                     <p style={styles.legalText}>
                         Vos données personnelles sont destinées à CafThé*. Elles sont recueillies exclusivement pour assurer la gestion de votre compte et le suivi de vos commandes d’exception. Elles ne seront pas utilisées à d’autres fins sans votre consentement préalable.
                     </p>
@@ -159,7 +197,6 @@ const styles = {
         backgroundColor: "#E9E3E3",
         border: "none",
         borderRadius: "4px",
-        // Ajustement : passage à 1rem (16px) pour éviter le zoom iOS et améliorer le confort
         fontSize: "1rem",
         color: "#373735",
         outline: "none",
@@ -179,7 +216,6 @@ const styles = {
         padding: "14px 60px",
         borderRadius: "30px",
         border: "none",
-        // Ajustement : bouton plus affirmé à 1.1rem
         fontSize: "1.1rem",
         fontWeight: "bold",
         cursor: "pointer",
@@ -190,7 +226,6 @@ const styles = {
         textAlign: "center"
     },
     legalText: {
-        // Ajustement : texte légal monté à 0.9rem (~14.5px) pour plus de lisibilité
         fontSize: "0.9rem",
         color: "#373735",
         lineHeight: "1.6",

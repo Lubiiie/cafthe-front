@@ -34,11 +34,9 @@ const ProductDetails = () => {
                 ).slice(0, 3);
 
                 setSimilaires(filtered);
-
                 const qtys = {};
                 filtered.forEach(p => qtys[p.numero_produit] = 1);
                 setQuantitesSimilaires(qtys);
-
             } catch (err) {
                 console.error("Erreur BDD:", err);
             } finally {
@@ -65,9 +63,7 @@ const ProductDetails = () => {
         setQuantitesSimilaires(prev => {
             const current = parseInt(prev[prodId], 10) || 1;
             const next = current + delta;
-            if (next >= 1 && next <= stockMax) {
-                return { ...prev, [prodId]: next };
-            }
+            if (next >= 1 && next <= stockMax) return { ...prev, [prodId]: next };
             return prev;
         });
     };
@@ -90,11 +86,12 @@ const ProductDetails = () => {
     const isOutOfStock = produit.stock <= 0;
 
     return (
-        <div style={styles.overlay}>
+        <div style={styles.overlay} className="details-overlay-fixed">
             <style>
                 {`
+                .details-overlay-fixed * { box-sizing: border-box; }
                 .close-btn:hover { color: #C9A24D !important; transform: rotate(90deg); transition: 0.3s; }
-                .sim-card { transition: all 0.4s ease; border: 2px solid transparent; }
+                .sim-card { transition: all 0.4s ease; border: 2px solid transparent; flex-shrink: 0; }
                 .sim-card:hover { transform: translateY(-8px); border-color: #C9A24D; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
                 .sim-card-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
                 
@@ -104,10 +101,45 @@ const ProductDetails = () => {
                 .cart-btn-premium { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; white-space: nowrap; flex-shrink: 0; }
                 .cart-btn-premium:disabled { background-color: #666 !important; cursor: not-allowed; opacity: 0.7; }
                 .plus-circle:hover { background-color: #C9A24D; color: #373735 !important; transition: 0.3s; }
+
+                /* FIX BARRE DE COMMANDE & CONTENU MANGÉ */
+                @media (max-width: 992px) {
+                    .details-container-res { 
+                        width: 95% !important; 
+                        padding: 100px 15px 220px !important; 
+                        margin: 0 auto !important;
+                        overflow-x: hidden !important;
+                    }
+                    .similar-grid-res { 
+                        display: flex !important; 
+                        overflow-x: auto !important; 
+                        gap: 15px !important; 
+                        padding: 10px 5px 20px !important;
+                        -webkit-overflow-scrolling: touch;
+                    }
+                    .sim-card-res { width: 260px !important; }
+                }
+
+                @media (max-width: 768px) {
+                    .title-res { font-size: 1.8rem !important; margin-top: 15px !important; }
+                    .footer-res { 
+                        flex-direction: column !important; 
+                        height: auto !important; 
+                        padding: 15px 20px !important; 
+                        gap: 10px !important;
+                    }
+                    .actions-res { 
+                        width: 100% !important; 
+                        justify-content: space-between !important;
+                        gap: 10px !important;
+                    }
+                    .qty-selector-res { flex: 0 0 110px !important; padding: 0 10px !important; }
+                    .cart-btn-res { flex: 1 !important; padding: 0 10px !important; font-size: 0.85rem !important; }
+                }
                 `}
             </style>
 
-            <div style={styles.container}>
+            <div style={styles.container} className="details-container-res">
                 <FiX style={styles.closeBtn} className="close-btn" onClick={() => navigate(-1)} />
 
                 <div style={styles.imageWrapper}>
@@ -116,17 +148,13 @@ const ProductDetails = () => {
                 </div>
 
                 <div style={styles.content}>
-                    <h1 style={styles.title}>{produit.nom_produit}</h1>
+                    <h1 style={styles.title} className="title-res">{produit.nom_produit}</h1>
                     <div style={{textAlign: 'center', marginBottom: '20px'}}>
                         <span style={{
-                            padding: '5px 15px',
-                            borderRadius: '20px',
-                            backgroundColor: isOutOfStock ? '#E63946' : '#2A9D8F',
-                            color: '#FFF',
-                            fontWeight: 'bold',
-                            fontSize: '14px'
+                            padding: '5px 15px', borderRadius: '20px', backgroundColor: isOutOfStock ? '#E63946' : '#2A9D8F',
+                            color: '#FFF', fontWeight: 'bold', fontSize: '14px'
                         }}>
-                            {isOutOfStock ? "Indisponible actuellement" : `En stock : ${produit.stock} unités`}
+                            {isOutOfStock ? "Indisponible" : `En stock : ${produit.stock}`}
                         </span>
                     </div>
 
@@ -144,11 +172,11 @@ const ProductDetails = () => {
                     <hr style={styles.divider} />
 
                     <h3 style={styles.subTitle}>Produits similaires</h3>
-                    <div style={styles.similarGrid}>
+                    <div style={styles.similarGrid} className="similar-grid-res">
                         {similaires.map((sim) => {
                             const simOut = sim.stock <= 0;
                             return (
-                                <div key={sim.numero_produit} style={styles.similarCard} className={`sim-card ${simOut ? "sim-card-out" : ""}`}>
+                                <div key={sim.numero_produit} style={styles.similarCard} className={`sim-card sim-card-res ${simOut ? "sim-card-out" : ""}`}>
                                     <div style={styles.similarImgBg} onClick={() => { navigate(`/produit/${sim.numero_produit}`); window.scrollTo(0,0); }}>
                                         <img src={`${apiUrl}/images/${sim.image}`} alt={sim.nom_produit} style={styles.similarImg} />
                                     </div>
@@ -157,22 +185,9 @@ const ProductDetails = () => {
                                         <div style={styles.simActionRow}>
                                             <span style={{color: '#C9A24D', fontWeight: 'bold'}}>{Number(sim.prix_ttc).toFixed(2)} €</span>
                                             {!simOut && (
-                                                <>
-                                                    <div style={styles.simQtyBox}>
-                                                        <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, -1, sim.stock)}><FiMinus size={12}/></button>
-                                                        <input
-                                                            type="text"
-                                                            className="qty-input-sim"
-                                                            value={quantitesSimilaires[sim.numero_produit] || 1}
-                                                            onChange={(e) => handleInputSim(sim.numero_produit, e.target.value, sim.stock)}
-                                                            onBlur={() => { if(!quantitesSimilaires[sim.numero_produit]) setQuantitesSimilaires(p => ({...p, [sim.numero_produit]: 1})) }}
-                                                        />
-                                                        <button style={styles.simMiniBtn} onClick={() => handleQtySim(sim.numero_produit, 1, sim.stock)}><FiPlus size={12}/></button>
-                                                    </div>
-                                                    <div style={styles.plusCircle} className="plus-circle" onClick={() => addToCart({ ...sim, id_produit: sim.numero_produit }, quantitesSimilaires[sim.numero_produit])}>
-                                                        <FiShoppingBag size={16} />
-                                                    </div>
-                                                </>
+                                                <div style={styles.plusCircle} className="plus-circle" onClick={() => addToCart({ ...sim, id_produit: sim.numero_produit }, quantitesSimilaires[sim.numero_produit])}>
+                                                    <FiShoppingBag size={16} />
+                                                </div>
                                             )}
                                         </div>
                                     </div>
@@ -182,16 +197,15 @@ const ProductDetails = () => {
                     </div>
                 </div>
 
-                {/* FOOTER CORRIGÉ ICI */}
-                <div style={styles.stickyFooter}>
+                <div style={styles.stickyFooter} className="footer-res">
                     <div style={styles.priceContainer}>
                         <p style={{color: '#E9E3E3', fontSize: '12px', margin: 0, opacity: 0.6}}>Prix TTC</p>
                         <span style={styles.priceValue}>{Number(produit.prix_ttc).toFixed(2)} €</span>
                     </div>
-                    <div style={styles.actions}>
+                    <div style={styles.actions} className="actions-res">
                         {!isOutOfStock ? (
                             <>
-                                <div style={styles.qtySelector}>
+                                <div style={styles.qtySelector} className="qty-selector-res">
                                     <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(-1)}><FiMinus /></button>
                                     <input
                                         type="text"
@@ -203,18 +217,18 @@ const ProductDetails = () => {
                                     <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(1)}><FiPlus /></button>
                                 </div>
                                 <button
-                                    className="cart-btn-premium"
+                                    className="cart-btn-premium cart-btn-res"
                                     style={{ ...styles.cartBtn, backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3" }}
                                     onMouseEnter={() => setIsHovered(true)}
                                     onMouseLeave={() => setIsHovered(false)}
                                     onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantite)}
                                 >
                                     <FiShoppingBag size={20} />
-                                    <span style={{marginLeft: '10px'}}>AJOUTER AU PANIER</span>
+                                    <span style={{marginLeft: '10px'}}>AJOUTER</span>
                                 </button>
                             </>
                         ) : (
-                            <button disabled style={styles.cartBtn}>VICTIME DE SON SUCCÈS</button>
+                            <button disabled style={styles.cartBtn}>INDISPONIBLE</button>
                         )}
                     </div>
                 </div>
@@ -231,23 +245,18 @@ const styles = {
     ruptureBadge: { position: 'absolute', top: '50%', background: '#E63946', color: '#FFF', padding: '10px 30px', fontWeight: '900', transform: 'rotate(-10deg)', zIndex: 5, border: '2px solid white' },
     mainImage: { width: "100%", maxWidth: "380px", objectFit: "contain", transition: '0.3s' },
     content: { width: "100%" },
-    // Ajustement : passage à 3rem (~48px) pour le nom du produit
     title: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", textAlign: "center", marginBottom: '10px' },
     divider: { border: "none", borderTop: "1.5px solid #373735", opacity: 0.15, margin: "30px 0" },
-    // Ajustement : description à 1.15rem (~18.5px) pour un confort de lecture premium
     description: { fontSize: "1.15rem", color: "#373735", textAlign: "justify", lineHeight: '1.7', opacity: 0.9 },
-    // Ajustement : sous-titres à 1.5rem (~24px)
     subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#373735", marginBottom: "25px", fontWeight: 'bold' },
     infoSection: { marginBottom: "35px" },
     originBox: { display: "flex", alignItems: "center", gap: "12px", background: 'rgba(55,55,53,0.05)', padding: '15px', borderRadius: '15px', width: 'fit-content' },
-    // Ajustement : texte d'origine à 1.25rem
     originText: { fontSize: "1.25rem", color: "#373735", fontWeight: '500' },
     similarGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" },
     similarCard: { backgroundColor: "#373735", borderRadius: "20px", overflow: "hidden", color: "#FFF", display: "flex", flexDirection: "column" },
     similarImgBg: { backgroundColor: "#FFF", display: "flex", justifyContent: "center", height: "180px" },
     similarImg: { width: "100%", height: "100%", objectFit: "cover" },
     similarInfo: { padding: "15px", flexGrow: 1, display: 'flex', flexDirection: 'column' },
-    // Ajustement : noms similaires à 1.1rem
     similarName: { fontSize: "1.1rem", fontWeight: "bold", margin: "0 0 10px 0", color: '#C9A24D' },
     simActionRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" },
     simQtyBox: { display: "flex", alignItems: "center", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "4px 8px" },
@@ -256,12 +265,10 @@ const styles = {
 
     stickyFooter: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "120px", backgroundColor: "#373735", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 40px", boxSizing: "border-box" },
     priceContainer: { display: 'flex', flexDirection: 'column' },
-    // Ajustement : prix principal à 2.5rem pour un impact maximal
     priceValue: { color: "#C9A24D", fontSize: "2.5rem", fontWeight: "900" },
     actions: { display: "flex", gap: "15px", alignItems: "center" },
     qtySelector: { backgroundColor: "#FFF", borderRadius: "30px", height: "55px", display: "flex", alignItems: "center", padding: "0 15px" },
     qtyBtn: { background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: '#373735', fontWeight: 'bold' },
-    // Ajustement : texte du bouton panier à 1.1rem
     cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 25px", fontWeight: "900", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735', fontSize: '1.1rem', letterSpacing: '0.5px' }
 };
 

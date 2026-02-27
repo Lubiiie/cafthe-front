@@ -7,7 +7,31 @@ import Assistance from "../components/Assistance";
 
 const Home = () => {
     return (
-        <div style={styles.pageContainer}>
+        <div style={styles.pageContainer} className="home-responsive-wrapper">
+            <style>
+                {`
+                /* Optimisation globale pour le scroll et l'affichage mobile */
+                .home-responsive-wrapper {
+                    overflow-x: hidden; /* Empêche tout scroll horizontal parasite */
+                    width: 100%;
+                }
+
+                @media (max-width: 768px) {
+                    /* On peut ajuster ici l'espacement entre les sections si besoin */
+                    .home-responsive-wrapper > div {
+                        width: 100% !important;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    /* Ajustements spécifiques pour très petits écrans */
+                    .home-responsive-wrapper {
+                        padding: 0;
+                    }
+                }
+                `}
+            </style>
+
             {/* Le Hero avec ses titres à 1.85rem */}
             <Hero />
 

@@ -5,23 +5,51 @@ import { useCard } from "../context/CardContext";
 
 const Merci = () => {
     const { clearCart } = useCard();
-    const [isHovered, setIsHovered] = useState(null); // État pour gérer les hovers
+    const [isHovered, setIsHovered] = useState(null);
 
     useEffect(() => {
         clearCart();
-        // On ne met RIEN dans le tableau ci-dessous []
-        // Cela garantit que la fonction ne s'exécute qu'une seule fois à l'arrivée sur la page
     }, []);
 
     return (
         <div style={styles.page}>
+            <style>
+                {`
+                @media (max-width: 768px) {
+                    .merci-card {
+                        width: 90% !important;
+                        padding: 40px 20px !important;
+                        margin: 0 auto !important;
+                    }
+                    .merci-title {
+                        font-size: 1.8rem !important;
+                    }
+                    .info-item-mobile {
+                        padding: 15px !important;
+                        gap: 12px !important;
+                    }
+                    .action-box-mobile {
+                        width: 100% !important;
+                        display: flex !important;
+                        justify-content: center !important;
+                    }
+                    .primary-btn-mobile {
+                        width: 100% !important;
+                        max-width: 280px !important; /* Empêche le bouton d'être trop large ou coupé */
+                        padding: 15px !important;
+                        font-size: 1rem !important;
+                        justify-content: center !important;
+                    }
+                }
+                `}
+            </style>
             <div style={styles.container}>
-                <div style={styles.card}>
+                <div style={styles.card} className="merci-card">
                     <div style={styles.iconWrapper}>
                         <FiCheckCircle style={styles.successIcon} />
                     </div>
 
-                    <h1 style={styles.title}>Commande confirmée !</h1>
+                    <h1 style={styles.title} className="merci-title">Commande confirmée !</h1>
                     <p style={styles.subtitle}>
                         Merci pour votre confiance. Votre commande a été enregistrée avec succès.
                     </p>
@@ -30,48 +58,34 @@ const Merci = () => {
 
                     <div style={styles.infoGrid}>
                         <div
-                            style={{
-                                ...styles.infoItem,
-                                backgroundColor: isHovered === 'mail' ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
-                                transform: isHovered === 'mail' ? 'translateX(5px)' : 'translateX(0)'
-                            }}
-                            onMouseEnter={() => setIsHovered('mail')}
-                            onMouseLeave={() => setIsHovered(null)}
+                            style={styles.infoItem}
+                            className="info-item-mobile"
                         >
                             <FiMail style={styles.infoIcon} />
                             <p style={styles.infoText}>Un mail de confirmation vient de vous être envoyé.</p>
                         </div>
 
                         <div
-                            style={{
-                                ...styles.infoItem,
-                                backgroundColor: isHovered === 'pkg' ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.03)',
-                                transform: isHovered === 'pkg' ? 'translateX(5px)' : 'translateX(0)'
-                            }}
-                            onMouseEnter={() => setIsHovered('pkg')}
-                            onMouseLeave={() => setIsHovered(null)}
+                            style={styles.infoItem}
+                            className="info-item-mobile"
                         >
                             <FiPackage style={styles.infoIcon} />
                             <p style={styles.infoText}>Nous préparons votre colis avec le plus grand soin.</p>
                         </div>
                     </div>
 
-                    <div style={styles.actionBox}>
+                    <div style={styles.actionBox} className="action-box-mobile">
                         <Link
                             to="/catalogue"
+                            className="primary-btn-mobile"
                             style={{
                                 ...styles.primaryBtn,
-                                backgroundColor: isHovered === 'btn' ? '#d9b35a' : '#C9A24D',
-                                transform: isHovered === 'btn' ? 'scale(1.05)' : 'scale(1)',
-                                boxShadow: isHovered === 'btn' ? '0 15px 30px rgba(201, 162, 77, 0.3)' : '0 10px 20px rgba(201, 162, 77, 0.2)'
+                                backgroundColor: isHovered === 'btn' ? '#d9b35a' : '#C9A24D'
                             }}
                             onMouseEnter={() => setIsHovered('btn')}
                             onMouseLeave={() => setIsHovered(null)}
                         >
-                            Retour à la boutique <FiArrowRight style={{
-                            transform: isHovered === 'btn' ? 'translateX(5px)' : 'translateX(0)',
-                            transition: '0.3s'
-                        }} />
+                            Retour à la boutique <FiArrowRight />
                         </Link>
                     </div>
                 </div>
@@ -81,72 +95,40 @@ const Merci = () => {
 };
 
 const styles = {
-    mainWrapper: {
+    page: {
         backgroundColor: '#373735',
         minHeight: '100vh',
         display: 'flex',
-        flexDirection: 'column'
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        boxSizing: 'border-box'
     },
-    contentArea: {
-        flex: 1,
-        paddingTop: '120px',
-        paddingBottom: '80px',
-        display: 'flex',
-        justifyContent: 'center'
-    },
-    pageContainer: {
-        width: '90%',
-        maxWidth: '1000px',
+    container: { width: '100%', maxWidth: '600px', display: 'flex', justifyContent: 'center' },
+    card: {
         backgroundColor: '#E9E3E3',
-        borderRadius: '15px',
-        padding: '60px 80px',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
-    },
-    mainTitle: {
-        fontFamily: "'Playfair Display', serif",
-        // Ajustement : passage à 3rem (~48px) pour la cohérence avec les CGV
-        fontSize: '3rem',
-        color: '#373735',
+        borderRadius: '20px',
+        padding: '60px',
         textAlign: 'center',
-        marginBottom: '50px',
-        fontWeight: 'bold'
+        width: '100%',
+        boxSizing: 'border-box'
     },
-    legalNotice: {
-        color: '#373735',
-        fontFamily: "'Lato', sans-serif",
-        lineHeight: '1.8'
+    iconWrapper: {
+        width: '80px', height: '80px', backgroundColor: 'rgba(201, 162, 77, 0.1)',
+        borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 25px'
     },
-    intro: {
-        // Ajustement : passage à 1.15rem (~18.5px)
-        fontSize: '1.15rem',
-        marginBottom: '40px',
-        fontStyle: 'italic',
-        borderLeft: '4px solid #C9A24D',
-        paddingLeft: '20px'
-    },
-    section: {
-        marginBottom: '35px'
-    },
-    subTitle: {
-        // Ajustement : passage à 1.5rem (~24px) pour les têtes de section
-        fontSize: '1.5rem',
-        fontWeight: 'bold',
-        marginBottom: '15px',
-        color: '#373735',
-        borderBottom: '1px solid rgba(55, 55, 53, 0.1)',
-        paddingBottom: '10px',
-        display: 'inline-block'
-    },
-    text: {
-        // Ajustement : corps de texte à 1.1rem (~17.5px)
-        fontSize: '1.1rem',
-        marginBottom: '10px'
-    },
-    list: {
-        // Ajustement : éléments de liste à 1.1rem
-        fontSize: '1.1rem',
-        listStyleType: 'none',
-        paddingLeft: '0'
+    successIcon: { fontSize: '45px', color: '#C9A24D' },
+    title: { fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', color: '#373735', marginBottom: '15px' },
+    subtitle: { fontSize: '1.1rem', color: '#373735', opacity: 0.8, lineHeight: '1.5' },
+    divider: { height: '1px', backgroundColor: 'rgba(55,55,53,0.1)', margin: '30px 0' },
+    infoGrid: { display: 'flex', flexDirection: 'column', gap: '15px', textAlign: 'left' },
+    infoItem: { display: 'flex', alignItems: 'center', gap: '20px', padding: '18px', borderRadius: '12px', backgroundColor: 'rgba(255,255,255,0.4)' },
+    infoIcon: { fontSize: '22px', color: '#C9A24D', flexShrink: 0 },
+    infoText: { fontSize: '0.95rem', color: '#373735', margin: 0 },
+    actionBox: { marginTop: '40px', width: '100%' },
+    primaryBtn: {
+        display: 'inline-flex', alignItems: 'center', gap: '12px', padding: '16px 30px',
+        borderRadius: '50px', color: '#373735', fontWeight: 'bold', textDecoration: 'none', transition: '0.3s'
     }
 };
 

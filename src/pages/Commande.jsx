@@ -50,17 +50,15 @@ const Commande = () => {
     const handlePaymentSuccess = async (details) => {
         const token = localStorage.getItem('token');
 
-        // 1. Préparation propre des données
         const orderData = {
             items: cart,
             total: totalTTC,
             deliveryMethod: deliveryMethod,
-            relayInfo: selectedRelay, // Sera null si Click & Collect
+            relayInfo: selectedRelay,
             paypalDetails: details
         };
 
         try {
-            // 2. Un seul appel fetch propre
             const response = await fetch(`${apiUrl}/api/orders/create`, {
                 method: 'POST',
                 headers: {
@@ -71,11 +69,9 @@ const Commande = () => {
             });
 
             if (response.ok) {
-                // Si le serveur répond 201 ou 200
                 console.log("Commande enregistrée avec succès !");
                 window.location.href = "/merci";
             } else {
-                // Si le serveur renvoie une erreur (401, 500, etc.)
                 const errorData = await response.json();
                 console.error("Erreur serveur :", errorData.message || errorData.error);
                 alert("Erreur lors de la validation : " + (errorData.message || "Vérifiez votre connexion"));
@@ -89,15 +85,65 @@ const Commande = () => {
 
     return (
         <div style={styles.page}>
+            <style>
+                {`
+                @media (max-width: 992px) {
+                    .main-grid-responsive {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .left-col-responsive {
+                        order: 2;
+                    }
+                    .right-col-responsive {
+                        order: 1;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .page-container-responsive {
+                        padding-top: 100px !important;
+                    }
+                    .main-title-responsive {
+                        font-size: 2rem !important;
+                    }
+                    .section-box-responsive {
+                        padding: 20px !important;
+                    }
+                    .method-card-responsive {
+                        flex-direction: column !important;
+                        align-items: flex-start !important;
+                        gap: 15px !important;
+                    }
+                    .action-btn-responsive {
+                        width: 100% !important;
+                    }
+                    .total-row-responsive {
+                        font-size: 1.4rem !important;
+                    }
+                }
+
+                .custom-scroll::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .custom-scroll::-webkit-scrollbar-track {
+                    background: rgba(255,255,255,0.05);
+                }
+                .custom-scroll::-webkit-scrollbar-thumb {
+                    background: #C9A24D;
+                    border-radius: 10px;
+                }
+                `}
+            </style>
+
             <div style={styles.container}>
                 <header style={styles.header}>
-                    <h1 style={styles.mainTitle}>Finaliser ma commande</h1>
+                    <h1 style={styles.mainTitle} className="main-title-responsive">Finaliser ma commande</h1>
                     <p style={styles.breadcrumb}>Panier <FiChevronRight /> <strong>Livraison & Paiement</strong></p>
                 </header>
 
-                <div style={styles.mainGrid}>
-                    <div style={styles.leftCol}>
-                        <section style={styles.sectionBox}>
+                <div style={styles.mainGrid} className="main-grid-responsive">
+                    <div style={styles.leftCol} className="left-col-responsive">
+                        <section style={styles.sectionBox} className="section-box-responsive">
                             <h2 style={styles.sectionTitle}><FiMapPin /> Livraison</h2>
 
                             <div
@@ -107,6 +153,7 @@ const Commande = () => {
                                     backgroundColor: deliveryMethod === 'mondial_relay' ? 'rgba(201, 162, 77, 0.08)' : (isHovered === 'relay-card' ? 'rgba(255,255,255,0.02)' : 'transparent'),
                                     transform: isHovered === 'relay-card' ? 'translateY(-2px)' : 'translateY(0)'
                                 }}
+                                className="method-card-responsive"
                                 onClick={() => setDeliveryMethod('mondial_relay')}
                                 onMouseEnter={() => setIsHovered('relay-card')}
                                 onMouseLeave={() => setIsHovered(null)}
@@ -121,6 +168,7 @@ const Commande = () => {
                                 </div>
                                 <button
                                     onClick={(e) => { e.stopPropagation(); initMondialRelay(); }}
+                                    className="action-btn-responsive"
                                     style={{
                                         ...styles.actionBtn,
                                         backgroundColor: isHovered === 'btn-relay' ? '#d9b35a' : '#C9A24D',
@@ -145,6 +193,7 @@ const Commande = () => {
                                     backgroundColor: deliveryMethod === 'click_collect' ? 'rgba(201, 162, 77, 0.08)' : (isHovered === 'cc-card' ? 'rgba(255,255,255,0.02)' : 'transparent'),
                                     transform: isHovered === 'cc-card' ? 'translateY(-2px)' : 'translateY(0)'
                                 }}
+                                className="method-card-responsive"
                                 onClick={() => setDeliveryMethod('click_collect')}
                                 onMouseEnter={() => setIsHovered('cc-card')}
                                 onMouseLeave={() => setIsHovered(null)}
@@ -159,8 +208,8 @@ const Commande = () => {
                         </section>
                     </div>
 
-                    <div style={styles.rightCol}>
-                        <section style={styles.sectionBox}>
+                    <div style={styles.rightCol} className="right-col-responsive">
+                        <section style={styles.sectionBox} className="section-box-responsive">
                             <h2 style={styles.sectionTitle}>Récapitulatif de votre commande</h2>
 
                             <div style={styles.articlesList} className="custom-scroll">
@@ -175,7 +224,6 @@ const Commande = () => {
                                             />
                                             <div style={styles.articleDetails}>
                                                 <p style={styles.articleName}>{item.nom_produit}</p>
-                                                {/* SÉLECTEUR DE QUANTITÉ AJOUTÉ */}
                                                 <div style={styles.qtyContainer}>
                                                     <button
                                                         onClick={() => updateQuantity(itemId, -1)}
@@ -203,7 +251,6 @@ const Commande = () => {
                                                     onMouseEnter={() => setIsHovered(`trash-${itemId}`)}
                                                     onMouseLeave={() => setIsHovered(null)}
                                                     onClick={() => removeFromCart(itemId)}
-                                                    title="Retirer l'article"
                                                 />
                                             </div>
                                         </div>
@@ -224,7 +271,7 @@ const Commande = () => {
                                         {deliveryMethod === 'click_collect' ? "0,00 €" : (isFreeRelay ? "OFFERT" : "4,90 €")}
                                     </span>
                                 </div>
-                                <div style={styles.totalRow}>
+                                <div style={styles.totalRow} className="total-row-responsive">
                                     <span>TOTAL TTC</span>
                                     <span>{totalTTC.toFixed(2)} €</span>
                                 </div>
@@ -237,7 +284,7 @@ const Commande = () => {
                                     onMouseLeave={() => setIsHovered(null)}
                                 >
                                     <input type="checkbox" checked={cgvAccepted} onChange={() => setCgvAccepted(!cgvAccepted)} style={styles.checkbox}/>
-                                    <span>J'accepte les <Link to="/cgv" style={styles.cgvLink}>Conditions Générales de Vente</Link></span>
+                                    <span>J'accepte les <Link to="/cgv" style={styles.cgvLink}>CGV</Link></span>
                                 </label>
                             </div>
 
@@ -257,7 +304,7 @@ const Commande = () => {
                                     onApprove={(data, actions) => actions.order.capture().then(handlePaymentSuccess)}
                                 />
                             </div>
-                            {!canPay && <p style={styles.helperText}>{!cgvAccepted ? "Veuillez accepter les CGV" : "Veuillez choisir un point relay"}</p>}
+                            {!canPay && <p style={styles.helperText}>{!cgvAccepted ? "Veuillez accepter les CGV" : "Choisissez un point relay"}</p>}
                         </section>
                     </div>
                 </div>
@@ -270,19 +317,16 @@ const styles = {
     page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '80px', fontFamily: "'Inter', sans-serif" },
     container: { maxWidth: '1100px', margin: '0 auto', padding: '0 20px' },
     header: { marginBottom: '40px', textAlign: 'center' },
-    // Ajustement : passage à 2.75rem (~44px) pour le titre de page
     mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '2.75rem', color: '#373735' },
     breadcrumb: { fontSize: '1rem', color: '#373735', opacity: 0.6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
     mainGrid: { display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '30px', alignItems: 'start' },
     sectionBox: { backgroundColor: '#373735', borderRadius: '16px', padding: '30px', color: '#E9E3E3', boxShadow: '0 10px 30px rgba(0,0,0,0.15)' },
-    // Ajustement : passage à 1.5rem (~24px) pour les titres de section
     sectionTitle: { fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', color: '#C9A24D', marginBottom: '20px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' },
 
     articlesList: { maxHeight: '250px', overflowY: 'auto', marginBottom: '15px', paddingRight: '10px' },
     articleItem: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', padding: '10px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '8px', transition: '0.3s' },
     miniImg: { width: '55px', height: '55px', objectFit: 'cover', borderRadius: '6px' },
     articleDetails: { flex: 1 },
-    // Ajustement : passage à 1.1rem pour le nom des articles
     articleName: { fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 5px 0', color: '#E9E3E3' },
 
     qtyContainer: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '15px', width: 'fit-content', padding: '4px 12px' },
@@ -290,7 +334,6 @@ const styles = {
     qtyVal: { fontSize: '1rem', fontWeight: 'bold', minWidth: '15px', textAlign: 'center' },
 
     articlePriceBlock: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px' },
-    // Ajustement : prix article à 1.1rem
     articlePrice: { fontSize: '1.1rem', fontWeight: 'bold', color: '#C9A24D', margin: 0 },
     deleteIcon: { cursor: 'pointer', fontSize: '1.2rem', transition: '0.3s', opacity: 0.8 },
 
@@ -304,9 +347,7 @@ const styles = {
     widgetZone: { marginTop: '10px', borderRadius: '8px', overflow: 'hidden' },
     divider: { height: '1px', backgroundColor: 'rgba(255,255,255,0.05)', margin: '20px 0' },
     summaryTable: { marginBottom: '20px' },
-    // Ajustement : lignes de résumé à 1.1rem
     summaryRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '1.1rem', opacity: 0.8 },
-    // Ajustement : Total à 1.75rem pour la visibilité
     totalRow: { display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px', marginTop: '15px', fontSize: '1.75rem', fontWeight: 'bold', color: '#C9A24D' },
     cgvBox: { marginBottom: '20px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '8px' },
     checkboxLabel: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.05rem', cursor: 'pointer', transition: '0.3s' },
