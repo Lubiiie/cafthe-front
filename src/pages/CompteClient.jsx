@@ -303,7 +303,10 @@ const Compte = () => {
                                         <span style={styles.orderDate}>{new Date(order.date_commande).toLocaleDateString()}</span>
                                     </div>
                                     <div style={styles.orderActions}>
-                                        <span style={styles.orderPrice}>{order.montant_paiement || order.total_ttc} €</span>
+                                        {/* CORRECTION DES DÉCIMALES ICI */}
+                                        <span style={styles.orderPrice}>
+                                            {Number(order.montant_paiement || order.total_ttc).toFixed(2)} €
+                                        </span>
                                         <button
                                             onMouseEnter={() => setHoveredBtn(`reorder-${order.numero_commande}`)}
                                             onMouseLeave={() => setHoveredBtn(null)}
@@ -314,7 +317,7 @@ const Compte = () => {
                                                 boxShadow: hoveredBtn === `reorder-${order.numero_commande}` ? '0 5px 15px rgba(0,0,0,0.3)' : 'none'
                                             }}
                                         >
-                                            Recommander
+                                            Commander à nouveau
                                         </button>
                                     </div>
                                 </div>

@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom"; // Ajout de useLocation
 import { FiShoppingBag, FiUser, FiSearch, FiLogOut } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
 import { useCard } from "../context/CardContext";
 
 const Header = () => {
     const navigate = useNavigate();
+    const location = useLocation(); // Pour lire l'URL actuelle
     const { user, logout } = useAuth();
     const { cart } = useCard();
 
-    // --- LOGIQUE DE RECHERCHE ---
     const [searchQuery, setSearchQuery] = useState("");
 
+    // --- EFFET POUR GARDER LE TEXTE SI PRÉSENT DANS L'URL ---
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const q = params.get('search');
+        if (q) {
+            setSearchQuery(q); // Si on arrive sur une page avec ?search=..., on remplit l'input
+        }
+    }, [location.search]);
+
     const handleSearch = (e) => {
-        // Si l'utilisateur appuie sur Entrée
         if (e.key === 'Enter' && searchQuery.trim() !== "") {
-            // On redirige vers le catalogue avec le terme en paramètre d'URL
             navigate(`/catalogue?search=${encodeURIComponent(searchQuery.trim())}`);
-            setSearchQuery(""); // Optionnel : vide la barre après recherche
+            // ON NE VIDE PLUS : setSearchQuery(""); a été supprimé pour garder le texte
         }
     };
-    // ----------------------------
 
     const [hvrCart, setHvrCart] = useState(false);
     const [hvrUser, setHvrUser] = useState(false);
@@ -52,7 +58,7 @@ const Header = () => {
                             style={styles.searchInput}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={handleSearch} // Déclenche la recherche sur "Entrée"
+                            onKeyDown={handleSearch}
                         />
                         <FiSearch style={styles.searchIcon} />
                     </div>
@@ -98,7 +104,7 @@ const Header = () => {
     );
 };
 
-// ... gardez vos styles identiques ...
+// ... tes styles restent les mêmes
 const styles = {
     header: { width: "100%", height: "85px", backgroundColor: "#373735", position: "fixed", top: 0, left: 0, zIndex: 1000, display: "flex", alignItems: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.3)" },
     container: { width: "100%", maxWidth: "1400px", margin: "0 auto", padding: "0 40px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" },

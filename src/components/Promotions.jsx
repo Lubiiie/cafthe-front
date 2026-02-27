@@ -79,7 +79,7 @@ const Promotions = () => {
                                     <div style={styles.infoArea}>
                                         <h4 style={styles.prodName}>{item.nom_produit}</h4>
                                         <p style={styles.prodDesc}>{item.description}</p>
-                                        <span style={styles.price}>{item.prix_ttc} €</span>
+                                        <span style={styles.price}>{Number(item.prix_ttc).toFixed(2)} €</span>
                                     </div>
                                 </div>
 
