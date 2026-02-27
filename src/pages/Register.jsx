@@ -116,46 +116,51 @@ const styles = {
         backgroundColor: "#E9E3E3",
         display: "flex",
         justifyContent: "center",
-        padding: "40px 0" },
+        padding: "40px 0"
+    },
     modal: {
         width: "750px",
         backgroundColor: "#E9E3E3",
         borderRadius: "12px",
         overflow: "hidden",
-        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)"},
+        boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)"
+    },
     header: {
-        height: "120px", // On impose une hauteur fixe et courte
+        height: "120px",
         paddingTop: "50px",
         display: "flex",
         justifyContent: "center",
-        alignItems: "center", // Centre le logo verticalement même s'il dépasse
+        alignItems: "center",
         backgroundColor: "#E9E3E3",
-        padding: "0", // On supprime complètement le padding interne
-        overflow: "visible" // Permet au logo de respirer sans pousser les bords
+        padding: "0",
+        overflow: "visible"
     },
     logo: {
         width: "250px",
         height: "auto",
-        // Plus besoin de marges ici, c'est le header qui commande
     },
     darkSection: {
         backgroundColor: "#373735",
-        padding: "50px 100px" }, // Gris anthracite de la maquette
+        padding: "50px 100px"
+    },
     form: {
         display: "flex",
         flexDirection: "column",
-        gap: "20px" },
+        gap: "20px"
+    },
     inputGroup: {
         display: "flex",
         flexDirection: "column",
-        gap: "18px" },
+        gap: "18px"
+    },
     input: {
         width: "100%",
         padding: "15px 20px",
-        backgroundColor: "#E9E3E3", // Inputs clairs sur fond sombre
+        backgroundColor: "#E9E3E3",
         border: "none",
         borderRadius: "4px",
-        fontSize: "15px",
+        // Ajustement : passage à 1rem (16px) pour éviter le zoom iOS et améliorer le confort
+        fontSize: "1rem",
         color: "#373735",
         outline: "none",
         boxSizing: "border-box"
@@ -164,27 +169,33 @@ const styles = {
         width: "100%",
         border: "0.5px solid #E9E3E3",
         margin: "25px 0",
-        opacity: 0.2 }, // Ligne de séparation
+        opacity: 0.2
+    },
     footerAction: {
         display: "flex",
-        justifyContent: "flex-end" },
+        justifyContent: "flex-end"
+    },
     submitBtn: {
         padding: "14px 60px",
         borderRadius: "30px",
         border: "none",
-        fontSize: "16px",
+        // Ajustement : bouton plus affirmé à 1.1rem
+        fontSize: "1.1rem",
         fontWeight: "bold",
         cursor: "pointer",
         transition: "all 0.3s ease"
     },
     footer: {
         padding: "40px 80px",
-        textAlign: "center" },
+        textAlign: "center"
+    },
     legalText: {
-        fontSize: "12px",
+        // Ajustement : texte légal monté à 0.9rem (~14.5px) pour plus de lisibilité
+        fontSize: "0.9rem",
         color: "#373735",
         lineHeight: "1.6",
-        margin: 0 }
+        margin: 0
+    }
 };
 
 export default Register;

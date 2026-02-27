@@ -71,7 +71,8 @@ const styles = {
     },
     mainTitle: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: '48px',
+        // Ajustement : passage à 3rem (~48px) pour la cohérence
+        fontSize: '3rem',
         color: '#373735',
         textAlign: 'center',
         marginBottom: '50px',
@@ -83,7 +84,8 @@ const styles = {
         lineHeight: '1.8',
     },
     intro: {
-        fontSize: '16px',
+        // Ajustement : passage à 1.15rem (~18.5px)
+        fontSize: '1.15rem',
         marginBottom: '40px',
         fontStyle: 'italic',
         borderLeft: '4px solid #C9A24D',
@@ -93,7 +95,8 @@ const styles = {
         marginBottom: '35px',
     },
     subTitle: {
-        fontSize: '22px',
+        // Ajustement : passage à 1.5rem (~24px)
+        fontSize: '1.5rem',
         fontWeight: 'bold',
         marginBottom: '15px',
         color: '#373735',
@@ -114,7 +117,8 @@ const styles = {
         color: '#373735',
         textDecoration: 'none',
         transition: 'color 0.3s ease',
-        fontSize: '17px',
+        // Ajustement : passage à 1.1rem (~17.5px) pour les liens de navigation
+        fontSize: '1.1rem',
         fontWeight: '500',
         cursor: 'pointer',
         borderBottom: '1px solid transparent'

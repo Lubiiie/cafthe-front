@@ -99,7 +99,8 @@ const styles = {
     title: {
         fontFamily: "'Playfair Display', serif",
         color: "#C9A24D",
-        fontSize: "28px",
+        // Ajustement : passage de 28px à 2rem (~32px) pour la cohérence avec le Hero
+        fontSize: "2rem",
         marginBottom: "30px",
         letterSpacing: "2px"
     },
@@ -135,11 +136,14 @@ const styles = {
         padding: "10px 20px",
         color: "#C9A24D",
         fontWeight: "bold",
-        backgroundColor: "rgba(55, 55, 53, 0.8)"
+        backgroundColor: "rgba(55, 55, 53, 0.8)",
+        // Ajustement : passage à 1.1rem pour être raccord avec les boutons/liens
+        fontSize: "1.1rem"
     },
     description: {
         marginTop: "25px",
-        fontSize: "16px",
+        // Ajustement : passage de 16px à 1.15rem (~18.5px) pour le confort de lecture sur fond sombre
+        fontSize: "1.15rem",
         lineHeight: "1.6",
         fontStyle: "italic",
         transition: "color 0.3s ease"

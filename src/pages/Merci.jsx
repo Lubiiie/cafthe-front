@@ -81,86 +81,73 @@ const Merci = () => {
 };
 
 const styles = {
-    page: {
-        backgroundColor: '#E9E3E3',
+    mainWrapper: {
+        backgroundColor: '#373735',
         minHeight: '100vh',
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '20px',
-        fontFamily: "'Inter', sans-serif"
+        flexDirection: 'column'
     },
-    container: {
-        maxWidth: '600px',
-        width: '100%',
+    contentArea: {
+        flex: 1,
+        paddingTop: '120px',
+        paddingBottom: '80px',
+        display: 'flex',
+        justifyContent: 'center'
     },
-    card: {
-        backgroundColor: '#373735',
-        borderRadius: '24px',
-        padding: '50px 40px',
-        textAlign: 'center',
-        color: '#E9E3E3',
-        boxShadow: '0 20px 50px rgba(0,0,0,0.2)',
+    pageContainer: {
+        width: '90%',
+        maxWidth: '1000px',
+        backgroundColor: '#E9E3E3',
+        borderRadius: '15px',
+        padding: '60px 80px',
+        boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
     },
-    iconWrapper: {
-        marginBottom: '20px',
-    },
-    successIcon: {
-        fontSize: '80px',
-        color: '#C9A24D',
-    },
-    title: {
+    mainTitle: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: '36px',
-        marginBottom: '15px',
-        color: '#C9A24D',
-    },
-    subtitle: {
-        fontSize: '16px',
-        opacity: 0.8,
-        lineHeight: '1.6',
-        marginBottom: '30px',
-    },
-    divider: {
-        height: '1px',
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        margin: '30px 0',
-    },
-    infoGrid: {
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '20px',
-        marginBottom: '40px',
-        textAlign: 'left',
-    },
-    infoItem: {
-        display: 'flex',
-        alignItems: 'center',
-        gap: '15px',
-        padding: '15px',
-        borderRadius: '12px',
-        transition: 'all 0.3s ease',
-    },
-    infoIcon: {
-        fontSize: '20px',
-        color: '#C9A24D',
-    },
-    infoText: {
-        fontSize: '14px',
-        margin: 0,
-    },
-    primaryBtn: {
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '10px',
+        // Ajustement : passage à 3rem (~48px) pour la cohérence avec les CGV
+        fontSize: '3rem',
         color: '#373735',
-        padding: '15px 35px',
-        borderRadius: '50px',
-        textDecoration: 'none',
-        fontWeight: 'bold',
-        fontSize: '16px',
-        transition: 'all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+        textAlign: 'center',
+        marginBottom: '50px',
+        fontWeight: 'bold'
     },
+    legalNotice: {
+        color: '#373735',
+        fontFamily: "'Lato', sans-serif",
+        lineHeight: '1.8'
+    },
+    intro: {
+        // Ajustement : passage à 1.15rem (~18.5px)
+        fontSize: '1.15rem',
+        marginBottom: '40px',
+        fontStyle: 'italic',
+        borderLeft: '4px solid #C9A24D',
+        paddingLeft: '20px'
+    },
+    section: {
+        marginBottom: '35px'
+    },
+    subTitle: {
+        // Ajustement : passage à 1.5rem (~24px) pour les têtes de section
+        fontSize: '1.5rem',
+        fontWeight: 'bold',
+        marginBottom: '15px',
+        color: '#373735',
+        borderBottom: '1px solid rgba(55, 55, 53, 0.1)',
+        paddingBottom: '10px',
+        display: 'inline-block'
+    },
+    text: {
+        // Ajustement : corps de texte à 1.1rem (~17.5px)
+        fontSize: '1.1rem',
+        marginBottom: '10px'
+    },
+    list: {
+        // Ajustement : éléments de liste à 1.1rem
+        fontSize: '1.1rem',
+        listStyleType: 'none',
+        paddingLeft: '0'
+    }
 };
 
 export default Merci;

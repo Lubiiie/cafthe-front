@@ -231,32 +231,38 @@ const styles = {
     ruptureBadge: { position: 'absolute', top: '50%', background: '#E63946', color: '#FFF', padding: '10px 30px', fontWeight: '900', transform: 'rotate(-10deg)', zIndex: 5, border: '2px solid white' },
     mainImage: { width: "100%", maxWidth: "380px", objectFit: "contain", transition: '0.3s' },
     content: { width: "100%" },
-    title: { fontFamily: "'Playfair Display', serif", fontSize: "48px", color: "#373735", textAlign: "center", marginBottom: '10px' },
+    // Ajustement : passage à 3rem (~48px) pour le nom du produit
+    title: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", textAlign: "center", marginBottom: '10px' },
     divider: { border: "none", borderTop: "1.5px solid #373735", opacity: 0.15, margin: "30px 0" },
-    description: { fontSize: "17px", color: "#373735", textAlign: "justify", lineHeight: '1.7', opacity: 0.9 },
-    subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "26px", color: "#373735", marginBottom: "25px", fontWeight: 'bold' },
+    // Ajustement : description à 1.15rem (~18.5px) pour un confort de lecture premium
+    description: { fontSize: "1.15rem", color: "#373735", textAlign: "justify", lineHeight: '1.7', opacity: 0.9 },
+    // Ajustement : sous-titres à 1.5rem (~24px)
+    subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#373735", marginBottom: "25px", fontWeight: 'bold' },
     infoSection: { marginBottom: "35px" },
     originBox: { display: "flex", alignItems: "center", gap: "12px", background: 'rgba(55,55,53,0.05)', padding: '15px', borderRadius: '15px', width: 'fit-content' },
-    originText: { fontSize: "20px", color: "#373735", fontWeight: '500' },
+    // Ajustement : texte d'origine à 1.25rem
+    originText: { fontSize: "1.25rem", color: "#373735", fontWeight: '500' },
     similarGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" },
     similarCard: { backgroundColor: "#373735", borderRadius: "20px", overflow: "hidden", color: "#FFF", display: "flex", flexDirection: "column" },
     similarImgBg: { backgroundColor: "#FFF", display: "flex", justifyContent: "center", height: "180px" },
     similarImg: { width: "100%", height: "100%", objectFit: "cover" },
     similarInfo: { padding: "15px", flexGrow: 1, display: 'flex', flexDirection: 'column' },
-    similarName: { fontSize: "16px", fontWeight: "bold", margin: "0 0 10px 0", color: '#C9A24D' },
+    // Ajustement : noms similaires à 1.1rem
+    similarName: { fontSize: "1.1rem", fontWeight: "bold", margin: "0 0 10px 0", color: '#C9A24D' },
     simActionRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" },
     simQtyBox: { display: "flex", alignItems: "center", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "4px 8px" },
     simMiniBtn: { background: "none", border: "none", color: "#FFF", cursor: "pointer" },
     plusCircle: { width: "38px", height: "38px", border: "1.5px solid #C9A24D", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A24D", cursor: 'pointer' },
 
-    // MODIFICATIONS ICI
     stickyFooter: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "120px", backgroundColor: "#373735", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 40px", boxSizing: "border-box" },
     priceContainer: { display: 'flex', flexDirection: 'column' },
-    priceValue: { color: "#C9A24D", fontSize: "42px", fontWeight: "900" },
+    // Ajustement : prix principal à 2.5rem pour un impact maximal
+    priceValue: { color: "#C9A24D", fontSize: "2.5rem", fontWeight: "900" },
     actions: { display: "flex", gap: "15px", alignItems: "center" },
     qtySelector: { backgroundColor: "#FFF", borderRadius: "30px", height: "55px", display: "flex", alignItems: "center", padding: "0 15px" },
     qtyBtn: { background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: '#373735', fontWeight: 'bold' },
-    cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 25px", fontWeight: "900", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735', fontSize: '14px', letterSpacing: '0.5px' }
+    // Ajustement : texte du bouton panier à 1.1rem
+    cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 25px", fontWeight: "900", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735', fontSize: '1.1rem', letterSpacing: '0.5px' }
 };
 
 export default ProductDetails;

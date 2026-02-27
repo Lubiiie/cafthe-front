@@ -105,7 +105,8 @@ const styles = {
     categoryTitle: {
         marginTop: "20px",
         fontFamily: "'Playfair Display', serif",
-        fontSize: "24px",
+        // Taille ajustée à 1.85rem pour la cohérence globale
+        fontSize: "1.85rem",
         fontWeight: "bold",
         letterSpacing: "1px",
         transition: "color 0.3s ease",

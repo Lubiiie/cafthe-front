@@ -100,7 +100,9 @@ const styles = {
         objectFit: "contain"
     },
     text: {
-        fontSize: "24px",
+        // Ajustement : passage de 24px à 1.75rem (~28px) pour une meilleure lisibilité
+        fontSize: "1.75rem",
+        lineHeight: "1.2",
         fontFamily: "'Playfair Display', serif",
         transition: "all 0.3s ease"
     }

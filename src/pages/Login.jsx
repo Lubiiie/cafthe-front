@@ -84,18 +84,24 @@ const styles = {
     overlay: { width: "100%", backgroundColor: "#E9E3E3", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" },
     modal: { width: "900px", backgroundColor: "#E9E3E3", borderRadius: "8px", overflow: "hidden", position: "relative", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" },
     header: { padding: "40px 60px", display: "flex", justifyContent: "space-between", alignItems: "center" },
-    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: "48px", color: "#373735", margin: 0 },
+    // Ajustement : passage à 3rem (~48px) pour un titre majestueux
+    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", margin: 0 },
     closeIcon: { fontSize: "32px", cursor: "pointer", color: "#373735" },
     darkSection: { backgroundColor: "#373735", padding: "60px 100px", display: "flex", flexDirection: "column", gap: "20px" },
     form: { display: "flex", flexDirection: "column", gap: "25px" },
-    input: { width: "100%", maxWidth: "400px", padding: "15px 20px", backgroundColor: "#E9E3E3", border: "none", fontSize: "16px", color: "#373735" },
+    // Ajustement : passage à 1rem (16px) pour le confort de saisie
+    input: { width: "100%", maxWidth: "400px", padding: "15px 20px", backgroundColor: "#E9E3E3", border: "none", fontSize: "1rem", color: "#373735", borderRadius: "4px" },
     forgotRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "10px" },
-    forgotLink: { fontSize: "14px", cursor: "pointer", textDecoration: "underline" },
-    loginBtn: { padding: "12px 40px", borderRadius: "25px", border: "none", fontSize: "16px", fontWeight: "bold", cursor: "pointer" },
+    // Ajustement : passage à 1rem pour la lisibilité
+    forgotLink: { fontSize: "1rem", cursor: "pointer", textDecoration: "underline" },
+    // Ajustement : bouton plus affirmé à 1.1rem
+    loginBtn: { padding: "12px 40px", borderRadius: "25px", border: "none", fontSize: "1.1rem", fontWeight: "bold", cursor: "pointer", transition: "all 0.3s ease" },
     footer: { padding: "40px 0", textAlign: "center" },
-    footerText: { color: "#373735", fontSize: "16px" },
+    // Ajustement : texte de pied de page à 1.1rem
+    footerText: { color: "#373735", fontSize: "1.1rem" },
     createAccount: { fontWeight: "bold", textDecoration: "underline", cursor: "pointer" },
-    error: { color: "#ff4d4d", fontSize: "14px", textAlign: "center" }
+    // Ajustement : message d'erreur à 1rem
+    error: { color: "#ff4d4d", fontSize: "1rem", textAlign: "center", fontWeight: "bold" }
 };
 
 export default Login;

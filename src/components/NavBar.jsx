@@ -104,7 +104,6 @@ const Header = () => {
     );
 };
 
-// ... tes styles restent les mêmes
 const styles = {
     header: { width: "100%", height: "85px", backgroundColor: "#373735", position: "fixed", top: 0, left: 0, zIndex: 1000, display: "flex", alignItems: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.3)" },
     container: { width: "100%", maxWidth: "1400px", margin: "0 auto", padding: "0 40px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" },
@@ -113,12 +112,43 @@ const styles = {
     sectionSideRight: { flex: "1 1 auto", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "25px" },
     logo: { height: "80px", cursor: "pointer" },
     searchWrapper: { position: "relative", width: "100%", maxWidth: "400px", display: "flex", alignItems: "center" },
-    searchInput: { width: "100%", padding: "12px 45px 12px 20px", borderRadius: "30px", border: "none", backgroundColor: "#E9E3E3", fontSize: "14px", outline: "none", color: "#373735" },
+    searchInput: {
+        width: "100%",
+        padding: "12px 45px 12px 20px",
+        borderRadius: "30px",
+        border: "none",
+        backgroundColor: "#E9E3E3",
+        // Ajustement : passage de 14px à 1rem (16px) pour éviter le zoom automatique sur mobile et améliorer la lisibilité
+        fontSize: "1rem",
+        outline: "none",
+        color: "#373735"
+    },
     searchIcon: { position: "absolute", right: "15px", color: "#373735", fontSize: "20px", pointerEvents: "none" },
     iconWrapper: { position: "relative", cursor: "pointer", transition: "color 0.3s ease, transform 0.2s ease", display: "flex", alignItems: "center" },
-    badge: { position: "absolute", top: "-8px", right: "-10px", backgroundColor: "#C9A24D", color: "#373735", fontSize: "11px", fontWeight: "bold", borderRadius: "50%", width: "19px", height: "19px", display: "flex", justifyContent: "center", alignItems: "center", border: "1.5px solid #373735" },
+    badge: {
+        position: "absolute",
+        top: "-8px",
+        right: "-10px",
+        backgroundColor: "#C9A24D",
+        color: "#373735",
+        // Ajustement : passage de 11px à 12px
+        fontSize: "12px",
+        fontWeight: "bold",
+        borderRadius: "50%",
+        width: "20px",
+        height: "20px",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        border: "1.5px solid #373735"
+    },
     userControls: { display: "flex", alignItems: "center", gap: "15px", borderLeft: "1px solid rgba(233, 227, 227, 0.2)", paddingLeft: "15px", marginLeft: "5px" },
-    welcomeText: { color: "#C9A24D", fontSize: "14px", fontWeight: "bold" },
+    welcomeText: {
+        color: "#C9A24D",
+        // Ajustement : passage de 14px à 1.05rem (~17px) pour valoriser la personnalisation
+        fontSize: "1.05rem",
+        fontWeight: "bold"
+    },
     logoutIcon: { cursor: "pointer", transition: "color 0.3s ease" }
 };
 

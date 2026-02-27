@@ -88,14 +88,16 @@ const styles = {
         textAlign: "center",
         padding: "0 20px",
     },
+    // Titre principal harmonisé à 3rem (~48px)
     mainTitle: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: "48px",
+        fontSize: "3rem",
         color: "#373735",
         marginBottom: "25px",
     },
+    // Sous-titre monté à 1.15rem (~18.5px) pour une introduction aérée
     heroSubtitle: {
-        fontSize: "18px",
+        fontSize: "1.15rem",
         lineHeight: "1.6",
         color: "#373735",
         opacity: 0.9,
@@ -128,21 +130,24 @@ const styles = {
         minWidth: "300px",
         color: "#E9E3E3",
     },
+    // Titres de section à 2.25rem (~36px) pour la cohérence visuelle
     sectionTitle: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: "32px",
-        color: "#C9A24D", // Accent doré
+        fontSize: "2.25rem",
+        color: "#C9A24D",
         marginBottom: "20px",
     },
+    // Corps de texte à 1.1rem (~17.5px) pour un confort de lecture optimal
     paragraph: {
-        fontSize: "16px",
+        fontSize: "1.1rem",
         lineHeight: "1.7",
         marginBottom: "15px",
         opacity: 0.8,
     },
+    // Citation mise en valeur à 1.4rem (~22px)
     quote: {
         fontStyle: "italic",
-        fontSize: "20px",
+        fontSize: "1.4rem",
         borderLeft: "3px solid #C9A24D",
         paddingLeft: "20px",
         margin: "30px 0",

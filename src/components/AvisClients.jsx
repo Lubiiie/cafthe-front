@@ -69,7 +69,8 @@ const styles = {
         marginLeft: "5%",
         fontFamily: "'Playfair Display', serif",
         color: "#373735",
-        fontSize: "30px",
+        // Ajustement : passage de 30px à 2.25rem (~36px) pour affirmer le titre
+        fontSize: "2.25rem",
         marginBottom: "30px"
     },
     container: {
@@ -95,16 +96,18 @@ const styles = {
     },
     icon: {
         color: "#C9A24D",
-        fontSize: "18px"
+        fontSize: "1.2rem" // Légèrement agrandi pour suivre le reste
     },
     userName: {
         color: "#C9A24D",
-        fontSize: "18px",
+        // Ajustement : passage de 18px à 1.4rem (~22px) pour le nom du client
+        fontSize: "1.4rem",
         margin: "0 0 15px 0",
         fontFamily: "'Playfair Display', serif"
     },
     comment: {
-        fontSize: "14px",
+        // Ajustement : passage de 14px à 1.1rem (~17.5px) pour le confort de lecture
+        fontSize: "1.1rem",
         fontStyle: "italic",
         lineHeight: "1.6",
         opacity: 0.9

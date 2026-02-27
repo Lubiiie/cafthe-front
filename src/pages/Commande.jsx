@@ -270,45 +270,50 @@ const styles = {
     page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '80px', fontFamily: "'Inter', sans-serif" },
     container: { maxWidth: '1100px', margin: '0 auto', padding: '0 20px' },
     header: { marginBottom: '40px', textAlign: 'center' },
-    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '42px', color: '#373735' },
-    breadcrumb: { fontSize: '14px', color: '#373735', opacity: 0.6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
+    // Ajustement : passage à 2.75rem (~44px) pour le titre de page
+    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '2.75rem', color: '#373735' },
+    breadcrumb: { fontSize: '1rem', color: '#373735', opacity: 0.6, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' },
     mainGrid: { display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '30px', alignItems: 'start' },
     sectionBox: { backgroundColor: '#373735', borderRadius: '16px', padding: '30px', color: '#E9E3E3', boxShadow: '0 10px 30px rgba(0,0,0,0.15)' },
-    sectionTitle: { fontFamily: "'Playfair Display', serif", fontSize: '22px', color: '#C9A24D', marginBottom: '20px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' },
+    // Ajustement : passage à 1.5rem (~24px) pour les titres de section
+    sectionTitle: { fontFamily: "'Playfair Display', serif", fontSize: '1.5rem', color: '#C9A24D', marginBottom: '20px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px', display: 'flex', alignItems: 'center', gap: '10px' },
 
-    articlesList: { maxHeight: '220px', overflowY: 'auto', marginBottom: '15px', paddingRight: '10px' },
+    articlesList: { maxHeight: '250px', overflowY: 'auto', marginBottom: '15px', paddingRight: '10px' },
     articleItem: { display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px', padding: '10px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '8px', transition: '0.3s' },
-    miniImg: { width: '50px', height: '50px', objectFit: 'cover', borderRadius: '6px' },
+    miniImg: { width: '55px', height: '55px', objectFit: 'cover', borderRadius: '6px' },
     articleDetails: { flex: 1 },
-    articleName: { fontSize: '14px', fontWeight: 'bold', margin: '0 0 5px 0', color: '#E9E3E3' },
+    // Ajustement : passage à 1.1rem pour le nom des articles
+    articleName: { fontSize: '1.1rem', fontWeight: 'bold', margin: '0 0 5px 0', color: '#E9E3E3' },
 
-    // Styles pour le sélecteur de quantité
-    qtyContainer: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '15px', width: 'fit-content', padding: '2px 8px' },
-    qtyBtn: { background: 'none', border: 'none', color: '#C9A24D', cursor: 'pointer', fontSize: '16px', fontWeight: 'bold', transition: '0.2s' },
-    qtyVal: { fontSize: '12px', fontWeight: 'bold', minWidth: '15px', textAlign: 'center' },
+    qtyContainer: { display: 'flex', alignItems: 'center', gap: '10px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '15px', width: 'fit-content', padding: '4px 12px' },
+    qtyBtn: { background: 'none', border: 'none', color: '#C9A24D', cursor: 'pointer', fontSize: '1.2rem', fontWeight: 'bold', transition: '0.2s' },
+    qtyVal: { fontSize: '1rem', fontWeight: 'bold', minWidth: '15px', textAlign: 'center' },
 
     articlePriceBlock: { display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '5px' },
-    articlePrice: { fontSize: '14px', fontWeight: 'bold', color: '#C9A24D', margin: 0 },
-    deleteIcon: { cursor: 'pointer', fontSize: '16px', transition: '0.3s', opacity: 0.8 },
+    // Ajustement : prix article à 1.1rem
+    articlePrice: { fontSize: '1.1rem', fontWeight: 'bold', color: '#C9A24D', margin: 0 },
+    deleteIcon: { cursor: 'pointer', fontSize: '1.2rem', transition: '0.3s', opacity: 0.8 },
 
     methodCard: { padding: '20px', borderRadius: '12px', border: '2px solid', cursor: 'pointer', transition: 'all 0.3s ease', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' },
     methodInfo: { display: 'flex', flexDirection: 'column', gap: '4px' },
-    methodName: { fontSize: '18px', fontWeight: 'bold' },
-    methodPrice: { color: '#C9A24D', fontWeight: 'bold' },
-    methodDesc: { fontSize: '13px', opacity: 0.6 },
-    relayBadge: { backgroundColor: 'rgba(201, 162, 77, 0.15)', color: '#C9A24D', padding: '6px 12px', borderRadius: '6px', fontSize: '12px', marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '8px' },
-    actionBtn: { border: 'none', padding: '10px 20px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s ease' },
+    methodName: { fontSize: '1.25rem', fontWeight: 'bold' },
+    methodPrice: { color: '#C9A24D', fontWeight: 'bold', fontSize: '1.1rem' },
+    methodDesc: { fontSize: '1rem', opacity: 0.6 },
+    relayBadge: { backgroundColor: 'rgba(201, 162, 77, 0.15)', color: '#C9A24D', padding: '6px 12px', borderRadius: '6px', fontSize: '0.9rem', marginTop: '10px', display: 'inline-flex', alignItems: 'center', gap: '8px' },
+    actionBtn: { border: 'none', padding: '12px 24px', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', transition: 'all 0.3s ease', fontSize: '1rem' },
     widgetZone: { marginTop: '10px', borderRadius: '8px', overflow: 'hidden' },
     divider: { height: '1px', backgroundColor: 'rgba(255,255,255,0.05)', margin: '20px 0' },
     summaryTable: { marginBottom: '20px' },
-    summaryRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '14px', opacity: 0.8 },
-    totalRow: { display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px', marginTop: '15px', fontSize: '20px', fontWeight: 'bold', color: '#C9A24D' },
-    cgvBox: { marginBottom: '20px', padding: '12px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '8px' },
-    checkboxLabel: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', cursor: 'pointer', transition: '0.3s' },
-    checkbox: { width: '16px', height: '16px', accentColor: '#C9A24D', cursor: 'pointer' },
+    // Ajustement : lignes de résumé à 1.1rem
+    summaryRow: { display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '1.1rem', opacity: 0.8 },
+    // Ajustement : Total à 1.75rem pour la visibilité
+    totalRow: { display: 'flex', justifyContent: 'space-between', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px', marginTop: '15px', fontSize: '1.75rem', fontWeight: 'bold', color: '#C9A24D' },
+    cgvBox: { marginBottom: '20px', padding: '15px', backgroundColor: 'rgba(255,255,255,0.03)', borderRadius: '8px' },
+    checkboxLabel: { display: 'flex', alignItems: 'center', gap: '10px', fontSize: '1.05rem', cursor: 'pointer', transition: '0.3s' },
+    checkbox: { width: '18px', height: '18px', accentColor: '#C9A24D', cursor: 'pointer' },
     cgvLink: { color: '#C9A24D', textDecoration: 'underline', transition: '0.2s' },
-    paypalWrapper: { transition: 'all 0.3s ease' },
-    helperText: { textAlign: 'center', color: '#ff6b6b', fontSize: '11px', marginTop: '10px', fontWeight: 'bold' }
+    paypalWrapper: { transition: 'all 0.3s ease', marginTop: '10px' },
+    helperText: { textAlign: 'center', color: '#ff6b6b', fontSize: '0.95rem', marginTop: '12px', fontWeight: 'bold' }
 };
 
 export default Commande;

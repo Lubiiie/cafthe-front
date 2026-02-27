@@ -87,8 +87,23 @@ const styles = {
     navSection: { backgroundColor: "#E9E3E3", width: "100%", padding: "60px 0" },
     contentWrapper: { maxWidth: "1400px", margin: "0 auto", display: "flex", justifyContent: "space-between", padding: "0 5%" },
     column: { display: "flex", flexDirection: "column", gap: "12px" },
-    title: { fontFamily: "'Playfair Display', serif", fontSize: "20px", color: "#373735", marginBottom: "20px", fontWeight: "bold" },
-    link: { fontSize: "15px", color: "#373735", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: "4px", display: "inline-block" },
+    title: {
+        fontFamily: "'Playfair Display', serif",
+        // Ajustement : passage de 20px à 1.5rem (~24px)
+        fontSize: "1.5rem",
+        color: "#373735",
+        marginBottom: "20px",
+        fontWeight: "bold"
+    },
+    link: {
+        // Ajustement : passage de 15px à 1.1rem (~17.5px) pour s'aligner sur les commentaires clients
+        fontSize: "1.1rem",
+        color: "#373735",
+        cursor: "pointer",
+        textDecoration: "underline",
+        textUnderlineOffset: "4px",
+        display: "inline-block"
+    },
     logoContainer: { display: "flex", alignItems: "center" },
     logoBig: { width: "220px", height: "auto" },
     legalBar: { backgroundColor: "#373735", width: "100%", padding: "20px 0" },
@@ -97,8 +112,18 @@ const styles = {
     legalCenter: { textAlign: "center" },
     legalRight: { display: "flex", justifyContent: "flex-end", gap: "30px" },
     logoSmall: { width: "45px", height: "auto" },
-    scrollTop: { cursor: "pointer", fontSize: "15px", fontWeight: "bold", display: "inline-block" },
-    legalLink: { fontSize: "14px", cursor: "pointer" }
+    scrollTop: {
+        cursor: "pointer",
+        // Ajustement : aligné sur les liens principaux (1.1rem)
+        fontSize: "1.1rem",
+        fontWeight: "bold",
+        display: "inline-block"
+    },
+    legalLink: {
+        // Ajustement : passage de 14px à 1rem (16px standards) pour l'accessibilité
+        fontSize: "1rem",
+        cursor: "pointer"
+    }
 };
 
 export default Footer;

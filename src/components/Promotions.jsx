@@ -184,27 +184,29 @@ const Promotions = () => {
 
 const styles = {
     container: { padding: "60px 0", backgroundColor: "#E9E3E3", overflow: "hidden" },
-    mainTitle: { marginLeft: "5%", fontFamily: "'Playfair Display', serif", fontSize: "36px", color: "#373735", marginBottom: "40px", fontWeight: "900" },
+    // Titre harmonisé avec les autres sections (2.25rem ~ 36px)
+    mainTitle: { marginLeft: "5%", fontFamily: "'Playfair Display', serif", fontSize: "2.25rem", color: "#373735", marginBottom: "40px", fontWeight: "900" },
     sliderWrapper: { display: "flex", alignItems: "center", position: "relative", padding: "0 5%", gap: "20px" },
     carouselContainer: { display: "flex", gap: "30px", overflowX: "auto", scrollBehavior: "smooth", padding: "20px 5px", width: "100%" },
     arrow: { fontSize: "45px", color: "#373735", cursor: "pointer", transition: "0.3s", flexShrink: 0 },
     card: { width: "320px", height: "500px", backgroundColor: "#373735", borderRadius: "25px", overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer" },
     imageArea: { height: "200px", backgroundColor: "#FFF", position: "relative", overflow: "hidden" },
 
-    // BADGES
-    badge: { position: "absolute", top: "15px", right: "15px", backgroundColor: "#C9A24D", color: "#373735", padding: "5px 12px", borderRadius: "8px", fontSize: "12px", fontWeight: "900", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
-    stockBadge: { position: "absolute", top: "15px", left: "15px", color: "white", padding: "4px 10px", borderRadius: "8px", fontSize: "11px", fontWeight: "bold", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
+    // BADGES : Légèrement agrandis pour être lisibles au premier coup d'œil
+    badge: { position: "absolute", top: "15px", right: "15px", backgroundColor: "#C9A24D", color: "#373735", padding: "5px 12px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "900", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
+    stockBadge: { position: "absolute", top: "15px", left: "15px", color: "white", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
 
     img: { width: "100%", height: "100%", objectFit: "cover" },
     infoArea: { padding: "25px", color: "#E9E3E3", flexGrow: 1, display: "flex", flexDirection: "column", gap: "10px" },
-    prodName: { color: "#C9A24D", fontSize: "21px", fontFamily: "'Playfair Display', serif", margin: "0", fontWeight: "700" },
-    prodDesc: { fontSize: "14px", opacity: 0.85, height: "40px", overflow: "hidden", lineHeight: "1.4" },
-    price: { fontSize: "24px", fontWeight: "900", color: "#FFF", marginTop: "auto" },
+    prodName: { color: "#C9A24D", fontSize: "1.5rem", fontFamily: "'Playfair Display', serif", margin: "0", fontWeight: "700" },
+    // Description : Passage de 14px à 1rem (16px) pour le confort
+    prodDesc: { fontSize: "1rem", opacity: 0.85, height: "45px", overflow: "hidden", lineHeight: "1.4" },
+    price: { fontSize: "1.75rem", fontWeight: "900", color: "#FFF", marginTop: "auto" },
 
     quickAction: { display: "flex", justifyContent: "space-between", alignItems: "center", padding: "15px 20px", backgroundColor: "rgba(0,0,0,0.3)", marginTop: "auto" },
     qtySelector: { display: "flex", alignItems: "center", backgroundColor: "#E9E3E3", borderRadius: "20px", padding: "5px 12px", gap: "10px" },
     qtyBtn: { border: "none", background: "none", cursor: "pointer", color: "#373735", display: "flex", fontWeight: "bold" },
-    qtyInput: { width: "35px", border: "none", background: "transparent", textAlign: "center", color: "#373735", fontWeight: "900", fontSize: "15px", outline: "none", padding: "0" },
+    qtyInput: { width: "35px", border: "none", background: "transparent", textAlign: "center", color: "#373735", fontWeight: "900", fontSize: "1rem", outline: "none", padding: "0" },
     addToCart: { backgroundColor: "#C9A24D", border: "none", borderRadius: "50%", width: "42px", height: "42px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#373735", transition: "0.3s" }
 };
 

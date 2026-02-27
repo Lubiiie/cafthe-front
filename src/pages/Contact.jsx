@@ -119,35 +119,41 @@ const Contact = () => {
 const styles = {
     pageWrapper: { backgroundColor: "#E9E3E3", minHeight: "100vh", paddingTop: "120px" },
     heroSection: { maxWidth: "900px", margin: "0 auto 80px auto", textAlign: "center", padding: "0 20px" },
-    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: "48px", color: "#373735", marginBottom: "25px" },
-    heroSubtitle: { fontSize: "18px", lineHeight: "1.6", color: "#373735", opacity: 0.9 },
+    // Ajustement : passage à 3rem (~48px) pour le titre principal
+    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", marginBottom: "25px" },
+    // Ajustement : sous-titre à 1.15rem (~18.5px)
+    heroSubtitle: { fontSize: "1.15rem", lineHeight: "1.6", color: "#373735", opacity: 0.9 },
     sectionDark: { backgroundColor: "#373735", padding: "80px 0", marginBottom: "40px" },
     container: { maxWidth: "1200px", margin: "0 auto", padding: "0 40px" },
     contentRow: { display: "flex", alignItems: "center", gap: "60px", flexWrap: "wrap" },
     contentRowReverse: { display: "flex", flexDirection: "row-reverse", alignItems: "center", gap: "60px", flexWrap: "wrap" },
     textBlock: { flex: "1", minWidth: "300px", color: "#E9E3E3" },
-    sectionTitle: { fontFamily: "'Playfair Display', serif", fontSize: "32px", color: "#C9A24D", marginBottom: "20px" },
-    paragraph: { fontSize: "16px", lineHeight: "1.7", marginBottom: "15px", opacity: 0.8 },
+    // Titres de section harmonisés à 2.25rem (~36px)
+    sectionTitle: { fontFamily: "'Playfair Display', serif", fontSize: "2.25rem", color: "#C9A24D", marginBottom: "20px" },
+    paragraph: { fontSize: "1.1rem", lineHeight: "1.7", marginBottom: "15px", opacity: 0.8 },
     imageBlock: { flex: "1", minWidth: "300px", display: "flex", flexDirection: "column", alignItems: "center" },
     image: { width: "80%", maxWidth: "500px", borderRadius: "10px", transition: "all 0.4s ease", cursor: "pointer" },
     faqItem: { borderBottom: "1px solid rgba(201, 162, 77, 0.3)", padding: "15px 0" },
     faqHeader: { display: "flex", justifyContent: "space-between", cursor: "pointer", alignItems: "center", transition: "0.3s" },
-    questionText: { fontSize: "17px", fontWeight: "500", transition: "0.3s" },
-    faqAnswer: { marginTop: "15px", opacity: 0.7, lineHeight: "1.6", fontSize: "15px", paddingBottom: "10px" },
+    // Questions de la FAQ montées à 1.15rem pour plus de présence
+    questionText: { fontSize: "1.15rem", fontWeight: "500", transition: "0.3s" },
+    // Réponses à 1.05rem pour le confort de lecture
+    faqAnswer: { marginTop: "15px", opacity: 0.7, lineHeight: "1.6", fontSize: "1.05rem", paddingBottom: "10px" },
     form: { display: "flex", flexDirection: "column", gap: "15px", marginTop: "20px" },
-    input: { backgroundColor: "#E9E3E3", border: "none", padding: "12px", borderRadius: "5px", outline: "none" },
-    textarea: { backgroundColor: "#E9E3E3", border: "none", padding: "12px", borderRadius: "5px", minHeight: "120px", outline: "none", fontFamily: "inherit" },
+    // Inputs à 1rem (16px standards) pour éviter le zoom iOS et améliorer la saisie
+    input: { backgroundColor: "#E9E3E3", border: "none", padding: "14px", borderRadius: "8px", outline: "none", fontSize: "1rem" },
+    textarea: { backgroundColor: "#E9E3E3", border: "none", padding: "14px", borderRadius: "8px", minHeight: "120px", outline: "none", fontFamily: "inherit", fontSize: "1rem" },
 
-    // STYLES RGPD
     rgpdContainer: { marginTop: "10px", padding: "5px", opacity: 0.8, transition: "0.3s" },
-    checkboxLabel: { display: "flex", alignItems: "flex-start", gap: "12px", fontSize: "13px", cursor: "pointer", lineHeight: "1.4" },
-    checkbox: { marginTop: "3px", accentColor: "#C9A24D", width: "16px", height: "16px" },
+    // Texte RGPD monté à 0.95rem (~15px) pour la lisibilité légale
+    checkboxLabel: { display: "flex", alignItems: "flex-start", gap: "12px", fontSize: "0.95rem", cursor: "pointer", lineHeight: "1.4" },
+    checkbox: { marginTop: "3px", accentColor: "#C9A24D", width: "18px", height: "18px" },
     rgpdLink: { color: "#C9A24D", textDecoration: "underline" },
 
     submitButton: {
-        backgroundColor: "#C9A24D", color: "#373735", border: "none", padding: "12px",
+        backgroundColor: "#C9A24D", color: "#373735", border: "none", padding: "15px",
         borderRadius: "30px", fontWeight: "bold", cursor: "pointer", transition: "all 0.3s ease",
-        fontFamily: "Playfair Display"
+        fontFamily: "Playfair Display", fontSize: "1.1rem"
     },
     contactInfo: { textAlign: "left", width: "100%", color: "#E9E3E3" }
 };

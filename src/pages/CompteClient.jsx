@@ -363,44 +363,48 @@ const styles = {
     page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '160px', paddingBottom: '80px', fontFamily: "'Inter', sans-serif" },
     container: { maxWidth: '900px', margin: '0 auto', padding: '0 25px', display: 'flex', flexDirection: 'column', gap: '35px' },
     profileBox: { padding: '50px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 10px 30px rgba(0,0,0,0.15)', transition: 'all 0.3s ease' },
-    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '40px', marginBottom: '10px', color: '#C9A24D' },
-    subTitle: { fontSize: '16px', opacity: 0.8, maxWidth: '500px' },
-    logoutBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 24px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease' },
+    // Titre principal harmonisé à 2.5rem (~40px)
+    mainTitle: { fontFamily: "'Playfair Display', serif", fontSize: '2.5rem', marginBottom: '10px', color: '#C9A24D' },
+    subTitle: { fontSize: '1.1rem', opacity: 0.8, maxWidth: '500px' },
+    logoutBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 24px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '10px', transition: 'all 0.3s ease', fontSize: '1rem' },
 
     daSectionBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '16px', boxShadow: '0 4px 20px rgba(0,0,0,0.08)' },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px' },
-    daSectionTitle: { fontFamily: "'Playfair Display', serif", color: '#C9A24D', fontSize: '24px', display: 'flex', alignItems: 'center', gap: '15px' },
+    // Titres de section à 1.5rem
+    daSectionTitle: { fontFamily: "'Playfair Display', serif", color: '#C9A24D', fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '15px' },
 
     formContainer: { display: 'flex', flexDirection: 'column', gap: '20px' },
     formRow: { display: 'flex', gap: '25px', flexWrap: 'wrap' },
     formGroup: { flex: 1, minWidth: '250px' },
-    label: { display: 'block', fontSize: '12px', color: '#C9A24D', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: '600' },
-    staticText: { fontSize: '17px', margin: 0, padding: '8px 0', color: '#E9E3E3' },
-    input: { width: '100%', padding: '14px 18px', borderRadius: '8px', border: '1px solid rgba(201, 162, 77, 0.4)', backgroundColor: 'rgba(255, 255, 255, 0.03)', color: '#E9E3E3', fontSize: '16px', outline: 'none', transition: 'all 0.3s ease', boxSizing: 'border-box' },
+    label: { display: 'block', fontSize: '0.85rem', color: '#C9A24D', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: '600' },
+    // Texte statique monté à 1.1rem pour le confort
+    staticText: { fontSize: '1.1rem', margin: 0, padding: '8px 0', color: '#E9E3E3' },
+    input: { width: '100%', padding: '14px 18px', borderRadius: '8px', border: '1px solid rgba(201, 162, 77, 0.4)', backgroundColor: 'rgba(255, 255, 255, 0.03)', color: '#E9E3E3', fontSize: '1rem', outline: 'none', transition: 'all 0.3s ease', boxSizing: 'border-box' },
 
-    editBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '8px 20px', borderRadius: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600', transition: 'all 0.3s ease' },
-    saveBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700' },
-    cancelBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer' },
+    editBtn: { backgroundColor: 'transparent', border: '1px solid #C9A24D', color: '#C9A24D', padding: '8px 20px', borderRadius: '50px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontWeight: '600', transition: 'all 0.3s ease', fontSize: '0.95rem' },
+    saveBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer', fontWeight: '700', fontSize: '0.95rem' },
+    cancelBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '10px 22px', borderRadius: '50px', cursor: 'pointer', fontSize: '0.95rem' },
 
-    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid rgba(233, 227, 227, 0.3)', color: '#E9E3E3', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontSize: '13px', transition: 'all 0.3s ease' },
+    daSmallBtn: { backgroundColor: 'transparent', border: '1px solid rgba(233, 227, 227, 0.3)', color: '#E9E3E3', padding: '10px 20px', borderRadius: '50px', cursor: 'pointer', fontSize: '0.9rem', transition: 'all 0.3s ease' },
     divider: { height: '1px', backgroundColor: 'rgba(201, 162, 77, 0.15)', margin: '10px 0' },
 
     orderCard: { backgroundColor: 'rgba(255,255,255,0.03)', padding: '25px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid rgba(255,255,255,0.05)', transition: 'all 0.3s ease' },
     orderInfo: { display: 'flex', flexDirection: 'column', gap: '5px' },
-    orderId: { fontWeight: '700', fontSize: '18px', color: '#E9E3E3' },
-    orderDate: { fontSize: '14px', color: '#aaa' },
+    orderId: { fontWeight: '700', fontSize: '1.15rem', color: '#E9E3E3' },
+    orderDate: { fontSize: '0.95rem', color: '#aaa' },
     orderActions: { display: 'flex', alignItems: 'center', gap: '25px' },
-    orderPrice: { fontWeight: '700', fontSize: '20px', color: '#C9A24D' },
-    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease' },
-    emptyOrders: { textAlign: 'center', padding: '40px', opacity: 0.5 },
+    // Prix commande bien visible à 1.4rem
+    orderPrice: { fontWeight: '700', fontSize: '1.4rem', color: '#C9A24D' },
+    daActionBtn: { backgroundColor: '#C9A24D', border: 'none', color: '#373735', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease', fontSize: '0.95rem' },
+    emptyOrders: { textAlign: 'center', padding: '40px', opacity: 0.5, fontSize: '1.1rem' },
 
     dangerZone: { padding: '35px', backgroundColor: 'rgba(255, 77, 77, 0.05)', borderRadius: '16px', border: '1px solid rgba(255, 77, 77, 0.2)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' },
-    dangerTitle: { color: '#ff6b6b', fontFamily: "'Playfair Display', serif", fontSize: '22px', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' },
-    dangerText: { color: '#373735', fontSize: '14px', maxWidth: '500px' },
-    dangerBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease' },
+    dangerTitle: { color: '#ff6b6b', fontFamily: "'Playfair Display', serif", fontSize: '1.4rem', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '10px' },
+    dangerText: { color: '#373735', fontSize: '1rem', maxWidth: '500px' },
+    dangerBtn: { backgroundColor: 'transparent', border: '1px solid #ff6b6b', color: '#ff6b6b', padding: '12px 25px', borderRadius: '50px', fontWeight: '700', cursor: 'pointer', transition: 'all 0.3s ease', fontSize: '0.95rem' },
 
-    loading: { textAlign: 'center', padding: '150px', fontSize: '22px', color: '#373735', fontFamily: "'Playfair Display', serif" },
-    toast: { position: 'fixed', bottom: '40px', right: '40px', backgroundColor: '#C9A24D', color: '#373735', padding: '18px 30px', borderRadius: '50px', boxShadow: '0 15px 35px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '15px', fontWeight: '800', zIndex: 9999, animation: 'slideIn 0.4s ease' }
+    loading: { textAlign: 'center', padding: '150px', fontSize: '1.5rem', color: '#373735', fontFamily: "'Playfair Display', serif" },
+    toast: { position: 'fixed', bottom: '40px', right: '40px', backgroundColor: '#C9A24D', color: '#373735', padding: '18px 30px', borderRadius: '50px', boxShadow: '0 15px 35px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '15px', fontWeight: '800', zIndex: 9999, fontSize: '1.1rem' }
 };
 
 export default Compte;

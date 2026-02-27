@@ -87,7 +87,9 @@ const styles = {
     },
     mainTitle: {
         fontFamily: "'Playfair Display', serif",
-        fontSize: '48px', color: '#373735',
+        // Ajustement : passage à 3rem (~48px) pour la cohérence avec les CGV
+        fontSize: '3rem',
+        color: '#373735',
         textAlign: 'center',
         marginBottom: '50px',
         fontWeight: 'bold'
@@ -98,7 +100,8 @@ const styles = {
         lineHeight: '1.8'
     },
     intro: {
-        fontSize: '16px',
+        // Ajustement : passage à 1.15rem (~18.5px)
+        fontSize: '1.15rem',
         marginBottom: '40px',
         fontStyle: 'italic',
         borderLeft: '4px solid #C9A24D',
@@ -108,7 +111,8 @@ const styles = {
         marginBottom: '35px'
     },
     subTitle: {
-        fontSize: '22px',
+        // Ajustement : passage à 1.5rem (~24px) pour les têtes de section
+        fontSize: '1.5rem',
         fontWeight: 'bold',
         marginBottom: '15px',
         color: '#373735',
@@ -117,10 +121,13 @@ const styles = {
         display: 'inline-block'
     },
     text: {
-        fontSize: '16px',
+        // Ajustement : corps de texte à 1.1rem (~17.5px)
+        fontSize: '1.1rem',
         marginBottom: '10px'
     },
     list: {
+        // Ajustement : éléments de liste à 1.1rem
+        fontSize: '1.1rem',
         listStyleType: 'none',
         paddingLeft: '0'
     }

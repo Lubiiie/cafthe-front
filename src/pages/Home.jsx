@@ -8,15 +8,19 @@ import Assistance from "../components/Assistance";
 const Home = () => {
     return (
         <div style={styles.pageContainer}>
-
+            {/* Le Hero avec ses titres à 1.85rem */}
             <Hero />
 
+            {/* La section Promo avec son titre à 2.25rem */}
             <Promotions />
 
+            {/* Les Avis Clients avec leurs commentaires à 1.1rem */}
             <AvisClients />
 
+            {/* Histoire & Engagements avec ses textes à 1.15rem */}
             <HistoireEngagements />
 
+            {/* La section Assistance avec ses liens à 1.75rem */}
             <Assistance />
         </div>
     );
