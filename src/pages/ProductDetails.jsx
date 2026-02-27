@@ -1,275 +1,185 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { FiX, FiShoppingBag, FiMapPin, FiPlus, FiMinus } from "react-icons/fi";
+import { useParams } from "react-router-dom";
+import { FiPlus, FiMinus, FiShoppingBag, FiTruck, FiShield, FiRotateCcw } from "react-icons/fi";
 import { useCard } from "../context/CardContext.jsx";
+import { Helmet } from 'react-helmet-async';
 
 const ProductDetails = () => {
     const { id } = useParams();
-    const navigate = useNavigate();
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-    const { addToCart } = useCard();
-
     const [produit, setProduit] = useState(null);
-    const [similaires, setSimilaires] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [quantite, setQuantite] = useState(1);
-    const [isHovered, setIsHovered] = useState(false);
-    const [quantitesSimilaires, setQuantitesSimilaires] = useState({});
+    const [loading, setLoading] = useState(true);
+    const [quantity, setQuantity] = useState(1);
+    const { addToCart } = useCard();
+    const apiUrl = "http://localhost:3000";
 
     useEffect(() => {
         const fetchProduit = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/produits/${id}`);
                 const data = await response.json();
-                const currentProd = data.produit || data;
-                setProduit(currentProd);
-
-                const resSim = await fetch(`${apiUrl}/api/produits`);
-                const dataSim = await resSim.json();
-                const list = Array.isArray(dataSim) ? dataSim : (dataSim.produits || []);
-
-                const filtered = list.filter(p =>
-                    p.categorie === currentProd.categorie &&
-                    p.numero_produit !== currentProd.numero_produit
-                ).slice(0, 3);
-
-                setSimilaires(filtered);
-                const qtys = {};
-                filtered.forEach(p => qtys[p.numero_produit] = 1);
-                setQuantitesSimilaires(qtys);
+                setProduit(data.produit ? data.produit : data);
             } catch (err) {
-                console.error("Erreur BDD:", err);
+                console.error("Erreur Fetch BDD:", err);
             } finally {
-                setIsLoading(false);
+                setLoading(false);
             }
         };
         fetchProduit();
-    }, [id, apiUrl]);
+    }, [id]);
 
-    const handleMainQtyChange = (delta) => {
-        const next = (parseInt(quantite, 10) || 1) + delta;
-        if (next >= 1 && next <= produit.stock) setQuantite(next);
-    };
-
-    const handleMainInputChange = (value) => {
-        if (value === "") { setQuantite(""); return; }
-        const val = parseInt(value, 10);
-        if (!isNaN(val)) {
-            setQuantite(Math.max(1, Math.min(val, produit.stock)));
+    const handleInputChange = (e) => {
+        const val = parseInt(e.target.value, 10);
+        if (isNaN(val) || val < 1) {
+            setQuantity(1);
+        } else if (val > produit.stock) {
+            setQuantity(produit.stock);
+        } else {
+            setQuantity(val);
         }
     };
 
-    const handleQtySim = (prodId, delta, stockMax) => {
-        setQuantitesSimilaires(prev => {
-            const current = parseInt(prev[prodId], 10) || 1;
-            const next = current + delta;
-            if (next >= 1 && next <= stockMax) return { ...prev, [prodId]: next };
-            return prev;
-        });
-    };
-
-    const handleInputSim = (prodId, value, stockMax) => {
-        if (value === "") {
-            setQuantitesSimilaires(prev => ({ ...prev, [prodId]: "" }));
-            return;
-        }
-        const val = parseInt(value, 10);
-        if (!isNaN(val)) {
-            const safeVal = Math.max(1, Math.min(val, stockMax));
-            setQuantitesSimilaires(prev => ({ ...prev, [prodId]: safeVal }));
-        }
-    };
-
-    if (isLoading) return <div style={{textAlign: 'center', padding: '100px', color: '#FFF', fontFamily: 'Playfair Display', fontSize: '24px'}}>Chargement de l'univers...</div>;
-    if (!produit) return null;
+    if (loading) return <div style={styles.loading}>Chargement...</div>;
+    if (!produit) return <div style={styles.error}>Produit introuvable.</div>;
 
     const isOutOfStock = produit.stock <= 0;
 
     return (
-        <div style={styles.overlay} className="details-overlay-fixed">
-            <style>
-                {`
-                .details-overlay-fixed * { box-sizing: border-box; }
-                .close-btn:hover { color: #C9A24D !important; transform: rotate(90deg); transition: 0.3s; }
-                .sim-card { transition: all 0.4s ease; border: 2px solid transparent; flex-shrink: 0; }
-                .sim-card:hover { transform: translateY(-8px); border-color: #C9A24D; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
-                .sim-card-out { opacity: 0.5; filter: grayscale(1); pointer-events: none; }
-                
-                .qty-input-main { width: 50px; border: none; text-align: center; font-weight: 900; font-size: 20px; color: #373735; outline: none; background: transparent; }
-                .qty-input-sim { width: 30px; border: none; background: transparent; text-align: center; font-weight: 800; font-size: 14px; color: #FFF; outline: none; }
-                
-                .cart-btn-premium { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; white-space: nowrap; flex-shrink: 0; }
-                .cart-btn-premium:disabled { background-color: #666 !important; cursor: not-allowed; opacity: 0.7; }
-                .plus-circle:hover { background-color: #C9A24D; color: #373735 !important; transition: 0.3s; }
+        <>
+            <Helmet>
+                <title>{produit?.nom_produit || "Produit"} | CafThé</title>
+                <meta name="description" content={produit?.description ? produit.description.substring(0, 120) : ""} />
+            </Helmet>
 
-                /* FIX BARRE DE COMMANDE & CONTENU MANGÉ */
-                @media (max-width: 992px) {
-                    .details-container-res { 
-                        width: 95% !important; 
-                        padding: 100px 15px 220px !important; 
-                        margin: 0 auto !important;
-                        overflow-x: hidden !important;
+            <div style={styles.pageContainer} className="product-details-res">
+                <style>
+                    {`
+                    .add-btn:hover { background-color: #E9E3E3 !important; color: #373735 !important; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+                    .qty-btn:hover { color: #C9A24D !important; transform: scale(1.2); }
+                    .product-image-card:hover img { transform: scale(1.05); }
+                    input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+                    
+                    /* --- CORRECTIF RESPONSIVE --- */
+                    @media (max-width: 920px) {
+                        .product-flex { 
+                            flex-direction: column !important; 
+                            align-items: center !important; 
+                            gap: 40px !important; 
+                            padding-top: 20px !important;
+                        }
+                        .product-image-section { 
+                            width: 100% !important; 
+                            max-width: 600px !important; 
+                        }
+                        .product-info-section { 
+                            width: 100% !important; 
+                            padding: 0 20px !important; 
+                        }
                     }
-                    .similar-grid-res { 
-                        display: flex !important; 
-                        overflow-x: auto !important; 
-                        gap: 15px !important; 
-                        padding: 10px 5px 20px !important;
-                        -webkit-overflow-scrolling: touch;
+                    @media (max-width: 480px) {
+                        .product-details-res { padding-top: 100px !important; }
+                        .product-name { font-size: 2.2rem !important; }
+                        .action-buttons { flex-direction: column !important; gap: 15px !important; }
+                        .qty-selector { 
+                            width: 100% !important; 
+                            justify-content: space-between !important; 
+                            box-sizing: border-box !important;
+                        }
+                        .add-btn { width: 100% !important; }
+                        .price { font-size: 2.2rem !important; }
                     }
-                    .sim-card-res { width: 260px !important; }
-                }
+                    `}
+                </style>
 
-                @media (max-width: 768px) {
-                    .title-res { font-size: 1.8rem !important; margin-top: 15px !important; }
-                    .footer-res { 
-                        flex-direction: column !important; 
-                        height: auto !important; 
-                        padding: 15px 20px !important; 
-                        gap: 10px !important;
-                    }
-                    .actions-res { 
-                        width: 100% !important; 
-                        justify-content: space-between !important;
-                        gap: 10px !important;
-                    }
-                    .qty-selector-res { flex: 0 0 110px !important; padding: 0 10px !important; }
-                    .cart-btn-res { flex: 1 !important; padding: 0 10px !important; font-size: 0.85rem !important; }
-                }
-                `}
-            </style>
+                <div style={styles.productFlex} className="product-flex">
+                    <div style={styles.imageSection} className="product-image-section">
+                        <div style={styles.imageCard} className="product-image-card">
+                            <img src={`${apiUrl}/images/${produit.image}`} alt={produit.nom_produit} style={styles.mainImg} />
+                            {isOutOfStock && <div style={styles.outOfStockBadge}>RUPTURE</div>}
 
-            <div style={styles.container} className="details-container-res">
-                <FiX style={styles.closeBtn} className="close-btn" onClick={() => navigate(-1)} />
-
-                <div style={styles.imageWrapper}>
-                    {isOutOfStock && <div style={styles.ruptureBadge}>RUPTURE DE STOCK</div>}
-                    <img src={`${apiUrl}/images/${produit.image}`} alt={produit.nom_produit} style={{...styles.mainImage, opacity: isOutOfStock ? 0.5 : 1}} />
-                </div>
-
-                <div style={styles.content}>
-                    <h1 style={styles.title} className="title-res">{produit.nom_produit}</h1>
-                    <div style={{textAlign: 'center', marginBottom: '20px'}}>
-                        <span style={{
-                            padding: '5px 15px', borderRadius: '20px', backgroundColor: isOutOfStock ? '#E63946' : '#2A9D8F',
-                            color: '#FFF', fontWeight: 'bold', fontSize: '14px'
-                        }}>
-                            {isOutOfStock ? "Indisponible" : `En stock : ${produit.stock}`}
-                        </span>
-                    </div>
-
-                    <hr style={styles.divider} />
-                    <p style={styles.description}>{produit.description}</p>
-
-                    <div style={styles.infoSection}>
-                        <h3 style={styles.subTitle}>Origines</h3>
-                        <div style={styles.originBox}>
-                            <FiMapPin size={24} color="#C9A24D" />
-                            <span style={styles.originText}>{produit.origine || "Sélection Cafthé"}</span>
+                            {!isOutOfStock && (
+                                <div style={{...styles.stockBadge, backgroundColor: produit.stock < 5 ? "#E63946" : "#2A9D8F"}}>
+                                    Stock : {produit.stock} unités
+                                </div>
+                            )}
                         </div>
                     </div>
 
-                    <hr style={styles.divider} />
+                    <div style={styles.infoSection} className="product-info-section">
+                        <div style={styles.headerMeta}>
+                            <span style={styles.categoryBadge}>{produit.categorie}</span>
+                            {produit.origine && <span style={styles.originTag}>— Origine : {produit.origine}</span>}
+                        </div>
 
-                    <h3 style={styles.subTitle}>Produits similaires</h3>
-                    <div style={styles.similarGrid} className="similar-grid-res">
-                        {similaires.map((sim) => {
-                            const simOut = sim.stock <= 0;
-                            return (
-                                <div key={sim.numero_produit} style={styles.similarCard} className={`sim-card sim-card-res ${simOut ? "sim-card-out" : ""}`}>
-                                    <div style={styles.similarImgBg} onClick={() => { navigate(`/produit/${sim.numero_produit}`); window.scrollTo(0,0); }}>
-                                        <img src={`${apiUrl}/images/${sim.image}`} alt={sim.nom_produit} style={styles.similarImg} />
-                                    </div>
-                                    <div style={styles.similarInfo}>
-                                        <p style={styles.similarName}>{sim.nom_produit}</p>
-                                        <div style={styles.simActionRow}>
-                                            <span style={{color: '#C9A24D', fontWeight: 'bold'}}>{Number(sim.prix_ttc).toFixed(2)} €</span>
-                                            {!simOut && (
-                                                <div style={styles.plusCircle} className="plus-circle" onClick={() => addToCart({ ...sim, id_produit: sim.numero_produit }, quantitesSimilaires[sim.numero_produit])}>
-                                                    <FiShoppingBag size={16} />
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
+                        <h1 style={styles.title} className="product-name">{produit.nom_produit}</h1>
+                        <p style={styles.description}>{produit.description}</p>
 
-                <div style={styles.stickyFooter} className="footer-res">
-                    <div style={styles.priceContainer}>
-                        <p style={{color: '#E9E3E3', fontSize: '12px', margin: 0, opacity: 0.6}}>Prix TTC</p>
-                        <span style={styles.priceValue}>{Number(produit.prix_ttc).toFixed(2)} €</span>
-                    </div>
-                    <div style={styles.actions} className="actions-res">
+                        <div style={styles.priceContainer}>
+                            <span style={styles.price} className="price">{Number(produit.prix_ttc).toFixed(2)} €</span>
+                            <span style={styles.taxLabel}>TVA incluse</span>
+                        </div>
+
                         {!isOutOfStock ? (
-                            <>
-                                <div style={styles.qtySelector} className="qty-selector-res">
-                                    <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(-1)}><FiMinus /></button>
+                            <div style={styles.actionArea} className="action-buttons">
+                                <div style={styles.qtySelector} className="qty-selector">
+                                    <button style={styles.qtyBtn} className="qty-btn" onClick={() => quantity > 1 && setQuantity(quantity - 1)}><FiMinus /></button>
+
                                     <input
-                                        type="text"
-                                        className="qty-input-main"
-                                        value={quantite}
-                                        onChange={(e) => handleMainInputChange(e.target.value)}
-                                        onBlur={() => { if(!quantite) setQuantite(1) }}
+                                        type="number"
+                                        value={quantity}
+                                        onChange={handleInputChange}
+                                        style={styles.qtyInput}
                                     />
-                                    <button style={styles.qtyBtn} onClick={() => handleMainQtyChange(1)}><FiPlus /></button>
+
+                                    <button style={styles.qtyBtn} className="qty-btn" onClick={() => quantity < produit.stock && setQuantity(quantity + 1)}><FiPlus /></button>
                                 </div>
-                                <button
-                                    className="cart-btn-premium cart-btn-res"
-                                    style={{ ...styles.cartBtn, backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3" }}
-                                    onMouseEnter={() => setIsHovered(true)}
-                                    onMouseLeave={() => setIsHovered(false)}
-                                    onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantite)}
-                                >
-                                    <FiShoppingBag size={20} />
-                                    <span style={{marginLeft: '10px'}}>AJOUTER</span>
+                                <button style={styles.addBtn} className="add-btn" onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantity)}>
+                                    <FiShoppingBag /> Ajouter au panier
                                 </button>
-                            </>
+                            </div>
                         ) : (
-                            <button disabled style={styles.cartBtn}>INDISPONIBLE</button>
+                            <div style={styles.outOfStockMsg}>Actuellement indisponible</div>
                         )}
+
+                        <div style={styles.benefits}>
+                            <div style={styles.benefitItem}><FiTruck style={styles.icon} /> Livraison offerte dès 45€</div>
+                            <div style={styles.benefitItem}><FiShield style={styles.icon} /> Paiement 100% sécurisé</div>
+                            <div style={styles.benefitItem}><FiRotateCcw style={styles.icon} /> Retours sous 14 jours</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
 const styles = {
-    overlay: { width: "100%", backgroundColor: "#1a1a1a", minHeight: "100vh", padding: "120px 0", display: "flex", justifyContent: "center" },
-    container: { width: "950px", backgroundColor: "#E9E3E3", borderRadius: "25px", padding: "60px 80px 180px", position: "relative", overflow: 'hidden', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' },
-    closeBtn: { position: "absolute", right: "30px", top: "30px", fontSize: "35px", cursor: "pointer", color: "#373735", zIndex: 10 },
-    imageWrapper: { width: "100%", display: "flex", justifyContent: "center", marginBottom: "40px", position: 'relative' },
-    ruptureBadge: { position: 'absolute', top: '50%', background: '#E63946', color: '#FFF', padding: '10px 30px', fontWeight: '900', transform: 'rotate(-10deg)', zIndex: 5, border: '2px solid white' },
-    mainImage: { width: "100%", maxWidth: "380px", objectFit: "contain", transition: '0.3s' },
-    content: { width: "100%" },
-    title: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", textAlign: "center", marginBottom: '10px' },
-    divider: { border: "none", borderTop: "1.5px solid #373735", opacity: 0.15, margin: "30px 0" },
-    description: { fontSize: "1.15rem", color: "#373735", textAlign: "justify", lineHeight: '1.7', opacity: 0.9 },
-    subTitle: { fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#373735", marginBottom: "25px", fontWeight: 'bold' },
-    infoSection: { marginBottom: "35px" },
-    originBox: { display: "flex", alignItems: "center", gap: "12px", background: 'rgba(55,55,53,0.05)', padding: '15px', borderRadius: '15px', width: 'fit-content' },
-    originText: { fontSize: "1.25rem", color: "#373735", fontWeight: '500' },
-    similarGrid: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "20px" },
-    similarCard: { backgroundColor: "#373735", borderRadius: "20px", overflow: "hidden", color: "#FFF", display: "flex", flexDirection: "column" },
-    similarImgBg: { backgroundColor: "#FFF", display: "flex", justifyContent: "center", height: "180px" },
-    similarImg: { width: "100%", height: "100%", objectFit: "cover" },
-    similarInfo: { padding: "15px", flexGrow: 1, display: 'flex', flexDirection: 'column' },
-    similarName: { fontSize: "1.1rem", fontWeight: "bold", margin: "0 0 10px 0", color: '#C9A24D' },
-    simActionRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "auto" },
-    simQtyBox: { display: "flex", alignItems: "center", backgroundColor: "rgba(255,255,255,0.15)", borderRadius: "20px", padding: "4px 8px" },
-    simMiniBtn: { background: "none", border: "none", color: "#FFF", cursor: "pointer" },
-    plusCircle: { width: "38px", height: "38px", border: "1.5px solid #C9A24D", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A24D", cursor: 'pointer' },
-
-    stickyFooter: { position: "absolute", bottom: 0, left: 0, width: "100%", height: "120px", backgroundColor: "#373735", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 40px", boxSizing: "border-box" },
-    priceContainer: { display: 'flex', flexDirection: 'column' },
-    priceValue: { color: "#C9A24D", fontSize: "2.5rem", fontWeight: "900" },
-    actions: { display: "flex", gap: "15px", alignItems: "center" },
-    qtySelector: { backgroundColor: "#FFF", borderRadius: "30px", height: "55px", display: "flex", alignItems: "center", padding: "0 15px" },
-    qtyBtn: { background: "none", border: "none", fontSize: "24px", cursor: "pointer", color: '#373735', fontWeight: 'bold' },
-    cartBtn: { border: "none", borderRadius: "30px", height: "55px", padding: "0 25px", fontWeight: "900", display: "flex", alignItems: "center", cursor: "pointer", color: '#373735', fontSize: '1.1rem', letterSpacing: '0.5px' }
+    pageContainer: { backgroundColor: "#E9E3E3", minHeight: "100vh", padding: "140px 5% 80px 5%", boxSizing: "border-box" },
+    productFlex: { maxWidth: "1200px", margin: "0 auto", display: "flex", gap: "60px", alignItems: "flex-start" },
+    imageSection: { width: "50%" },
+    imageCard: { backgroundColor: "#FFF", borderRadius: "25px", padding: 0, boxShadow: "0 15px 40px rgba(0,0,0,0.08)", position: "relative", overflow: "hidden", display: 'flex', alignItems: 'center', justifyContent: 'center', aspectRatio: '1/1' },
+    mainImg: { width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.5s ease" },
+    stockBadge: { position: "absolute", bottom: "20px", right: "20px", padding: "6px 15px", borderRadius: "20px", color: "#FFF", fontSize: "0.85rem", fontWeight: "bold", zIndex: 10 },
+    outOfStockBadge: { position: "absolute", top: "20px", left: "20px", backgroundColor: "#E63946", color: "#FFF", padding: "8px 15px", borderRadius: "8px", fontWeight: "bold", zIndex: 10 },
+    infoSection: { width: "50%", display: "flex", flexDirection: "column", gap: "20px" },
+    headerMeta: { display: "flex", alignItems: "center", gap: "10px" },
+    categoryBadge: { color: "#C9A24D", fontWeight: "800", textTransform: "uppercase", letterSpacing: "1.5px", fontSize: "0.9rem" },
+    originTag: { color: "#373735", opacity: 0.6, fontSize: "0.9rem", fontWeight: "600" },
+    title: { fontFamily: "'Playfair Display', serif", fontSize: "3rem", color: "#373735", margin: 0, fontWeight: "800", lineHeight: "1.1" },
+    description: { fontSize: "1.1rem", color: "#373735", lineHeight: "1.7", opacity: 0.9, margin: 0 },
+    priceContainer: { display: "flex", alignItems: "baseline", gap: "12px", marginTop: "10px" },
+    price: { fontSize: "2.8rem", fontWeight: "900", color: "#373735" },
+    taxLabel: { color: "#888", fontSize: "0.9rem" },
+    actionArea: { display: "flex", gap: "20px", marginTop: "15px" },
+    qtySelector: { display: "flex", alignItems: "center", backgroundColor: "#FFF", borderRadius: "30px", padding: "8px 15px", border: "1.5px solid #373735" },
+    qtyBtn: { background: "none", border: "none", cursor: "pointer", padding: "5px", color: "#373735", display: "flex", alignItems: "center", transition: "0.3s" },
+    qtyInput: { border: "none", background: "none", width: "50px", textAlign: "center", fontSize: "1.2rem", fontWeight: "900", color: "#373735", outline: "none" },
+    addBtn: { flexGrow: 1, backgroundColor: "#373735", color: "#C9A24D", border: "none", borderRadius: "30px", padding: "18px 30px", fontSize: "1.1rem", fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "12px", transition: "all 0.3s ease" },
+    outOfStockMsg: { color: "#E63946", fontWeight: "bold", fontSize: "1.2rem", padding: "20px", border: "2px solid #E63946", borderRadius: "15px", textAlign: "center", backgroundColor: "rgba(230, 57, 70, 0.05)" },
+    benefits: { marginTop: "15px", display: "flex", flexDirection: "column", gap: "15px", borderTop: "1px solid rgba(55,55,53,0.1)", paddingTop: "25px" },
+    benefitItem: { display: "flex", alignItems: "center", gap: "12px", color: "#373735", fontWeight: "600", fontSize: "1rem" },
+    icon: { color: "#C9A24D", fontSize: "1.2rem" },
+    loading: { textAlign: 'center', padding: '100px', fontSize: '1.8rem', fontFamily: 'Playfair Display', color: '#373735' },
+    error: { textAlign: 'center', padding: '100px', color: '#E63946', fontSize: '1.2rem', fontWeight: 'bold' }
 };
 
 export default ProductDetails;

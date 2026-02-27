@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
 import { useCard } from "../context/CardContext.jsx";
+import { Helmet } from 'react-helmet-async';
 
 const Catalogue = () => {
     const [produits, setProduits] = useState([]);
@@ -137,79 +138,85 @@ const Catalogue = () => {
     if (loading) return <div style={styles.loading}>Chargement...</div>;
 
     return (
-        <div style={{ backgroundColor: "#E9E3E3", minHeight: "100vh", paddingTop: "80px", paddingBottom: "100px" }}>
-            <style>
-                {`
-                .catalogue-card { border: 2px solid #373735; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-                .catalogue-card:hover { transform: translateY(-12px); border-color: #C9A24D; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
-                .catalogue-card:hover .main-img { transform: scale(1.1); transition: 0.6s ease; }
-                .card-out-of-stock { opacity: 0.7; filter: grayscale(0.8); pointer-events: none; }
-                
-                .filter-bubble { transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-                
-                /* --- HOVERS DESKTOP RÉPARÉS --- */
-                .filter-bubble .img-container { transition: all 0.4s ease; border: 3px solid #C9A24D; }
-                .filter-bubble:hover .img-container { transform: scale(1.1); box-shadow: 0 8px 25px rgba(201, 162, 77, 0.3); border-color: #373735 !important; }
-                
-                .bubble-active .img-container { background-color: #C9A24D !important; border-color: #373735 !important; }
-                .bubble-active span { color: #C9A24D; font-weight: 800; }
+        <>
+            <Helmet>
+                <title>Boutique en Ligne | Nos Cafés, Thés et Accessoires - CafThé</title>
+                <meta name="description" content="Explorez notre sélection de cafés d'origine, thés verts, noirs et infusions bio. Trouvez l'accessoire parfait pour votre rituel café." />
+            </Helmet>
 
-                .add-btn-cat { transition: all 0.3s ease; }
-                .add-btn-cat:hover { background-color: #FFF !important; transform: scale(1.15) rotate(-5deg); color: #373735 !important; }
-                .view-more-btn:hover { background-color: #373735 !important; color: #C9A24D !important; transform: translateY(-3px); }
-                .qty-hover:hover { color: #C9A24D !important; transform: scale(1.2); }
+            <div style={{ backgroundColor: "#E9E3E3", minHeight: "100vh", paddingTop: "80px", paddingBottom: "100px" }}>
+                <style>
+                    {`
+                    .catalogue-card { border: 2px solid #373735; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+                    .catalogue-card:hover { transform: translateY(-12px); border-color: #C9A24D; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
+                    .catalogue-card:hover .main-img { transform: scale(1.1); transition: 0.6s ease; }
+                    .card-out-of-stock { opacity: 0.7; filter: grayscale(0.8); pointer-events: none; }
+                    
+                    .filter-bubble { transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+                    
+                    /* --- HOVERS DESKTOP RÉPARÉS --- */
+                    .filter-bubble .img-container { transition: all 0.4s ease; border: 3px solid #C9A24D; }
+                    .filter-bubble:hover .img-container { transform: scale(1.1); box-shadow: 0 8px 25px rgba(201, 162, 77, 0.3); border-color: #373735 !important; }
+                    
+                    .bubble-active .img-container { background-color: #C9A24D !important; border-color: #373735 !important; }
+                    .bubble-active span { color: #C9A24D; font-weight: 800; }
 
-                @media (max-width: 768px) {
-                    .bubble-group-mobile { 
-                        display: grid !important; 
-                        grid-template-columns: repeat(3, 1fr) !important; 
-                        width: 95% !important;
-                        margin: 0 auto !important;
-                        gap: 10px !important; 
-                        justify-items: center !important; 
+                    .add-btn-cat { transition: all 0.3s ease; }
+                    .add-btn-cat:hover { background-color: #FFF !important; transform: scale(1.15) rotate(-5deg); color: #373735 !important; }
+                    .view-more-btn:hover { background-color: #373735 !important; color: #C9A24D !important; transform: translateY(-3px); }
+                    .qty-hover:hover { color: #C9A24D !important; transform: scale(1.2); }
+
+                    @media (max-width: 768px) {
+                        .bubble-group-mobile { 
+                            display: grid !important; 
+                            grid-template-columns: repeat(3, 1fr) !important; 
+                            width: 95% !important;
+                            margin: 0 auto !important;
+                            gap: 10px !important; 
+                            justify-items: center !important; 
+                        }
+                        .img-container { width: 80px !important; height: 80px !important; }
+                        .bubble-label-mobile { font-size: 0.85rem !important; margin-top: 5px !important; text-align: center !important; }
+                        .responsive-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; padding: 0 10px !important; }
+                        .catalogue-card { height: 480px !important; border-radius: 15px !important; }
+                        .section-title-mobile { font-size: 1.4rem !important; text-align: center; margin-left: 0 !important; margin-bottom: 25px !important; }
                     }
-                    .img-container { width: 80px !important; height: 80px !important; }
-                    .bubble-label-mobile { font-size: 0.85rem !important; margin-top: 5px !important; text-align: center !important; }
-                    .responsive-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; padding: 0 10px !important; }
-                    .catalogue-card { height: 480px !important; border-radius: 15px !important; }
-                    .section-title-mobile { font-size: 1.4rem !important; text-align: center; margin-left: 0 !important; margin-bottom: 25px !important; }
-                }
 
-                @media (max-width: 480px) {
-                    .img-container { width: 70px !important; height: 70px !important; }
-                    .responsive-grid { grid-template-columns: 1fr !important; padding: 0 20px !important; }
-                    .catalogue-card { height: 520px !important; }
-                }
-                `}
-            </style>
+                    @media (max-width: 480px) {
+                        .img-container { width: 70px !important; height: 70px !important; }
+                        .responsive-grid { grid-template-columns: 1fr !important; padding: 0 20px !important; }
+                        .catalogue-card { height: 520px !important; }
+                    }
+                    `}
+                </style>
 
-            <div style={styles.filterArea}>
-                <h3 style={styles.filterTitle}>Notre Univers</h3>
-                <div style={styles.bubbleGroup} className="bubble-group-mobile">
-                    {[
-                        { label: "Café", img: "/cafe_icon.webp" },
-                        { label: "Thé", img: "/the_icon.webp" },
-                        { label: "Accessoire", img: "/accessoires_icon.webp" }
-                    ].map(cat => (
-                        <div key={cat.label} className={`filter-bubble ${filter === cat.label ? "bubble-active" : ""}`} onClick={() => {
-                            setFilter(filter === cat.label ? "Tous" : cat.label);
-                            navigate('/catalogue', { replace: true });
-                        }}>
-                            <div className="img-container" style={styles.bubbleImgContainer}>
-                                <img src={cat.img} style={styles.bubbleImg} alt={cat.label} />
+                <div style={styles.filterArea}>
+                    <h3 style={styles.filterTitle}>Notre Univers</h3>
+                    <div style={styles.bubbleGroup} className="bubble-group-mobile">
+                        {[
+                            { label: "Café", img: "/cafe_icon.webp" },
+                            { label: "Thé", img: "/the_icon.webp" },
+                            { label: "Accessoire", img: "/accessoires_icon.webp" }
+                        ].map(cat => (
+                            <div key={cat.label} className={`filter-bubble ${filter === cat.label ? "bubble-active" : ""}`} onClick={() => {
+                                setFilter(filter === cat.label ? "Tous" : cat.label);
+                                navigate('/catalogue', { replace: true });
+                            }}>
+                                <div className="img-container" style={styles.bubbleImgContainer}>
+                                    <img src={cat.img} style={styles.bubbleImg} alt={cat.label} />
+                                </div>
+                                <span style={{...styles.bubbleLabel, marginTop: '15px'}} className="bubble-label-mobile">{cat.label}s</span>
                             </div>
-                            {/* AJOUT D'UNE MARGE ICI POUR ÉLOIGNER LE TEXTE DE LA BULLE */}
-                            <span style={{...styles.bubbleLabel, marginTop: '15px'}} className="bubble-label-mobile">{cat.label}s</span>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
 
-            {renderSection("Nos offres et promotions", p => p.numero_promotion && p.numero_promotion !== "NO_PROMO", "promo")}
-            {renderSection("Nos cafés", p => p.categorie === "Café", "cafe")}
-            {renderSection("Nos thés", p => p.categorie === "Thé", "the")}
-            {renderSection("Nos accessoires", p => p.categorie === "Accessoire", "accessoire")}
-        </div>
+                {renderSection("Nos offres et promotions", p => p.numero_promotion && p.numero_promotion !== "NO_PROMO", "promo")}
+                {renderSection("Nos cafés", p => p.categorie === "Café", "cafe")}
+                {renderSection("Nos thés", p => p.categorie === "Thé", "the")}
+                {renderSection("Nos accessoires", p => p.categorie === "Accessoire", "accessoire")}
+            </div>
+        </>
     );
 };
 
@@ -234,7 +241,7 @@ const styles = {
     outOfStockMsg: { width: "100%", textAlign: "center", color: "#E63946", fontWeight: "900" },
     viewMoreContainer: { width: "100%", display: "flex", justifyContent: "center", marginTop: "30px" },
     viewMoreBtn: { display: "flex", alignItems: "center", gap: "10px", backgroundColor: "transparent", border: "2px solid #373735", borderRadius: "30px", padding: "12px 30px", fontWeight: "bold", cursor: "pointer", fontFamily: 'Playfair Display', color: '#373735' },
-    filterArea: { display: "flex", flexDirection: "column", alignItems: "center", gap: "15px", marginBottom: "50px" }, // Gap réduit pour rapprocher le titre
+    filterArea: { display: "flex", flexDirection: "column", alignItems: "center", gap: "15px", marginBottom: "50px" },
     filterTitle: { fontFamily: "'Playfair Display', serif", fontSize: "2.2rem", color: "#373735", fontWeight: '900' },
     bubbleGroup: { display: "flex", gap: "45px", justifyContent: "center" },
     bubbleImgContainer: { width: "125px", height: "125px", borderRadius: "50%", backgroundColor: "#FFF", border: "3px solid #C9A24D", overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' },
