@@ -18,6 +18,15 @@ const Catalogue = () => {
 
     const queryParams = new URLSearchParams(location.search);
     const searchTerm = queryParams.get("search") || "";
+    const filterParam = queryParams.get("filter");
+
+    useEffect(() => {
+        if (filterParam) {
+            setFilter(filterParam);
+        } else if (!searchTerm) {
+            setFilter("Tous");
+        }
+    }, [filterParam, searchTerm]);
 
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -54,6 +63,9 @@ const Catalogue = () => {
         const list = produits.filter(item => {
             const matchesCategory = filterFn(item);
             const matchesSearch = item.nom_produit.toLowerCase().includes(searchTerm.toLowerCase());
+            if (filter !== "Tous") {
+                return matchesCategory && matchesSearch && item.categorie === filter;
+            }
             return matchesCategory && matchesSearch;
         });
 
@@ -134,7 +146,11 @@ const Catalogue = () => {
                 .card-out-of-stock { opacity: 0.7; filter: grayscale(0.8); pointer-events: none; }
                 
                 .filter-bubble { transition: all 0.3s ease; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-                .filter-bubble:hover .img-container { transform: scale(1.1); box-shadow: 0 8px 20px rgba(201, 162, 77, 0.3); border-color: #373735 !important; }
+                
+                /* --- HOVERS DESKTOP RÉPARÉS --- */
+                .filter-bubble .img-container { transition: all 0.4s ease; border: 3px solid #C9A24D; }
+                .filter-bubble:hover .img-container { transform: scale(1.1); box-shadow: 0 8px 25px rgba(201, 162, 77, 0.3); border-color: #373735 !important; }
+                
                 .bubble-active .img-container { background-color: #C9A24D !important; border-color: #373735 !important; }
                 .bubble-active span { color: #C9A24D; font-weight: 800; }
 
@@ -144,7 +160,6 @@ const Catalogue = () => {
                 .qty-hover:hover { color: #C9A24D !important; transform: scale(1.2); }
 
                 @media (max-width: 768px) {
-                    /* --- FIX CHEVAUCHEMENT BULLES --- */
                     .bubble-group-mobile { 
                         display: grid !important; 
                         grid-template-columns: repeat(3, 1fr) !important; 
@@ -153,24 +168,10 @@ const Catalogue = () => {
                         gap: 10px !important; 
                         justify-items: center !important; 
                     }
-                    .img-container { 
-                        width: 80px !important; 
-                        height: 80px !important; 
-                    }
-                    .bubble-label-mobile { 
-                        font-size: 0.85rem !important; 
-                        margin-top: 5px !important; 
-                        text-align: center !important; 
-                    }
-                    
-                    /* --- FIX CARDS MANGÉES --- */
+                    .img-container { width: 80px !important; height: 80px !important; }
+                    .bubble-label-mobile { font-size: 0.85rem !important; margin-top: 5px !important; text-align: center !important; }
                     .responsive-grid { grid-template-columns: 1fr 1fr !important; gap: 12px !important; padding: 0 10px !important; }
                     .catalogue-card { height: 480px !important; border-radius: 15px !important; }
-                    .info-container-mobile { padding: 10px !important; gap: 4px !important; }
-                    .product-name-mobile { font-size: 1rem !important; height: auto !important; max-height: 44px; margin-bottom: 2px !important; line-height: 1.2 !important; }
-                    .product-desc-mobile { font-size: 0.8rem !important; height: 38px !important; line-height: 1.3 !important; }
-                    .price-mobile { font-size: 1.25rem !important; margin-top: 5px !important; }
-                    .quick-action-mobile { padding: 8px !important; }
                     .section-title-mobile { font-size: 1.4rem !important; text-align: center; margin-left: 0 !important; margin-bottom: 25px !important; }
                 }
 
@@ -190,11 +191,15 @@ const Catalogue = () => {
                         { label: "Thé", img: "/the_icon.webp" },
                         { label: "Accessoire", img: "/accessoires_icon.webp" }
                     ].map(cat => (
-                        <div key={cat.label} className={`filter-bubble ${filter === cat.label ? "bubble-active" : ""}`} onClick={() => setFilter(filter === cat.label ? "Tous" : cat.label)}>
+                        <div key={cat.label} className={`filter-bubble ${filter === cat.label ? "bubble-active" : ""}`} onClick={() => {
+                            setFilter(filter === cat.label ? "Tous" : cat.label);
+                            navigate('/catalogue', { replace: true });
+                        }}>
                             <div className="img-container" style={styles.bubbleImgContainer}>
                                 <img src={cat.img} style={styles.bubbleImg} alt={cat.label} />
                             </div>
-                            <span style={styles.bubbleLabel} className="bubble-label-mobile">{cat.label}s</span>
+                            {/* AJOUT D'UNE MARGE ICI POUR ÉLOIGNER LE TEXTE DE LA BULLE */}
+                            <span style={{...styles.bubbleLabel, marginTop: '15px'}} className="bubble-label-mobile">{cat.label}s</span>
                         </div>
                     ))}
                 </div>
@@ -229,7 +234,7 @@ const styles = {
     outOfStockMsg: { width: "100%", textAlign: "center", color: "#E63946", fontWeight: "900" },
     viewMoreContainer: { width: "100%", display: "flex", justifyContent: "center", marginTop: "30px" },
     viewMoreBtn: { display: "flex", alignItems: "center", gap: "10px", backgroundColor: "transparent", border: "2px solid #373735", borderRadius: "30px", padding: "12px 30px", fontWeight: "bold", cursor: "pointer", fontFamily: 'Playfair Display', color: '#373735' },
-    filterArea: { display: "flex", flexDirection: "column", alignItems: "center", gap: "30px", marginBottom: "50px" },
+    filterArea: { display: "flex", flexDirection: "column", alignItems: "center", gap: "15px", marginBottom: "50px" }, // Gap réduit pour rapprocher le titre
     filterTitle: { fontFamily: "'Playfair Display', serif", fontSize: "2.2rem", color: "#373735", fontWeight: '900' },
     bubbleGroup: { display: "flex", gap: "45px", justifyContent: "center" },
     bubbleImgContainer: { width: "125px", height: "125px", borderRadius: "50%", backgroundColor: "#FFF", border: "3px solid #C9A24D", overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' },
