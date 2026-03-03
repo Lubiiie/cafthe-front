@@ -58,28 +58,48 @@ const PlanSite = () => {
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="plansite-subtitle">Navigation Principale</h2>
                             <ul style={styles.list}>
-                                <li style={styles.listItem}><Link to="/" style={styles.link} className="plansite-link plansite-link-text">Accueil</Link></li>
-                                <li style={styles.listItem}><Link to="/panier" style={styles.link} className="plansite-link plansite-link-text">Votre Panier</Link></li>
-                                <li style={styles.listItem}><Link to="/login" style={styles.link} className="plansite-link plansite-link-text">Connexion / Inscription</Link></li>
+                                <li style={styles.listItem}>
+                                    <Link to="/" style={styles.link} className="plansite-link plansite-link-text" aria-label="Aller à la page d'accueil">Accueil</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/panier" style={styles.link} className="plansite-link plansite-link-text" aria-label="Voir mon panier">Votre Panier</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/login" style={styles.link} className="plansite-link plansite-link-text" aria-label="Se connecter ou s'inscrire">Connexion / Inscription</Link>
+                                </li>
                             </ul>
                         </section>
 
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="plansite-subtitle">Espace Client</h2>
                             <ul style={styles.list}>
-                                <li style={styles.listItem}><Link to="/compte" style={styles.link} className="plansite-link plansite-link-text">Mon Compte</Link></li>
-                                <li style={styles.listItem}><Link to="/compte" style={styles.link} className="plansite-link plansite-link-text">Historique des commandes</Link></li>
-                                <li style={styles.listItem}><Link to="/compte" style={styles.link} className="plansite-link plansite-link-text">Gestion des informations personnelles</Link></li>
+                                <li style={styles.listItem}>
+                                    <Link to="/compte" style={styles.link} className="plansite-link plansite-link-text" aria-label="Accéder à mon compte">Mon Compte</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/compte" style={styles.link} className="plansite-link plansite-link-text" aria-label="Consulter l'historique de mes commandes">Historique des commandes</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/compte" style={styles.link} className="plansite-link plansite-link-text" aria-label="Gérer mes informations personnelles">Gestion des informations personnelles</Link>
+                                </li>
                             </ul>
                         </section>
 
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="plansite-subtitle">Informations Légales</h2>
                             <ul style={styles.list}>
-                                <li style={styles.listItem}><Link to="/mentions-legales" style={styles.link} className="plansite-link plansite-link-text">Mentions Légales</Link></li>
-                                <li style={styles.listItem}><Link to="/politique-confidentialite" style={styles.link} className="plansite-link plansite-link-text">Politique de Confidentialité</Link></li>
-                                <li style={styles.listItem}><Link to="/cgv" style={styles.link} className="plansite-link plansite-link-text">Conditions Générales de Vente (CGV)</Link></li>
-                                <li style={styles.listItem}><Link to="/plan-site" style={styles.link} className="plansite-link plansite-link-text">Plan du site</Link></li>
+                                <li style={styles.listItem}>
+                                    <Link to="/mentions-legales" style={styles.link} className="plansite-link plansite-link-text" aria-label="Consulter les mentions légales">Mentions Légales</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/politique-confidentialite" style={styles.link} className="plansite-link plansite-link-text" aria-label="Lire la politique de confidentialité">Politique de Confidentialité</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/cgv" style={styles.link} className="plansite-link plansite-link-text" aria-label="Voir les conditions générales de vente">Conditions Générales de Vente (CGV)</Link>
+                                </li>
+                                <li style={styles.listItem}>
+                                    <Link to="/plan-site" style={styles.link} className="plansite-link plansite-link-text" aria-label="Consulter le plan du site">Plan du site</Link>
+                                </li>
                             </ul>
                         </section>
                     </div>

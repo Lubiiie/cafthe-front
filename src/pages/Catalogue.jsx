@@ -119,11 +119,30 @@ const Catalogue = () => {
                                     {!isOutOfStock ? (
                                         <>
                                             <div style={styles.miniQtySelector}>
-                                                <button style={styles.miniQtyBtn} className="qty-hover" onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}><FiMinus/></button>
+                                                <button
+                                                    style={styles.miniQtyBtn}
+                                                    className="qty-hover"
+                                                    aria-label="Diminuer la quantité"
+                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}
+                                                >
+                                                    <FiMinus/>
+                                                </button>
                                                 <span style={styles.miniQtyVal}>{currentQty}</span>
-                                                <button style={styles.miniQtyBtn} className="qty-hover" onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}><FiPlus/></button>
+                                                <button
+                                                    style={styles.miniQtyBtn}
+                                                    className="qty-hover"
+                                                    aria-label="Augmenter la quantité"
+                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}
+                                                >
+                                                    <FiPlus/>
+                                                </button>
                                             </div>
-                                            <button className="add-btn-cat" style={styles.addToCartBtn} onClick={(e) => { e.stopPropagation(); addToCart({ ...item, id_produit: itemId }, currentQty); }}>
+                                            <button
+                                                className="add-btn-cat"
+                                                style={styles.addToCartBtn}
+                                                aria-label={`Ajouter ${item.nom_produit} au panier`}
+                                                onClick={(e) => { e.stopPropagation(); addToCart({ ...item, id_produit: itemId }, currentQty); }}
+                                            >
                                                 <FiShoppingBag size={20} />
                                             </button>
                                         </>

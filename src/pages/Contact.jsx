@@ -105,7 +105,14 @@ const Contact = () => {
                                 <div style={{ marginTop: "30px" }}>
                                     {faqData.map((item, index) => (
                                         <div key={index} style={styles.faqItem}>
-                                            <div className="faq-header" style={styles.faqHeader} onClick={() => setOpenIndex(openIndex === index ? null : index)}>
+                                            <div
+                                                className="faq-header"
+                                                style={styles.faqHeader}
+                                                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                                                role="button"
+                                                aria-expanded={openIndex === index}
+                                                aria-label={`Voir la réponse pour : ${item.q}`}
+                                            >
                                                 <span className="question-text" style={styles.questionText}>{item.q}</span>
                                                 {openIndex === index ? <FiChevronUp color="#C9A24D" /> : <FiChevronDown color="#C9A24D" />}
                                             </div>
@@ -127,9 +134,26 @@ const Contact = () => {
                             <div style={styles.textBlock} className="text-block-res">
                                 <h2 style={styles.sectionTitle} className="section-title-res">Nous écrire</h2>
                                 <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
-                                    <input type="text" placeholder="Votre nom" style={styles.input} required />
-                                    <input type="email" placeholder="Votre email" style={styles.input} required />
-                                    <textarea placeholder="Votre message" style={styles.textarea} required></textarea>
+                                    <input
+                                        type="text"
+                                        placeholder="Votre nom"
+                                        style={styles.input}
+                                        required
+                                        aria-label="Nom complet"
+                                    />
+                                    <input
+                                        type="email"
+                                        placeholder="Votre email"
+                                        style={styles.input}
+                                        required
+                                        aria-label="Adresse email"
+                                    />
+                                    <textarea
+                                        placeholder="Votre message"
+                                        style={styles.textarea}
+                                        required
+                                        aria-label="Votre message"
+                                    ></textarea>
 
                                     <div className="checkbox-container" style={styles.rgpdContainer}>
                                         <label style={styles.checkboxLabel}>
@@ -138,6 +162,7 @@ const Contact = () => {
                                                 checked={rgpdAccepted}
                                                 onChange={() => setRgpdAccepted(!rgpdAccepted)}
                                                 style={styles.checkbox}
+                                                aria-label="Accepter l'utilisation des données personnelles"
                                             />
                                             <span>
                                                 J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <Link to="/politique-confidentialite" style={styles.rgpdLink}>politique de confidentialité</Link>.
@@ -150,6 +175,7 @@ const Contact = () => {
                                         className="submit-btn"
                                         disabled={!rgpdAccepted}
                                         style={styles.submitButton}
+                                        aria-label="Envoyer le formulaire de contact"
                                     >
                                         Envoyer le message
                                     </button>

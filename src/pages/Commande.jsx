@@ -5,7 +5,6 @@ import { FiMapPin, FiShoppingBag, FiInfo, FiCheckCircle, FiChevronRight, FiTrash
 import { useNavigate, Link } from 'react-router-dom';
 
 const Commande = () => {
-    // Ajout de updateQuantity depuis ton context
     const { cart, getSubTotal, removeFromCart, updateQuantity } = useCard();
     const navigate = useNavigate();
 
@@ -157,6 +156,8 @@ const Commande = () => {
                                 onClick={() => setDeliveryMethod('mondial_relay')}
                                 onMouseEnter={() => setIsHovered('relay-card')}
                                 onMouseLeave={() => setIsHovered(null)}
+                                aria-label="Choisir la livraison en point Mondial Relay"
+                                role="button"
                             >
                                 <div style={styles.methodInfo}>
                                     <span style={styles.methodName}>Mondial Relay</span>
@@ -169,6 +170,7 @@ const Commande = () => {
                                 <button
                                     onClick={(e) => { e.stopPropagation(); initMondialRelay(); }}
                                     className="action-btn-responsive"
+                                    aria-label={selectedRelay ? "Modifier le point relais sélectionné" : "Choisir un point relais sur la carte"}
                                     style={{
                                         ...styles.actionBtn,
                                         backgroundColor: isHovered === 'btn-relay' ? '#d9b35a' : '#C9A24D',
@@ -197,6 +199,8 @@ const Commande = () => {
                                 onClick={() => setDeliveryMethod('click_collect')}
                                 onMouseEnter={() => setIsHovered('cc-card')}
                                 onMouseLeave={() => setIsHovered(null)}
+                                aria-label="Choisir le retrait gratuit à l'atelier"
+                                role="button"
                             >
                                 <div style={styles.methodInfo}>
                                     <span style={styles.methodName}>Retrait à l'Atelier</span>
@@ -227,6 +231,7 @@ const Commande = () => {
                                                 <div style={styles.qtyContainer}>
                                                     <button
                                                         onClick={() => updateQuantity(itemId, -1)}
+                                                        aria-label={`Diminuer la quantité de ${item.nom_produit}`}
                                                         style={{...styles.qtyBtn, opacity: isHovered === `minus-${itemId}` ? 0.7 : 1}}
                                                         onMouseEnter={() => setIsHovered(`minus-${itemId}`)}
                                                         onMouseLeave={() => setIsHovered(null)}
@@ -234,6 +239,7 @@ const Commande = () => {
                                                     <span style={styles.qtyVal}>{item.quantite}</span>
                                                     <button
                                                         onClick={() => updateQuantity(itemId, 1)}
+                                                        aria-label={`Augmenter la quantité de ${item.nom_produit}`}
                                                         style={{...styles.qtyBtn, opacity: isHovered === `plus-${itemId}` ? 0.7 : 1}}
                                                         onMouseEnter={() => setIsHovered(`plus-${itemId}`)}
                                                         onMouseLeave={() => setIsHovered(null)}
@@ -243,6 +249,7 @@ const Commande = () => {
                                             <div style={styles.articlePriceBlock}>
                                                 <p style={styles.articlePrice}>{(item.prix_ttc * item.quantite).toFixed(2)}€</p>
                                                 <FiTrash2
+                                                    aria-label={`Supprimer ${item.nom_produit} de la commande`}
                                                     style={{
                                                         ...styles.deleteIcon,
                                                         color: isHovered === `trash-${itemId}` ? '#ff4d4d' : '#ff6b6b',
@@ -283,7 +290,13 @@ const Commande = () => {
                                     onMouseEnter={() => setIsHovered('cgv-label')}
                                     onMouseLeave={() => setIsHovered(null)}
                                 >
-                                    <input type="checkbox" checked={cgvAccepted} onChange={() => setCgvAccepted(!cgvAccepted)} style={styles.checkbox}/>
+                                    <input
+                                        type="checkbox"
+                                        checked={cgvAccepted}
+                                        onChange={() => setCgvAccepted(!cgvAccepted)}
+                                        style={styles.checkbox}
+                                        aria-label="Accepter les conditions générales de vente"
+                                    />
                                     <span>J'accepte les <Link to="/cgv" style={styles.cgvLink}>CGV</Link></span>
                                 </label>
                             </div>

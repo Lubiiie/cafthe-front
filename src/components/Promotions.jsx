@@ -100,7 +100,12 @@ const Promotions = () => {
             <h2 style={styles.mainTitle} className="promo-main-title">Nos offres et promotions</h2>
 
             <div style={styles.sliderWrapper} className="promo-slider-wrapper">
-                <FiChevronLeft className="arrow-btn promo-arrow" style={styles.arrow} onClick={() => scroll('left')} />
+                <FiChevronLeft
+                    className="arrow-btn promo-arrow"
+                    style={styles.arrow}
+                    onClick={() => scroll('left')}
+                    aria-label="Promotions précédentes"
+                />
 
                 <div style={styles.carouselContainer} ref={scrollRef} className="hide-scrollbar">
                     {promos.map((item) => {
@@ -142,22 +147,36 @@ const Promotions = () => {
                                     {!isOutOfStock ? (
                                         <>
                                             <div style={styles.qtySelector}>
-                                                <button style={styles.qtyBtn} onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}><FiMinus/></button>
+                                                <button
+                                                    style={styles.qtyBtn}
+                                                    aria-label="Diminuer la quantité"
+                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}
+                                                >
+                                                    <FiMinus/>
+                                                </button>
                                                 <input
                                                     type="text"
                                                     style={styles.qtyInput}
                                                     value={quantities[itemId] || 1}
+                                                    aria-label="Quantité"
                                                     onClick={(e) => e.stopPropagation()}
                                                     onChange={(e) => handleInputChange(itemId, e.target.value, item.stock)}
                                                     onBlur={() => {
                                                         if (!quantities[itemId]) setQuantities(prev => ({ ...prev, [itemId]: 1 }));
                                                     }}
                                                 />
-                                                <button style={styles.qtyBtn} onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}><FiPlus/></button>
+                                                <button
+                                                    style={styles.qtyBtn}
+                                                    aria-label="Augmenter la quantité"
+                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}
+                                                >
+                                                    <FiPlus/>
+                                                </button>
                                             </div>
                                             <button
                                                 className="add-btn-promo"
                                                 style={styles.addToCart}
+                                                aria-label={`Ajouter ${item.nom_produit} au panier`}
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     addToCart({ ...item, id_produit: itemId }, currentQty);
@@ -177,7 +196,12 @@ const Promotions = () => {
                     })}
                 </div>
 
-                <FiChevronRight className="arrow-btn promo-arrow" style={styles.arrow} onClick={() => scroll('right')} />
+                <FiChevronRight
+                    className="arrow-btn promo-arrow"
+                    style={styles.arrow}
+                    onClick={() => scroll('right')}
+                    aria-label="Promotions suivantes"
+                />
             </div>
         </section>
     );

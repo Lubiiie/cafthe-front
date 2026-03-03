@@ -39,7 +39,6 @@ const Panier = () => {
                     .custom-scroll::-webkit-scrollbar-thumb { background: #C9A24D; border-radius: 10px; }
 
                     @media (max-width: 860px) {
-                        /* AJOUT DU PADDING POUR DÉGAGER LE HEADER */
                         .panier-overlay-responsive {
                             padding-top: 100px !important; 
                             align-items: flex-start !important;
@@ -84,7 +83,11 @@ const Panier = () => {
                 <div style={styles.modal} className="panier-modal">
                     <div style={styles.header}>
                         <h1 style={styles.title} className="panier-title">Votre panier</h1>
-                        <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
+                        <FiX
+                            style={styles.closeIcon}
+                            onClick={() => navigate("/")}
+                            aria-label="Fermer le panier"
+                        />
                     </div>
 
                     <div style={styles.itemsContainer} className="custom-scroll">
@@ -101,12 +104,33 @@ const Panier = () => {
                                         <div style={styles.itemInfo} className="item-info-res">
                                             <h3 style={styles.itemName}>{item.nom_produit}</h3>
                                             <p style={styles.itemPrice}>{Number(item.prix_ttc).toFixed(2)} €</p>
-                                            <button onClick={() => removeFromCart(itemId)} style={styles.removeBtn} className="remove-btn">Supprimer</button>
+                                            <button
+                                                onClick={() => removeFromCart(itemId)}
+                                                style={styles.removeBtn}
+                                                className="remove-btn"
+                                                aria-label={`Supprimer ${item.nom_produit} du panier`}
+                                            >
+                                                Supprimer
+                                            </button>
                                         </div>
                                         <div style={styles.qtySelector}>
-                                            <button onClick={() => updateQuantity(itemId, -1)} style={styles.qtyOp} className="qty-op">-</button>
+                                            <button
+                                                onClick={() => updateQuantity(itemId, -1)}
+                                                style={styles.qtyOp}
+                                                className="qty-op"
+                                                aria-label="Diminuer la quantité"
+                                            >
+                                                -
+                                            </button>
                                             <span style={styles.qtyVal}>{item.quantite}</span>
-                                            <button onClick={() => updateQuantity(itemId, 1)} style={styles.qtyOp} className="qty-op">+</button>
+                                            <button
+                                                onClick={() => updateQuantity(itemId, 1)}
+                                                style={styles.qtyOp}
+                                                className="qty-op"
+                                                aria-label="Augmenter la quantité"
+                                            >
+                                                +
+                                            </button>
                                         </div>
                                     </div>
                                 );
@@ -128,6 +152,7 @@ const Panier = () => {
                             style={styles.validateBtn}
                             className="validate-btn validate-btn-res"
                             disabled={cart.length === 0}
+                            aria-label="Procéder au paiement"
                         >
                             <FiShoppingBag size={24} /> Valider
                         </button>

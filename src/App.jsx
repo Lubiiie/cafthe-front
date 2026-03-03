@@ -72,12 +72,12 @@ function App() {
                                 <Route path="cgv" element={<CGV />} />
                                 <Route path="plan-site" element={<PlanSite />} />
                                 <Route path="catalogue" element={<Catalogue />} />
-                                <Route path="/notre-histoire" element={<NotreHistoire />} />
-                                <Route path="/nos-engagements" element={<NosEngagements />} />
-                                <Route path="/contact" element={<Contact />} />
-                                <Route path="/compte" element={<CompteClient />} />
-                                <Route path="/commande" element={<Commande />} />
-                                <Route path="/merci" element={<Merci />} />
+                                <Route path="notre-histoire" element={<NotreHistoire />} />
+                                <Route path="nos-engagements" element={<NosEngagements />} />
+                                <Route path="contact" element={<Contact />} />
+                                <Route path="compte" element={<CompteClient />} />
+                                <Route path="commande" element={<Commande />} />
+                                <Route path="merci" element={<Merci />} />
                             </Route>
                         </Routes>
 
@@ -89,6 +89,8 @@ function App() {
                             cookieName="CafTheCookieConsent"
                             buttonClasses="cookie-btn-accept"
                             declineButtonClasses="cookie-btn-decline"
+                            ariaAcceptLabel="Accepter l'utilisation des cookies"
+                            ariaDeclineLabel="Refuser l'utilisation des cookies"
                             style={{
                                 backgroundColor: "#373735",
                                 color: "#E9E3E3",

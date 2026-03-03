@@ -121,18 +121,38 @@ const ProductDetails = () => {
                         {!isOutOfStock ? (
                             <div style={styles.actionArea} className="action-buttons">
                                 <div style={styles.qtySelector} className="qty-selector">
-                                    <button style={styles.qtyBtn} className="qty-btn" onClick={() => quantity > 1 && setQuantity(quantity - 1)}><FiMinus /></button>
+                                    <button
+                                        style={styles.qtyBtn}
+                                        className="qty-btn"
+                                        onClick={() => quantity > 1 && setQuantity(quantity - 1)}
+                                        aria-label="Diminuer la quantité"
+                                    >
+                                        <FiMinus />
+                                    </button>
 
                                     <input
                                         type="number"
                                         value={quantity}
                                         onChange={handleInputChange}
                                         style={styles.qtyInput}
+                                        aria-label="Quantité sélectionnée"
                                     />
 
-                                    <button style={styles.qtyBtn} className="qty-btn" onClick={() => quantity < produit.stock && setQuantity(quantity + 1)}><FiPlus /></button>
+                                    <button
+                                        style={styles.qtyBtn}
+                                        className="qty-btn"
+                                        onClick={() => quantity < produit.stock && setQuantity(quantity + 1)}
+                                        aria-label="Augmenter la quantité"
+                                    >
+                                        <FiPlus />
+                                    </button>
                                 </div>
-                                <button style={styles.addBtn} className="add-btn" onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantity)}>
+                                <button
+                                    style={styles.addBtn}
+                                    className="add-btn"
+                                    onClick={() => addToCart({ ...produit, id_produit: produit.numero_produit }, quantity)}
+                                    aria-label={`Ajouter ${produit.nom_produit} au panier`}
+                                >
                                     <FiShoppingBag /> Ajouter au panier
                                 </button>
                             </div>

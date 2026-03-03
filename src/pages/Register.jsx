@@ -109,19 +109,19 @@ const Register = () => {
                         <form onSubmit={handleSubmit} style={styles.form}>
 
                             <div style={styles.inputGroup}>
-                                <input name="prenom_client" placeholder="Prénom" style={styles.input} onChange={handleChange} />
-                                <input name="nom_client" placeholder="Nom" style={styles.input} onChange={handleChange} required />
-                                <input name="email_client" type="email" placeholder="Email" style={styles.input} onChange={handleChange} required />
-                                <input name="mdp_client" type="password" placeholder="Mot de passe" style={styles.input} onChange={handleChange} required />
+                                <input name="prenom_client" placeholder="Prénom" style={styles.input} onChange={handleChange} aria-label="Prénom" />
+                                <input name="nom_client" placeholder="Nom" style={styles.input} onChange={handleChange} required aria-label="Nom de famille" />
+                                <input name="email_client" type="email" placeholder="Email" style={styles.input} onChange={handleChange} required aria-label="Adresse email" />
+                                <input name="mdp_client" type="password" placeholder="Mot de passe" style={styles.input} onChange={handleChange} required aria-label="Mot de passe" />
                             </div>
 
                             <hr style={styles.divider} />
 
                             <div style={styles.inputGroup}>
-                                <input name="adresse_livraison" placeholder="Adresse de livraison" style={styles.input} onChange={handleChange} />
-                                <input name="ville_livraison" placeholder="Ville" style={styles.input} onChange={handleChange} />
-                                <input name="code_postal_livraison" placeholder="Code postal" style={styles.input} onChange={handleChange} maxLength="5" />
-                                <input name="telephone" placeholder="Numéro de téléphone" style={styles.input} onChange={handleChange} maxLength="10" />
+                                <input name="adresse_livraison" placeholder="Adresse de livraison" style={styles.input} onChange={handleChange} aria-label="Adresse de livraison" />
+                                <input name="ville_livraison" placeholder="Ville" style={styles.input} onChange={handleChange} aria-label="Ville" />
+                                <input name="code_postal_livraison" placeholder="Code postal" style={styles.input} onChange={handleChange} maxLength="5" aria-label="Code postal" />
+                                <input name="telephone" placeholder="Numéro de téléphone" style={styles.input} onChange={handleChange} maxLength="10" aria-label="Numéro de téléphone" />
                             </div>
 
                             <hr style={styles.divider} />
@@ -130,6 +130,7 @@ const Register = () => {
                                 <button
                                     type="submit"
                                     className="register-submit-btn"
+                                    aria-label="Créer mon compte et continuer"
                                     style={{
                                         ...styles.submitBtn,
                                         backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3",

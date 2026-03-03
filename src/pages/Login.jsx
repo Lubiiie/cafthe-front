@@ -67,7 +67,6 @@ const Login = () => {
                 <style>
                     {`
                     @media (max-width: 920px) {
-                        /* Padding ajouté ici pour décoller du header */
                         .login-overlay-responsive {
                             padding-top: 100px !important; 
                             align-items: flex-start !important;
@@ -103,13 +102,17 @@ const Login = () => {
                 <div style={styles.modal} className="login-modal">
                     <div style={styles.header} className="login-header">
                         <h1 style={styles.mainTitle} className="login-title">Se connecter</h1>
-                        <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
+                        <FiX
+                            style={styles.closeIcon}
+                            onClick={() => navigate("/")}
+                            aria-label="Fermer la fenêtre de connexion"
+                        />
                     </div>
                     <div style={styles.darkSection} className="login-dark-section">
                         {errorMsg && <p style={styles.error}>{errorMsg}</p>}
                         <form onSubmit={handleSubmit} style={styles.form}>
-                            <input type="email" placeholder="Votre email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} className="login-input" required />
-                            <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} style={styles.input} className="login-input" required />
+                            <input type="email" placeholder="Votre email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} className="login-input" required aria-label="Adresse email" />
+                            <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} style={styles.input} className="login-input" required aria-label="Mot de passe" />
                             <div style={styles.forgotRow} className="login-forgot-row">
                                 <span style={{...styles.forgotLink, color: isForgotHovered ? "#C9A24D" : "#E9E3E3"}} onMouseEnter={() => setIsForgotHovered(true)} onMouseLeave={() => setIsForgotHovered(false)} onClick={() => navigate("/forgot-password")}>Mot de passe oublié ?</span>
                                 <button type="submit" className="login-btn-res" style={{...styles.loginBtn, backgroundColor: isLoginHovered ? "#C9A24D" : "#E9E3E3", color: isLoginHovered ? "#FFF" : "#C9A24D"}} onMouseEnter={() => setIsLoginHovered(true)} onMouseLeave={() => setIsLoginHovered(false)}>Se connecter</button>

@@ -187,6 +187,7 @@ const Compte = () => {
                         onMouseEnter={() => setHoveredBtn('logout')}
                         onMouseLeave={() => setHoveredBtn(null)}
                         onClick={handleLogout}
+                        aria-label="Se déconnecter"
                         style={{
                             ...styles.logoutBtn,
                             transform: hoveredBtn === 'logout' ? 'scale(1.05)' : 'scale(1)',
@@ -205,14 +206,15 @@ const Compte = () => {
                                 onMouseEnter={() => setHoveredBtn('edit')}
                                 onMouseLeave={() => setHoveredBtn(null)}
                                 onClick={() => setIsEditing(true)}
+                                aria-label="Modifier mes informations personnelles"
                                 style={{ ...styles.editBtn, backgroundColor: hoveredBtn === 'edit' ? 'rgba(201, 162, 77, 0.1)' : 'transparent' }}
                             >
                                 <FiEdit2 /> Modifier le profil
                             </button>
                         ) : (
                             <div style={{ display: 'flex', gap: '10px' }}>
-                                <button onClick={() => setIsEditing(false)} style={styles.cancelBtn}><FiX /> Annuler</button>
-                                <button onClick={handleUpdateProfile} style={styles.saveBtn}><FiSave /> Enregistrer</button>
+                                <button onClick={() => setIsEditing(false)} style={styles.cancelBtn} aria-label="Annuler les modifications"><FiX /> Annuler</button>
+                                <button onClick={handleUpdateProfile} style={styles.saveBtn} aria-label="Enregistrer les modifications"><FiSave /> Enregistrer</button>
                             </div>
                         )}
                     </div>
@@ -221,11 +223,11 @@ const Compte = () => {
                         <div style={styles.formRow}>
                             <div style={styles.formGroup}>
                                 <label style={styles.label}>Prénom</label>
-                                {isEditing ? <input style={styles.input} value={formData.prenom} onChange={(e) => setFormData({...formData, prenom: e.target.value})} /> : <p style={styles.staticText}>{user?.prenom_client}</p>}
+                                {isEditing ? <input style={styles.input} value={formData.prenom} onChange={(e) => setFormData({...formData, prenom: e.target.value})} aria-label="Prénom" /> : <p style={styles.staticText}>{user?.prenom_client}</p>}
                             </div>
                             <div style={styles.formGroup}>
                                 <label style={styles.label}>Nom</label>
-                                {isEditing ? <input style={styles.input} value={formData.nom} onChange={(e) => setFormData({...formData, nom: e.target.value})} /> : <p style={styles.staticText}>{user?.nom_client}</p>}
+                                {isEditing ? <input style={styles.input} value={formData.nom} onChange={(e) => setFormData({...formData, nom: e.target.value})} aria-label="Nom" /> : <p style={styles.staticText}>{user?.nom_client}</p>}
                             </div>
                         </div>
                         <div style={styles.divider} />
@@ -233,10 +235,10 @@ const Compte = () => {
                             <label style={styles.label}><FiMapPin /> Adresse de livraison</label>
                             {isEditing ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                    <input style={styles.input} value={formData.adresse} onChange={(e) => setFormData({...formData, adresse: e.target.value})} placeholder="Rue" />
+                                    <input style={styles.input} value={formData.adresse} onChange={(e) => setFormData({...formData, adresse: e.target.value})} placeholder="Rue" aria-label="Adresse" />
                                     <div style={styles.formRow}>
-                                        <input style={{...styles.input, flex: 1}} value={formData.cp} onChange={(e) => setFormData({...formData, cp: e.target.value})} placeholder="CP" />
-                                        <input style={{...styles.input, flex: 2}} value={formData.ville} onChange={(e) => setFormData({...formData, ville: e.target.value})} placeholder="Ville" />
+                                        <input style={{...styles.input, flex: 1}} value={formData.cp} onChange={(e) => setFormData({...formData, cp: e.target.value})} placeholder="CP" aria-label="Code postal" />
+                                        <input style={{...styles.input, flex: 2}} value={formData.ville} onChange={(e) => setFormData({...formData, ville: e.target.value})} placeholder="Ville" aria-label="Ville" />
                                     </div>
                                 </div>
                             ) : (
@@ -256,6 +258,7 @@ const Compte = () => {
                                 onClick={() => setShowAllOrders(!showAllOrders)}
                                 style={styles.daSmallBtn}
                                 className="btn-hover"
+                                aria-label={showAllOrders ? "Afficher moins de commandes" : "Afficher toutes les commandes"}
                             >
                                 {showAllOrders ? "Voir moins" : `Voir tout (${orders.length})`}
                             </button>
@@ -275,6 +278,7 @@ const Compte = () => {
                                             onMouseEnter={() => setHoveredBtn(`reorder-${order.numero_commande}`)}
                                             onMouseLeave={() => setHoveredBtn(null)}
                                             onClick={() => handleReorder(order.numero_commande)}
+                                            aria-label={`Recommander la commande numéro ${order.numero_commande}`}
                                             style={{
                                                 ...styles.daActionBtn,
                                                 transform: hoveredBtn === `reorder-${order.numero_commande}` ? 'translateY(-2px)' : 'translateY(0)'
@@ -299,6 +303,7 @@ const Compte = () => {
                         onMouseEnter={() => setHoveredBtn('danger')}
                         onMouseLeave={() => setHoveredBtn(null)}
                         onClick={handleDeleteAccount}
+                        aria-label="Supprimer définitivement mon compte"
                         style={{
                             ...styles.dangerBtn,
                             backgroundColor: hoveredBtn === 'danger' ? '#ff6b6b' : 'transparent',

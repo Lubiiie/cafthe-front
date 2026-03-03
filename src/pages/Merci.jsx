@@ -43,7 +43,7 @@ const Merci = () => {
                         }
                         .primary-btn-mobile {
                             width: 100% !important;
-                            max-width: 280px !important; /* Empêche le bouton d'être trop large ou coupé */
+                            max-width: 280px !important;
                             padding: 15px !important;
                             font-size: 1rem !important;
                             justify-content: center !important;
@@ -86,6 +86,7 @@ const Merci = () => {
                             <Link
                                 to="/catalogue"
                                 className="primary-btn-mobile"
+                                aria-label="Retourner au catalogue de la boutique"
                                 style={{
                                     ...styles.primaryBtn,
                                     backgroundColor: isHovered === 'btn' ? '#d9b35a' : '#C9A24D'
