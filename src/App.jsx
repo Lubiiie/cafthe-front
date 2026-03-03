@@ -34,6 +34,32 @@ function App() {
             <CardProvider>
                 <PayPalScriptProvider options={initialOptions}>
                     <BrowserRouter>
+                        {/* Styles pour le survol des cookies */}
+                        <style>
+                            {`
+                            .cookie-btn-accept {
+                                transition: all 0.3s ease !important;
+                                cursor: pointer !important;
+                            }
+                            .cookie-btn-accept:hover {
+                                background-color: #E9E3E3 !important;
+                                color: #373735 !important;
+                                transform: scale(1.05);
+                                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                            }
+                            .cookie-btn-decline {
+                                transition: all 0.3s ease !important;
+                                cursor: pointer !important;
+                                opacity: 0.8;
+                            }
+                            .cookie-btn-decline:hover {
+                                opacity: 1 !important;
+                                color: #C9A24D !important;
+                                text-decoration: none !important;
+                            }
+                            `}
+                        </style>
+
                         <Routes>
                             <Route path="/" element={<Layout />}>
                                 <Route index element={<Home />} />
@@ -61,13 +87,25 @@ function App() {
                             declineButtonText="Refuser"
                             enableDeclineButton
                             cookieName="CafTheCookieConsent"
+                            buttonClasses="cookie-btn-accept"
+                            declineButtonClasses="cookie-btn-decline"
                             style={{
                                 backgroundColor: "#373735",
                                 color: "#E9E3E3",
                                 fontFamily: "'Lato', sans-serif",
                                 fontSize: "15px",
-                                padding: "10px 50px",
-                                alignItems: "center"
+                                padding: "10px 20px",
+                                alignItems: "center",
+                                boxSizing: "border-box",
+                                width: "100%",
+                                display: "flex",
+                                flexWrap: "wrap",
+                                justifyContent: "center"
+                            }}
+                            contentStyle={{
+                                margin: "15px",
+                                flex: "1 1 300px",
+                                textAlign: "center"
                             }}
                             buttonStyle={{
                                 backgroundColor: "#C9A24D",
@@ -75,18 +113,21 @@ function App() {
                                 fontSize: "14px",
                                 fontWeight: "bold",
                                 borderRadius: "25px",
-                                padding: "10px 30px"
+                                padding: "10px 30px",
+                                margin: "10px",
+                                border: "none"
                             }}
                             declineButtonStyle={{
                                 backgroundColor: "transparent",
                                 color: "#E9E3E3",
                                 fontSize: "14px",
                                 textDecoration: "underline",
-                                marginRight: "20px"
+                                margin: "10px",
+                                border: "none"
                             }}
                             expires={150}
                         >
-                            Ce site utilise des cookies pour vous garantir la meilleure expérience de dégustation. ☕
+                            Ce site utilise des cookies pour vous garantir la meilleure expérience de dégustation.
                         </CookieConsent>
                     </BrowserRouter>
                 </PayPalScriptProvider>
