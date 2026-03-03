@@ -9,9 +9,10 @@ CafThé est une solution e-commerce complète dédiée à la distribution de caf
 ### Frontend
 * **Core :** React 18 (Vite)
 * **Routing :** React Router DOM v6
-* **State Management :** Context API (Authentification JWT et persistance du panier)
-* **SEO :** React Helmet Async (Gestion dynamique des métadonnées)
-* **UI/UX :** CSS3 (Architecture responsive Mobile-First), React Icons
+* **State Management :** Context API
+* **Cookies :** React Cookie Consent (Gestion de la conformité utilisateur)
+* **SEO :** React Helmet Async
+* **Interface :** CSS3 (Responsive Mobile-First), React Icons
 
 ### Backend & Sécurité
 * **Runtime :** Node.js
