@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
     const [openIndex, setOpenIndex] = useState(null);
@@ -28,137 +29,144 @@ const Contact = () => {
     }, [location]);
 
     return (
-        <div style={styles.pageWrapper}>
-            <style>
-                {`
-                .submit-btn:hover:not(:disabled) { background-color: #E9E3E3 !important; color: #373735 !important; transform: translateY(-3px); }
-                .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
-                .faq-header:hover .question-text { color: #C9A24D; }
-                .checkbox-container:hover { opacity: 1 !important; }
-                
-                /* --- RESPONSIVE LOGIC --- */
-                @media (max-width: 992px) {
-                    .content-row-res { 
-                        flex-direction: column !important; 
-                        gap: 40px !important; 
-                    }
-                    .content-row-reverse-res { 
-                        flex-direction: column !important; 
-                        gap: 40px !important; 
-                    }
-                    .text-block-res, .image-block-res { 
-                        width: 100% !important; 
-                        min-width: unset !important; 
-                    }
-                }
+        <>
+            <Helmet>
+                <title>Contact & FAQ | CafThé - Nous sommes à votre écoute</title>
+                <meta name="description" content="Une question sur nos cafés, nos thés ou votre commande ? Consultez notre FAQ ou contactez l'équipe CafThé directement via notre formulaire." />
+            </Helmet>
 
-                @media (max-width: 768px) {
-                    .container-res {
-                        padding: 0 20px !important;
+            <div style={styles.pageWrapper}>
+                <style>
+                    {`
+                    .submit-btn:hover:not(:disabled) { background-color: #E9E3E3 !important; color: #373735 !important; transform: translateY(-3px); }
+                    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+                    .faq-header:hover .question-text { color: #C9A24D; }
+                    .checkbox-container:hover { opacity: 1 !important; }
+                    
+                    /* --- RESPONSIVE LOGIC --- */
+                    @media (max-width: 992px) {
+                        .content-row-res { 
+                            flex-direction: column !important; 
+                            gap: 40px !important; 
+                        }
+                        .content-row-reverse-res { 
+                            flex-direction: column !important; 
+                            gap: 40px !important; 
+                        }
+                        .text-block-res, .image-block-res { 
+                            width: 100% !important; 
+                            min-width: unset !important; 
+                        }
                     }
-                    .main-title-res {
-                        font-size: 2.2rem !important;
-                    }
-                    .section-dark-res {
-                        padding: 60px 0 !important;
-                    }
-                    .image-res {
-                        width: 60% !important;
-                    }
-                    .section-title-res {
-                        font-size: 1.8rem !important;
-                        text-align: center;
-                    }
-                    .contact-info-res {
-                        text-align: center !important;
-                    }
-                }
 
-                @media (max-width: 480px) {
-                    .main-title-res {
-                        font-size: 1.8rem !important;
+                    @media (max-width: 768px) {
+                        .container-res {
+                            padding: 0 20px !important;
+                        }
+                        .main-title-res {
+                            font-size: 2.2rem !important;
+                        }
+                        .section-dark-res {
+                            padding: 60px 0 !important;
+                        }
+                        .image-res {
+                            width: 60% !important;
+                        }
+                        .section-title-res {
+                            font-size: 1.8rem !important;
+                            text-align: center;
+                        }
+                        .contact-info-res {
+                            text-align: center !important;
+                        }
                     }
-                    .submit-btn {
-                        width: 100% !important;
+
+                    @media (max-width: 480px) {
+                        .main-title-res {
+                            font-size: 1.8rem !important;
+                        }
+                        .submit-btn {
+                            width: 100% !important;
+                        }
                     }
-                }
-                `}
-            </style>
+                    `}
+                </style>
 
-            <header style={styles.heroSection}>
-                <h1 style={styles.mainTitle} className="main-title-res">Besoin d'aide ?</h1>
-                <p style={styles.heroSubtitle}>Consultez notre FAQ ou contactez-nous directement.</p>
-            </header>
+                <header style={styles.heroSection}>
+                    <h1 style={styles.mainTitle} className="main-title-res">Besoin d'aide ?</h1>
+                    <p style={styles.heroSubtitle}>Consultez notre FAQ ou contactez-nous directement.</p>
+                </header>
 
-            <section id="faq" style={styles.sectionDark} className="section-dark-res">
-                <div style={styles.container} className="container-res">
-                    <div style={styles.contentRow} className="content-row-res">
-                        <div style={styles.textBlock} className="text-block-res">
-                            <h2 style={styles.sectionTitle} className="section-title-res">Foire aux questions</h2>
-                            <div style={{ marginTop: "30px" }}>
-                                {faqData.map((item, index) => (
-                                    <div key={index} style={styles.faqItem}>
-                                        <div className="faq-header" style={styles.faqHeader} onClick={() => setOpenIndex(openIndex === index ? null : index)}>
-                                            <span className="question-text" style={styles.questionText}>{item.q}</span>
-                                            {openIndex === index ? <FiChevronUp color="#C9A24D" /> : <FiChevronDown color="#C9A24D" />}
+                <section id="faq" style={styles.sectionDark} className="section-dark-res">
+                    <div style={styles.container} className="container-res">
+                        <div style={styles.contentRow} className="content-row-res">
+                            <div style={styles.textBlock} className="text-block-res">
+                                <h2 style={styles.sectionTitle} className="section-title-res">Foire aux questions</h2>
+                                <div style={{ marginTop: "30px" }}>
+                                    {faqData.map((item, index) => (
+                                        <div key={index} style={styles.faqItem}>
+                                            <div className="faq-header" style={styles.faqHeader} onClick={() => setOpenIndex(openIndex === index ? null : index)}>
+                                                <span className="question-text" style={styles.questionText}>{item.q}</span>
+                                                {openIndex === index ? <FiChevronUp color="#C9A24D" /> : <FiChevronDown color="#C9A24D" />}
+                                            </div>
+                                            {openIndex === index && <div style={styles.faqAnswer}>{item.a}</div>}
                                         </div>
-                                        {openIndex === index && <div style={styles.faqAnswer}>{item.a}</div>}
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                        <div style={styles.imageBlock} className="image-block-res">
-                            <img src="/logo2.webp" alt="" style={styles.image} className="image-res" />
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section id="message" style={styles.sectionDark} className="section-dark-res">
-                <div style={styles.container} className="container-res">
-                    <div style={styles.contentRowReverse} className="content-row-reverse-res">
-                        <div style={styles.textBlock} className="text-block-res">
-                            <h2 style={styles.sectionTitle} className="section-title-res">Nous écrire</h2>
-                            <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
-                                <input type="text" placeholder="Votre nom" style={styles.input} required />
-                                <input type="email" placeholder="Votre email" style={styles.input} required />
-                                <textarea placeholder="Votre message" style={styles.textarea} required></textarea>
-
-                                <div className="checkbox-container" style={styles.rgpdContainer}>
-                                    <label style={styles.checkboxLabel}>
-                                        <input
-                                            type="checkbox"
-                                            checked={rgpdAccepted}
-                                            onChange={() => setRgpdAccepted(!rgpdAccepted)}
-                                            style={styles.checkbox}
-                                        />
-                                        <span>
-                                            J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <Link to="/politique-confidentialite" style={styles.rgpdLink}>politique de confidentialité</Link>.
-                                        </span>
-                                    </label>
+                                    ))}
                                 </div>
-
-                                <button
-                                    type="submit"
-                                    className="submit-btn"
-                                    disabled={!rgpdAccepted}
-                                    style={styles.submitButton}
-                                >
-                                    Envoyer le message
-                                </button>
-                            </form>
-                        </div>
-                        <div style={styles.imageBlock} className="image-block-res">
-                            <div style={styles.contactInfo} className="contact-info-res">
-                                <h3 style={{ color: "#C9A24D", fontFamily: "Playfair Display", marginBottom: "15px" }}>CafThé Boutique</h3>
-                                <p style={styles.paragraph}>15 Rue de l'Excellence, 75001 Paris</p>
-                                <p style={styles.paragraph}>contact@cafthe.fr</p>
+                            </div>
+                            <div style={styles.imageBlock} className="image-block-res">
+                                <img src="/logo2.webp" alt="" style={styles.image} className="image-res" />
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+
+                <section id="message" style={styles.sectionDark} className="section-dark-res">
+                    <div style={styles.container} className="container-res">
+                        <div style={styles.contentRowReverse} className="content-row-reverse-res">
+                            <div style={styles.textBlock} className="text-block-res">
+                                <h2 style={styles.sectionTitle} className="section-title-res">Nous écrire</h2>
+                                <form style={styles.form} onSubmit={(e) => e.preventDefault()}>
+                                    <input type="text" placeholder="Votre nom" style={styles.input} required />
+                                    <input type="email" placeholder="Votre email" style={styles.input} required />
+                                    <textarea placeholder="Votre message" style={styles.textarea} required></textarea>
+
+                                    <div className="checkbox-container" style={styles.rgpdContainer}>
+                                        <label style={styles.checkboxLabel}>
+                                            <input
+                                                type="checkbox"
+                                                checked={rgpdAccepted}
+                                                onChange={() => setRgpdAccepted(!rgpdAccepted)}
+                                                style={styles.checkbox}
+                                            />
+                                            <span>
+                                                J'accepte que mes données soient utilisées pour traiter ma demande conformément à la <Link to="/politique-confidentialite" style={styles.rgpdLink}>politique de confidentialité</Link>.
+                                            </span>
+                                        </label>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="submit-btn"
+                                        disabled={!rgpdAccepted}
+                                        style={styles.submitButton}
+                                    >
+                                        Envoyer le message
+                                    </button>
+                                </form>
+                            </div>
+                            <div style={styles.imageBlock} className="image-block-res">
+                                <div style={styles.contactInfo} className="contact-info-res">
+                                    <h3 style={{ color: "#C9A24D", fontFamily: "Playfair Display", marginBottom: "15px" }}>CafThé Boutique</h3>
+                                    <p style={styles.paragraph}>15 Rue de l'Excellence, 75001 Paris</p>
+                                    <p style={styles.paragraph}>contact@cafthe.fr</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </>
     );
 };
 

@@ -3,6 +3,7 @@ import { useCard } from '../context/CardContext.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 
 const Panier = () => {
     const { cart, updateQuantity, removeFromCart, getSubTotal } = useCard();
@@ -19,113 +20,121 @@ const Panier = () => {
     };
 
     return (
-        <div style={styles.overlay} className="panier-overlay-responsive">
-            <style>
-                {`
-                .item-row:hover { background-color: #454542 !important; }
-                .validate-btn:hover { background-color: #C9A24D !important; color: #373735 !important; transform: scale(1.02); }
-                .remove-btn:hover { color: #FFF !important; }
-                .qty-op:hover { opacity: 0.7; }
-                .continue-btn:hover { color: #C9A24D !important; transform: translateX(5px); }
-                .custom-scroll::-webkit-scrollbar { width: 6px; }
-                .custom-scroll::-webkit-scrollbar-thumb { background: #C9A24D; border-radius: 10px; }
+        <>
+            <Helmet>
+                <title>Mon Panier | CafThé</title>
+                <meta name="description" content="Finalisez votre commande de cafés et thés d'exception sur CafThé. Profitez de la livraison offerte dès 45€ d'achat." />
+                <meta name="robots" content="noindex, follow" />
+            </Helmet>
 
-                @media (max-width: 860px) {
-                    /* AJOUT DU PADDING POUR DÉGAGER LE HEADER */
-                    .panier-overlay-responsive {
-                        padding-top: 100px !important; 
-                        align-items: flex-start !important;
-                        height: auto !important;
-                        min-height: 100vh !important;
-                        overflow-y: auto !important;
+            <div style={styles.overlay} className="panier-overlay-responsive">
+                <style>
+                    {`
+                    .item-row:hover { background-color: #454542 !important; }
+                    .validate-btn:hover { background-color: #C9A24D !important; color: #373735 !important; transform: scale(1.02); }
+                    .remove-btn:hover { color: #FFF !important; }
+                    .qty-op:hover { opacity: 0.7; }
+                    .continue-btn:hover { color: #C9A24D !important; transform: translateX(5px); }
+                    .custom-scroll::-webkit-scrollbar { width: 6px; }
+                    .custom-scroll::-webkit-scrollbar-thumb { background: #C9A24D; border-radius: 10px; }
+
+                    @media (max-width: 860px) {
+                        /* AJOUT DU PADDING POUR DÉGAGER LE HEADER */
+                        .panier-overlay-responsive {
+                            padding-top: 100px !important; 
+                            align-items: flex-start !important;
+                            height: auto !important;
+                            min-height: 100vh !important;
+                            overflow-y: auto !important;
+                        }
+                        .panier-modal {
+                            width: 95% !important;
+                            max-height: none !important;
+                            margin-bottom: 40px !important;
+                        }
                     }
-                    .panier-modal {
-                        width: 95% !important;
-                        max-height: none !important;
-                        margin-bottom: 40px !important;
+
+                    @media (max-width: 768px) {
+                        .panier-title { font-size: 2rem !important; }
+                        .item-row-res {
+                            padding: 20px !important;
+                            flex-wrap: wrap !important;
+                            justify-content: center !important;
+                            text-align: center !important;
+                            gap: 15px !important;
+                        }
+                        .item-img-res { width: 80px !important; height: 80px !important; }
+                        .item-info-res { min-width: 100% !important; }
+                        .panier-footer {
+                            flex-direction: column !important;
+                            gap: 20px !important;
+                            padding: 20px !important;
+                            text-align: center !important;
+                        }
+                        .validate-btn-res { width: 100% !important; justify-content: center !important; }
                     }
-                }
 
-                @media (max-width: 768px) {
-                    .panier-title { font-size: 2rem !important; }
-                    .item-row-res {
-                        padding: 20px !important;
-                        flex-wrap: wrap !important;
-                        justify-content: center !important;
-                        text-align: center !important;
-                        gap: 15px !important;
+                    @media (max-width: 480px) {
+                        .panier-title { font-size: 1.75rem !important; }
+                        .total-price-res { font-size: 1.8rem !important; }
                     }
-                    .item-img-res { width: 80px !important; height: 80px !important; }
-                    .item-info-res { min-width: 100% !important; }
-                    .panier-footer {
-                        flex-direction: column !important;
-                        gap: 20px !important;
-                        padding: 20px !important;
-                        text-align: center !important;
-                    }
-                    .validate-btn-res { width: 100% !important; justify-content: center !important; }
-                }
+                    `}
+                </style>
 
-                @media (max-width: 480px) {
-                    .panier-title { font-size: 1.75rem !important; }
-                    .total-price-res { font-size: 1.8rem !important; }
-                }
-                `}
-            </style>
+                <div style={styles.modal} className="panier-modal">
+                    <div style={styles.header}>
+                        <h1 style={styles.title} className="panier-title">Votre panier</h1>
+                        <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
+                    </div>
 
-            <div style={styles.modal} className="panier-modal">
-                <div style={styles.header}>
-                    <h1 style={styles.title} className="panier-title">Votre panier</h1>
-                    <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
-                </div>
-
-                <div style={styles.itemsContainer} className="custom-scroll">
-                    {cart.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '60px', color: '#373735' }}>
-                            <p style={{fontSize: '1.1rem'}}>Votre panier est vide.</p>
+                    <div style={styles.itemsContainer} className="custom-scroll">
+                        {cart.length === 0 ? (
+                            <div style={{ textAlign: 'center', padding: '60px', color: '#373735' }}>
+                                <p style={{fontSize: '1.1rem'}}>Votre panier est vide.</p>
+                            </div>
+                        ) : (
+                            cart.map((item) => {
+                                const itemId = item.id_produit || item.numero_produit;
+                                return (
+                                    <div key={itemId} style={styles.itemRow} className="item-row item-row-res">
+                                        <img src={`${apiUrl}/images/${item.image}`} alt={item.nom_produit} style={styles.itemImg} className="item-img-res" />
+                                        <div style={styles.itemInfo} className="item-info-res">
+                                            <h3 style={styles.itemName}>{item.nom_produit}</h3>
+                                            <p style={styles.itemPrice}>{Number(item.prix_ttc).toFixed(2)} €</p>
+                                            <button onClick={() => removeFromCart(itemId)} style={styles.removeBtn} className="remove-btn">Supprimer</button>
+                                        </div>
+                                        <div style={styles.qtySelector}>
+                                            <button onClick={() => updateQuantity(itemId, -1)} style={styles.qtyOp} className="qty-op">-</button>
+                                            <span style={styles.qtyVal}>{item.quantite}</span>
+                                            <button onClick={() => updateQuantity(itemId, 1)} style={styles.qtyOp} className="qty-op">+</button>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        )}
+                        <div style={styles.emptyPrompt}>
+                            <img src="/logo1.webp" alt="logo" style={styles.miniLogo} />
+                            <button style={styles.continueBtn} className="continue-btn" onClick={() => navigate('/catalogue')}>Continuer mes achats <FiArrowRight /></button>
                         </div>
-                    ) : (
-                        cart.map((item) => {
-                            const itemId = item.id_produit || item.numero_produit;
-                            return (
-                                <div key={itemId} style={styles.itemRow} className="item-row item-row-res">
-                                    <img src={`${apiUrl}/images/${item.image}`} alt={item.nom_produit} style={styles.itemImg} className="item-img-res" />
-                                    <div style={styles.itemInfo} className="item-info-res">
-                                        <h3 style={styles.itemName}>{item.nom_produit}</h3>
-                                        <p style={styles.itemPrice}>{Number(item.prix_ttc).toFixed(2)} €</p>
-                                        <button onClick={() => removeFromCart(itemId)} style={styles.removeBtn} className="remove-btn">Supprimer</button>
-                                    </div>
-                                    <div style={styles.qtySelector}>
-                                        <button onClick={() => updateQuantity(itemId, -1)} style={styles.qtyOp} className="qty-op">-</button>
-                                        <span style={styles.qtyVal}>{item.quantite}</span>
-                                        <button onClick={() => updateQuantity(itemId, 1)} style={styles.qtyOp} className="qty-op">+</button>
-                                    </div>
-                                </div>
-                            );
-                        })
-                    )}
-                    <div style={styles.emptyPrompt}>
-                        <img src="/logo1.webp" alt="logo" style={styles.miniLogo} />
-                        <button style={styles.continueBtn} className="continue-btn" onClick={() => navigate('/catalogue')}>Continuer mes achats <FiArrowRight /></button>
                     </div>
-                </div>
 
-                <div style={styles.footer} className="panier-footer">
-                    <div style={styles.totalBlock}>
-                        <span style={styles.totalPrice} className="total-price-res">{getSubTotal().toFixed(2)} €</span>
-                        <span style={{color: '#FFF', display: 'block', fontSize: '12px'}}>Livraison offerte dès 45€</span>
+                    <div style={styles.footer} className="panier-footer">
+                        <div style={styles.totalBlock}>
+                            <span style={styles.totalPrice} className="total-price-res">{getSubTotal().toFixed(2)} €</span>
+                            <span style={{color: '#FFF', display: 'block', fontSize: '12px'}}>Livraison offerte dès 45€</span>
+                        </div>
+                        <button
+                            onClick={handleCheckout}
+                            style={styles.validateBtn}
+                            className="validate-btn validate-btn-res"
+                            disabled={cart.length === 0}
+                        >
+                            <FiShoppingBag size={24} /> Valider
+                        </button>
                     </div>
-                    <button
-                        onClick={handleCheckout}
-                        style={styles.validateBtn}
-                        className="validate-btn validate-btn-res"
-                        disabled={cart.length === 0}
-                    >
-                        <FiShoppingBag size={24} /> Valider
-                    </button>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

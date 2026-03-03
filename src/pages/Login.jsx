@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { FiX } from "react-icons/fi";
+import { Helmet } from 'react-helmet-async';
 
 const Login = () => {
     const { login } = useContext(AuthContext);
@@ -55,64 +56,72 @@ const Login = () => {
     };
 
     return (
-        <div style={styles.overlay} className="login-overlay-responsive">
-            <style>
-                {`
-                @media (max-width: 920px) {
-                    /* Padding ajouté ici pour décoller du header */
-                    .login-overlay-responsive {
-                        padding-top: 100px !important; 
-                        align-items: flex-start !important;
-                        height: auto !important;
-                        min-height: 100vh !important;
-                        overflow-y: auto !important;
-                    }
-                    .login-modal {
-                        width: 95% !important;
-                        max-width: 500px !important;
-                        margin-bottom: 40px !important;
-                    }
-                }
+        <>
+            <Helmet>
+                <title>Connexion | CafThé</title>
+                <meta name="description" content="Connectez-vous à votre compte CafThé pour suivre vos commandes et gérer vos informations personnelles." />
+                <meta name="robots" content="noindex, follow" />
+            </Helmet>
 
-                @media (max-width: 768px) {
-                    .login-header { padding: 30px 40px !important; }
-                    .login-title { font-size: 2.2rem !important; }
-                    .login-dark-section { padding: 40px 30px !important; }
-                    .login-input { max-width: 100% !important; }
-                    .login-forgot-row {
-                        flex-direction: column !important;
-                        gap: 20px !important;
-                        text-align: center !important;
+            <div style={styles.overlay} className="login-overlay-responsive">
+                <style>
+                    {`
+                    @media (max-width: 920px) {
+                        /* Padding ajouté ici pour décoller du header */
+                        .login-overlay-responsive {
+                            padding-top: 100px !important; 
+                            align-items: flex-start !important;
+                            height: auto !important;
+                            min-height: 100vh !important;
+                            overflow-y: auto !important;
+                        }
+                        .login-modal {
+                            width: 95% !important;
+                            max-width: 500px !important;
+                            margin-bottom: 40px !important;
+                        }
                     }
-                    .login-btn-res { width: 100% !important; }
-                }
 
-                @media (max-width: 480px) {
-                    .login-title { font-size: 1.8rem !important; }
-                }
-                `}
-            </style>
-            <div style={styles.modal} className="login-modal">
-                <div style={styles.header} className="login-header">
-                    <h1 style={styles.mainTitle} className="login-title">Se connecter</h1>
-                    <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
-                </div>
-                <div style={styles.darkSection} className="login-dark-section">
-                    {errorMsg && <p style={styles.error}>{errorMsg}</p>}
-                    <form onSubmit={handleSubmit} style={styles.form}>
-                        <input type="email" placeholder="Votre email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} className="login-input" required />
-                        <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} style={styles.input} className="login-input" required />
-                        <div style={styles.forgotRow} className="login-forgot-row">
-                            <span style={{...styles.forgotLink, color: isForgotHovered ? "#C9A24D" : "#E9E3E3"}} onMouseEnter={() => setIsForgotHovered(true)} onMouseLeave={() => setIsForgotHovered(false)} onClick={() => navigate("/forgot-password")}>Mot de passe oublié ?</span>
-                            <button type="submit" className="login-btn-res" style={{...styles.loginBtn, backgroundColor: isLoginHovered ? "#C9A24D" : "#E9E3E3", color: isLoginHovered ? "#FFF" : "#C9A24D"}} onMouseEnter={() => setIsLoginHovered(true)} onMouseLeave={() => setIsLoginHovered(false)}>Se connecter</button>
-                        </div>
-                    </form>
-                </div>
-                <div style={styles.footer}>
-                    <p style={styles.footerText}>Vous n’avez pas de compte ? <br style={{display: window.innerWidth < 480 ? 'block' : 'none'}} /> <span style={{...styles.createAccount, color: isCreateHovered ? "#C9A24D" : "#373735"}} onMouseEnter={() => setIsCreateHovered(true)} onMouseLeave={() => setIsCreateHovered(false)} onClick={() => navigate("/register")}>Créer un compte</span></p>
+                    @media (max-width: 768px) {
+                        .login-header { padding: 30px 40px !important; }
+                        .login-title { font-size: 2.2rem !important; }
+                        .login-dark-section { padding: 40px 30px !important; }
+                        .login-input { max-width: 100% !important; }
+                        .login-forgot-row {
+                            flex-direction: column !important;
+                            gap: 20px !important;
+                            text-align: center !important;
+                        }
+                        .login-btn-res { width: 100% !important; }
+                    }
+
+                    @media (max-width: 480px) {
+                        .login-title { font-size: 1.8rem !important; }
+                    }
+                    `}
+                </style>
+                <div style={styles.modal} className="login-modal">
+                    <div style={styles.header} className="login-header">
+                        <h1 style={styles.mainTitle} className="login-title">Se connecter</h1>
+                        <FiX style={styles.closeIcon} onClick={() => navigate("/")} />
+                    </div>
+                    <div style={styles.darkSection} className="login-dark-section">
+                        {errorMsg && <p style={styles.error}>{errorMsg}</p>}
+                        <form onSubmit={handleSubmit} style={styles.form}>
+                            <input type="email" placeholder="Votre email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} className="login-input" required />
+                            <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} style={styles.input} className="login-input" required />
+                            <div style={styles.forgotRow} className="login-forgot-row">
+                                <span style={{...styles.forgotLink, color: isForgotHovered ? "#C9A24D" : "#E9E3E3"}} onMouseEnter={() => setIsForgotHovered(true)} onMouseLeave={() => setIsForgotHovered(false)} onClick={() => navigate("/forgot-password")}>Mot de passe oublié ?</span>
+                                <button type="submit" className="login-btn-res" style={{...styles.loginBtn, backgroundColor: isLoginHovered ? "#C9A24D" : "#E9E3E3", color: isLoginHovered ? "#FFF" : "#C9A24D"}} onMouseEnter={() => setIsLoginHovered(true)} onMouseLeave={() => setIsLoginHovered(false)}>Se connecter</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div style={styles.footer}>
+                        <p style={styles.footerText}>Vous n’avez pas de compte ? <br style={{display: window.innerWidth < 480 ? 'block' : 'none'}} /> <span style={{...styles.createAccount, color: isCreateHovered ? "#C9A24D" : "#373735"}} onMouseEnter={() => setIsCreateHovered(true)} onMouseLeave={() => setIsCreateHovered(false)} onClick={() => navigate("/register")}>Créer un compte</span></p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

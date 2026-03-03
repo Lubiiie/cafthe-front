@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
 
 const Register = () => {
     const navigate = useNavigate();
@@ -49,101 +50,109 @@ const Register = () => {
     };
 
     return (
-        <div style={styles.overlay} className="register-overlay-res">
-            <style>
-                {`
-                /* Correction Desktop : On descend le modal sous le header */
-                @media (min-width: 921px) {
-                    .register-overlay-res {
-                        padding-top: 140px !important;
-                        align-items: flex-start !important;
+        <>
+            <Helmet>
+                <title>Créer un compte | CafThé</title>
+                <meta name="description" content="Rejoignez la communauté CafThé. Créez votre compte pour commander vos cafés et thés préférés et bénéficier d'un suivi personnalisé." />
+                <meta name="robots" content="noindex, follow" />
+            </Helmet>
+
+            <div style={styles.overlay} className="register-overlay-res">
+                <style>
+                    {`
+                    /* Correction Desktop : On descend le modal sous le header */
+                    @media (min-width: 921px) {
+                        .register-overlay-res {
+                            padding-top: 140px !important;
+                            align-items: flex-start !important;
+                        }
                     }
-                }
 
-                @media (max-width: 920px) {
-                    .register-overlay-res {
-                        padding-top: 100px !important; 
-                        align-items: flex-start !important;
+                    @media (max-width: 920px) {
+                        .register-overlay-res {
+                            padding-top: 100px !important; 
+                            align-items: flex-start !important;
+                        }
+                        .register-modal {
+                            width: 95% !important;
+                            margin-bottom: 40px !important;
+                        }
+                        .register-dark-section {
+                            padding: 40px 30px !important;
+                        }
+                        .register-footer {
+                            padding: 30px 20px !important;
+                        }
                     }
-                    .register-modal {
-                        width: 95% !important;
-                        margin-bottom: 40px !important;
+
+                    @media (max-width: 480px) {
+                        .register-logo {
+                            width: 180px !important;
+                        }
+                        .register-submit-btn {
+                            width: 100% !important;
+                            padding: 14px 20px !important;
+                        }
+                        .register-footer-action {
+                            justify-content: center !important;
+                        }
                     }
-                    .register-dark-section {
-                        padding: 40px 30px !important;
-                    }
-                    .register-footer {
-                        padding: 30px 20px !important;
-                    }
-                }
+                    `}
+                </style>
 
-                @media (max-width: 480px) {
-                    .register-logo {
-                        width: 180px !important;
-                    }
-                    .register-submit-btn {
-                        width: 100% !important;
-                        padding: 14px 20px !important;
-                    }
-                    .register-footer-action {
-                        justify-content: center !important;
-                    }
-                }
-                `}
-            </style>
+                <div style={styles.modal} className="register-modal">
+                    <div style={styles.header}>
+                        <img src="/logo2.webp" alt="CafThé" style={styles.logo} className="register-logo" />
+                    </div>
 
-            <div style={styles.modal} className="register-modal">
-                <div style={styles.header}>
-                    <img src="/logo2.webp" alt="CafThé" style={styles.logo} className="register-logo" />
-                </div>
+                    <div style={styles.darkSection} className="register-dark-section">
+                        <form onSubmit={handleSubmit} style={styles.form}>
 
-                <div style={styles.darkSection} className="register-dark-section">
-                    <form onSubmit={handleSubmit} style={styles.form}>
+                            <div style={styles.inputGroup}>
+                                <input name="prenom_client" placeholder="Prénom" style={styles.input} onChange={handleChange} />
+                                <input name="nom_client" placeholder="Nom" style={styles.input} onChange={handleChange} required />
+                                <input name="email_client" type="email" placeholder="Email" style={styles.input} onChange={handleChange} required />
+                                <input name="mdp_client" type="password" placeholder="Mot de passe" style={styles.input} onChange={handleChange} required />
+                            </div>
 
-                        <div style={styles.inputGroup}>
-                            <input name="prenom_client" placeholder="Prénom" style={styles.input} onChange={handleChange} />
-                            <input name="nom_client" placeholder="Nom" style={styles.input} onChange={handleChange} required />
-                            <input name="email_client" type="email" placeholder="Email" style={styles.input} onChange={handleChange} required />
-                            <input name="mdp_client" type="password" placeholder="Mot de passe" style={styles.input} onChange={handleChange} required />
-                        </div>
+                            <hr style={styles.divider} />
 
-                        <hr style={styles.divider} />
+                            <div style={styles.inputGroup}>
+                                <input name="adresse_livraison" placeholder="Adresse de livraison" style={styles.input} onChange={handleChange} />
+                                <input name="ville_livraison" placeholder="Ville" style={styles.input} onChange={handleChange} />
+                                <input name="code_postal_livraison" placeholder="Code postal" style={styles.input} onChange={handleChange} maxLength="5" />
+                                <input name="telephone" placeholder="Numéro de téléphone" style={styles.input} onChange={handleChange} maxLength="10" />
+                            </div>
 
-                        <div style={styles.inputGroup}>
-                            <input name="adresse_livraison" placeholder="Adresse de livraison" style={styles.input} onChange={handleChange} />
-                            <input name="ville_livraison" placeholder="Ville" style={styles.input} onChange={handleChange} />
-                            <input name="code_postal_livraison" placeholder="Code postal" style={styles.input} onChange={handleChange} maxLength="5" />
-                            <input name="telephone" placeholder="Numéro de téléphone" style={styles.input} onChange={handleChange} maxLength="10" />
-                        </div>
+                            <hr style={styles.divider} />
 
-                        <hr style={styles.divider} />
+                            <div style={styles.footerAction} className="register-footer-action">
+                                <button
+                                    type="submit"
+                                    className="register-submit-btn"
+                                    style={{
+                                        ...styles.submitBtn,
+                                        backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3",
+                                        color: isHovered ? "#FFF" : "#C9A24D",
+                                        transform: isHovered ? "scale(1.05)" : "scale(1)"
+                                    }}
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                >
+                                    Continuer
+                                </button>
+                            </div>
+                        </form>
+                    </div>
 
-                        <div style={styles.footerAction} className="register-footer-action">
-                            <button
-                                type="submit"
-                                className="register-submit-btn"
-                                style={{
-                                    ...styles.submitBtn,
-                                    backgroundColor: isHovered ? "#C9A24D" : "#E9E3E3",
-                                    color: isHovered ? "#FFF" : "#C9A24D",
-                                    transform: isHovered ? "scale(1.05)" : "scale(1)"
-                                }}
-                                onMouseEnter={() => setIsHovered(true)}
-                                onMouseLeave={() => setIsHovered(false)}
-                            >
-                                Continuer
-                            </button>
-                        </div>
-                    </form>
-                </div>
-
-                <div style={styles.footer} className="register-footer">
-                    <p style={styles.legalText}>
-                        Vos données personnelles sont destinées à CafThé*. Elles sont recueillies exclusivement pour assurer la gestion de votre compte et le suivi de vos commandes d’exception. Elles ne seront pas utilisées à d’autres fins sans votre consentement préalable.
-                    </p>
+                    <div style={styles.footer} className="register-footer">
+                        <p style={styles.legalText}>
+                            Vos données personnelles sont destinées à CafThé*. Elles sont recueillies exclusivement pour assurer la gestion de votre compte et le suivi de vos commandes d’exception. Elles ne seront pas utilisées à d’autres fins sans votre consentement préalable.
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

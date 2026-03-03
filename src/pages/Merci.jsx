@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiCheckCircle, FiPackage, FiMail, FiArrowRight } from 'react-icons/fi';
 import { useCard } from "../context/CardContext";
+import { Helmet } from 'react-helmet-async';
 
 const Merci = () => {
     const { clearCart } = useCard();
@@ -12,85 +13,93 @@ const Merci = () => {
     }, []);
 
     return (
-        <div style={styles.page}>
-            <style>
-                {`
-                @media (max-width: 768px) {
-                    .merci-card {
-                        width: 90% !important;
-                        padding: 40px 20px !important;
-                        margin: 0 auto !important;
-                    }
-                    .merci-title {
-                        font-size: 1.8rem !important;
-                    }
-                    .info-item-mobile {
-                        padding: 15px !important;
-                        gap: 12px !important;
-                    }
-                    .action-box-mobile {
-                        width: 100% !important;
-                        display: flex !important;
-                        justify-content: center !important;
-                    }
-                    .primary-btn-mobile {
-                        width: 100% !important;
-                        max-width: 280px !important; /* Empêche le bouton d'être trop large ou coupé */
-                        padding: 15px !important;
-                        font-size: 1rem !important;
-                        justify-content: center !important;
-                    }
-                }
-                `}
-            </style>
-            <div style={styles.container}>
-                <div style={styles.card} className="merci-card">
-                    <div style={styles.iconWrapper}>
-                        <FiCheckCircle style={styles.successIcon} />
-                    </div>
+        <>
+            <Helmet>
+                <title>Merci pour votre commande | CafThé</title>
+                <meta name="description" content="Votre commande a été validée avec succès. Merci de votre confiance." />
+                <meta name="robots" content="noindex, nofollow" />
+            </Helmet>
 
-                    <h1 style={styles.title} className="merci-title">Commande confirmée !</h1>
-                    <p style={styles.subtitle}>
-                        Merci pour votre confiance. Votre commande a été enregistrée avec succès.
-                    </p>
-
-                    <div style={styles.divider} />
-
-                    <div style={styles.infoGrid}>
-                        <div
-                            style={styles.infoItem}
-                            className="info-item-mobile"
-                        >
-                            <FiMail style={styles.infoIcon} />
-                            <p style={styles.infoText}>Un mail de confirmation vient de vous être envoyé.</p>
+            <div style={styles.page}>
+                <style>
+                    {`
+                    @media (max-width: 768px) {
+                        .merci-card {
+                            width: 90% !important;
+                            padding: 40px 20px !important;
+                            margin: 0 auto !important;
+                        }
+                        .merci-title {
+                            font-size: 1.8rem !important;
+                        }
+                        .info-item-mobile {
+                            padding: 15px !important;
+                            gap: 12px !important;
+                        }
+                        .action-box-mobile {
+                            width: 100% !important;
+                            display: flex !important;
+                            justify-content: center !important;
+                        }
+                        .primary-btn-mobile {
+                            width: 100% !important;
+                            max-width: 280px !important; /* Empêche le bouton d'être trop large ou coupé */
+                            padding: 15px !important;
+                            font-size: 1rem !important;
+                            justify-content: center !important;
+                        }
+                    }
+                    `}
+                </style>
+                <div style={styles.container}>
+                    <div style={styles.card} className="merci-card">
+                        <div style={styles.iconWrapper}>
+                            <FiCheckCircle style={styles.successIcon} />
                         </div>
 
-                        <div
-                            style={styles.infoItem}
-                            className="info-item-mobile"
-                        >
-                            <FiPackage style={styles.infoIcon} />
-                            <p style={styles.infoText}>Nous préparons votre colis avec le plus grand soin.</p>
-                        </div>
-                    </div>
+                        <h1 style={styles.title} className="merci-title">Commande confirmée !</h1>
+                        <p style={styles.subtitle}>
+                            Merci pour votre confiance. Votre commande a été enregistrée avec succès.
+                        </p>
 
-                    <div style={styles.actionBox} className="action-box-mobile">
-                        <Link
-                            to="/catalogue"
-                            className="primary-btn-mobile"
-                            style={{
-                                ...styles.primaryBtn,
-                                backgroundColor: isHovered === 'btn' ? '#d9b35a' : '#C9A24D'
-                            }}
-                            onMouseEnter={() => setIsHovered('btn')}
-                            onMouseLeave={() => setIsHovered(null)}
-                        >
-                            Retour à la boutique <FiArrowRight />
-                        </Link>
+                        <div style={styles.divider} />
+
+                        <div style={styles.infoGrid}>
+                            <div
+                                style={styles.infoItem}
+                                className="info-item-mobile"
+                            >
+                                <FiMail style={styles.infoIcon} />
+                                <p style={styles.infoText}>Un mail de confirmation vient de vous être envoyé.</p>
+                            </div>
+
+                            <div
+                                style={styles.infoItem}
+                                className="info-item-mobile"
+                            >
+                                <FiPackage style={styles.infoIcon} />
+                                <p style={styles.infoText}>Nous préparons votre colis avec le plus grand soin.</p>
+                            </div>
+                        </div>
+
+                        <div style={styles.actionBox} className="action-box-mobile">
+                            <Link
+                                to="/catalogue"
+                                className="primary-btn-mobile"
+                                style={{
+                                    ...styles.primaryBtn,
+                                    backgroundColor: isHovered === 'btn' ? '#d9b35a' : '#C9A24D'
+                                }}
+                                onMouseEnter={() => setIsHovered('btn')}
+                                onMouseLeave={() => setIsHovered(null)}
+                            >
+                                Retour à la boutique <FiArrowRight />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 
