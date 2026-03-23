@@ -4,29 +4,49 @@ import { FiShoppingBag, FiUser, FiSearch, FiLogOut, FiMenu, FiX } from "react-ic
 import { useAuth } from "../context/AuthContext";
 import { useCard } from "../context/CardContext";
 
+/**
+ * COMPOSANT : Header
+ * ROLE : Barre de navigation principale gérant la recherche, le panier, l'authentification et le responsive.
+ */
 const Header = () => {
+    // --- NAVIGATION & ROUTAGE ---
     const navigate = useNavigate();
     const location = useLocation();
+
+    // --- CONSOMMATION DES CONTEXTES ---
+    // Récupération des données utilisateur et de la fonction de déconnexion via le Context d'authentification
     const { user, logout } = useAuth();
+    // Récupération du panier pour afficher le badge du nombre d'articles
     const { cart } = useCard();
 
-    const [searchQuery, setSearchQuery] = useState("");
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    // --- ÉTATS LOCAUX (States) ---
+    const [searchQuery, setSearchQuery] = useState(""); // Gère la saisie de la barre de recherche
+    const [isMenuOpen, setIsMenuOpen] = useState(false); // Gère l'ouverture/fermeture du menu burger
 
+    // --- EFFETS (Side Effects) ---
+    /** * Synchronise le champ de recherche avec l'URL.
+     * Si l'utilisateur change de page ou rafraîchit, le texte saisi reste cohérent avec les résultats affichés.
+     */
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const q = params.get('search');
         if (q) setSearchQuery(q);
     }, [location.search]);
 
+    // --- LOGIQUE DE RECHERCHE ---
+    /** * Redirige vers le catalogue avec le terme de recherche encodé dans l'URL.
+     */
     const handleSearch = (e) => {
         if (e.key === 'Enter' && searchQuery.trim() !== "") {
             navigate(`/catalogue?search=${encodeURIComponent(searchQuery.trim())}`);
-            setIsMenuOpen(false);
+            setIsMenuOpen(false); // Ferme le menu mobile après validation
         }
     };
 
+    // --- CALCULS DERIVÉS ---
+    // Vérification de la présence d'un token ou d'un utilisateur dans le state global
     const isConnected = !!user || !!localStorage.getItem('token');
+    // Calcul dynamique du nombre total d'articles dans le panier pour le badge
     const totalArticles = cart.reduce((acc, item) => acc + item.quantite, 0);
 
     return (
@@ -34,10 +54,9 @@ const Header = () => {
             <style>
                 {`
                 .header-main-container, .nav-container { box-sizing: border-box !important; }
-                
                 .icon-hover:hover { color: #C9A24D !important; transform: scale(1.1); transition: all 0.2s ease; }
                 
-                /* FIX DESKTOP : On force le comportement horizontal */
+                /* DESKTOP : Affichage en ligne et annulation des styles mobiles */
                 @media (min-width: 993px) {
                     .nav-container {
                         display: flex !important;
@@ -52,6 +71,7 @@ const Header = () => {
                     }
                 }
 
+                /* MOBILE : Menu plein écran coulissant */
                 @media (max-width: 992px) {
                     .nav-container {
                         position: fixed;
@@ -69,24 +89,19 @@ const Header = () => {
                         visibility: ${isMenuOpen ? "visible" : "hidden"};
                     }
                     .mobile-toggle { display: flex !important; }
-                    .search-box { margin-bottom: 10px !important; width: 100% !important; max-width: 320px !important; }
-                    .actions-box { width: 100%; justify-content: center !important; gap: 40px !important; } 
-                }
-                
-                @media (max-width: 480px) {
-                    .header-main-container { padding: 0 15px !important; }
-                    .logo-img { height: 60px !important; }
                 }
                 `}
             </style>
 
             <div style={styles.container} className="header-main-container">
+                {/* LOGO */}
                 <div style={styles.sectionSide}>
                     <Link to="/" onClick={() => setIsMenuOpen(false)} aria-label="Retour à l'accueil CafThé">
                         <img src="/logo1.webp" alt="CafThé" style={styles.logo} className="logo-img" />
                     </Link>
                 </div>
 
+                {/* BOUTON MENU MOBILE (Burger) */}
                 <button
                     style={styles.mobileToggle}
                     className="mobile-toggle"
@@ -97,7 +112,9 @@ const Header = () => {
                     {isMenuOpen ? <FiX size={32} color="#E9E3E3" /> : <FiMenu size={32} color="#E9E3E3" />}
                 </button>
 
+                {/* NAVIGATION ET ACTIONS */}
                 <nav style={styles.navWrapper} className="nav-container" aria-label="Navigation principale">
+                    {/* BARRE DE RECHERCHE */}
                     <div style={styles.sectionCenter} className="search-box">
                         <div style={styles.searchWrapper}>
                             <input
@@ -113,7 +130,9 @@ const Header = () => {
                         </div>
                     </div>
 
+                    {/* ACTIONS (PANIER & COMPTE) */}
                     <div style={styles.sectionSideRight} className="actions-box">
+                        {/* PANIER AVEC BADGE */}
                         <button
                             style={styles.iconButton}
                             className="icon-hover"
@@ -124,6 +143,7 @@ const Header = () => {
                             {totalArticles > 0 && <span style={styles.badge}>{totalArticles}</span>}
                         </button>
 
+                        {/* PROFIL UTILISATEUR */}
                         <button
                             style={styles.iconButton}
                             className="icon-hover"
@@ -133,6 +153,7 @@ const Header = () => {
                             <FiUser size={28} />
                         </button>
 
+                        {/* DÉCONNEXION (Conditionnelle) */}
                         {isConnected && (
                             <div style={styles.userControls}>
                                 <button
@@ -152,6 +173,7 @@ const Header = () => {
     );
 };
 
+// --- STYLES ---
 const styles = {
     header: { width: "100%", height: "85px", backgroundColor: "#373735", position: "fixed", top: 0, left: 0, zIndex: 1000, display: "flex", alignItems: "center", boxShadow: "0 2px 10px rgba(0,0,0,0.3)" },
     container: { width: "100%", maxWidth: "1400px", margin: "0 auto", padding: "0 40px", display: "flex", justifyContent: "space-between", alignItems: "center", boxSizing: "border-box" },

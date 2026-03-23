@@ -5,12 +5,23 @@ import { FiX, FiShoppingBag, FiArrowRight } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : Panier
+ * ROLE : Affiche le récapitulatif des produits sélectionnés avant le passage en commande.
+ */
 const Panier = () => {
+    // --- CONTEXTES ---
+    // Récupération de la logique globale du panier (fonctions CRUD)
     const { cart, updateQuantity, removeFromCart, getSubTotal } = useCard();
+    // Récupération de l'utilisateur pour conditionner l'accès au tunnel d'achat
     const { user } = useAuth();
+
     const navigate = useNavigate();
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+    /**
+     * Gère la redirection : vers la commande si connecté, vers le login sinon.
+     */
     const handleCheckout = () => {
         if (user) {
             navigate('/commande');
@@ -113,6 +124,7 @@ const Panier = () => {
                                                 Supprimer
                                             </button>
                                         </div>
+                                        {/* Sélecteur de quantité relié au contexte global */}
                                         <div style={styles.qtySelector}>
                                             <button
                                                 onClick={() => updateQuantity(itemId, -1)}
@@ -151,7 +163,7 @@ const Panier = () => {
                             onClick={handleCheckout}
                             style={styles.validateBtn}
                             className="validate-btn validate-btn-res"
-                            disabled={cart.length === 0}
+                            disabled={cart.length === 0} // Empêche de valider un panier vide
                             aria-label="Procéder au paiement"
                         >
                             <FiShoppingBag size={24} /> Valider

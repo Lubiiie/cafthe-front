@@ -4,23 +4,31 @@ import { FiChevronDown, FiChevronUp, FiPlus, FiMinus, FiShoppingBag } from "reac
 import { useCard } from "../context/CardContext.jsx";
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : Catalogue
+ * ROLE : Affiche l'ensemble des produits de la boutique CafThé.
+ * LOGIQUE : Gère le fetch API, le filtrage dynamique, la recherche et l'ajout direct au panier.
+ */
 const Catalogue = () => {
-    const [produits, setProduits] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [expandedSections, setExpandedSections] = useState({});
-    const [filter, setFilter] = useState("Tous");
-    const [quantities, setQuantities] = useState({});
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    // --- ÉTATS (States) ---
+    const [produits, setProduits] = useState([]); // Données brutes de l'API
+    const [loading, setLoading] = useState(true); // État de chargement
+    const [expandedSections, setExpandedSections] = useState({}); // Gère le bouton "Voir plus" par section
+    const [filter, setFilter] = useState("Tous"); // Catégorie active
+    const [quantities, setQuantities] = useState({}); // Quantités sélectionnées par produit (local au catalogue)
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768); // Détection responsive pour le seuil d'affichage
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { addToCart } = useCard();
+    const { addToCart } = useCard(); // Consommation du contexte Panier
     const apiUrl = "http://localhost:3000";
 
+    // --- LOGIQUE D'URL (Query Params) ---
     const queryParams = new URLSearchParams(location.search);
     const searchTerm = queryParams.get("search") || "";
     const filterParam = queryParams.get("filter");
 
+    /** Synchronise le filtre interne avec les paramètres de l'URL */
     useEffect(() => {
         if (filterParam) {
             setFilter(filterParam);
@@ -29,12 +37,14 @@ const Catalogue = () => {
         }
     }, [filterParam, searchTerm]);
 
+    /** Écouteur de redimensionnement pour adapter le seuil "Voir plus" en temps réel */
     useEffect(() => {
         const handleResize = () => setIsMobile(window.innerWidth <= 768);
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    /** CHARGEMENT INITIAL : Récupère tous les produits via l'API */
     useEffect(() => {
         const fetchProduits = async () => {
             try {
@@ -51,6 +61,7 @@ const Catalogue = () => {
         fetchProduits();
     }, []);
 
+    /** Gère la modification de quantité locale avant l'ajout au panier */
     const handleQtyChange = (id, delta, stockDisponible) => {
         setQuantities(prev => {
             const current = parseInt(prev[id], 10) || 1;
@@ -60,7 +71,11 @@ const Catalogue = () => {
         });
     };
 
+    /** * FONCTION DE RENDU DE SECTION
+     * Orchestre le filtrage, la recherche et la pagination (Voir plus)
+     */
     const renderSection = (title, filterFn, sectionKey) => {
+        // Filtrage croisé : Catégorie + Recherche textuelle
         const list = produits.filter(item => {
             const matchesCategory = filterFn(item);
             const matchesSearch = item.nom_produit.toLowerCase().includes(searchTerm.toLowerCase());
@@ -72,6 +87,7 @@ const Catalogue = () => {
 
         if (list.length === 0) return null;
 
+        // Logique d'affichage partiel (pagination simplifiée)
         const threshold = isMobile ? 2 : 8;
         const isExpanded = expandedSections[sectionKey];
         const displayedList = (isExpanded || filter !== "Tous" || searchTerm !== "") ? list : list.slice(0, threshold);
@@ -89,24 +105,22 @@ const Catalogue = () => {
                             <div key={itemId} style={styles.card} className={`catalogue-card ${isOutOfStock ? "card-out-of-stock" : ""}`}>
                                 <div onClick={() => !isOutOfStock && navigate(`/produit/${itemId}`)} style={{cursor: isOutOfStock ? 'default' : 'pointer', flex: 1, position: 'relative', display: 'flex', flexDirection: 'column'}}>
 
-                                    {/* OVERLAY RUPTURE (Identique aux Promotions) */}
+                                    {/* INDICATEUR VISUEL : RUPTURE DE STOCK */}
                                     {isOutOfStock && (
                                         <div className="promo-overlay">
                                             <span className="promo-overlay-text">RUPTURE</span>
                                         </div>
                                     )}
 
-                                    {/* BADGE STOCK */}
+                                    {/* BADGE ÉTAT DU STOCK */}
                                     <div style={{...styles.stockBadge, backgroundColor: isOutOfStock ? "#666" : "#2A9D8F"}}>
                                         {isOutOfStock ? "Indisponible" : `Stock : ${item.stock}`}
                                     </div>
 
-                                    {/* IMAGE AREA */}
                                     <div style={styles.imageContainer} className="img-wrapper">
                                         <img src={`${apiUrl}/images/${item.image}`} alt={item.nom_produit} style={styles.img} className="main-img" />
                                     </div>
 
-                                    {/* INFO AREA */}
                                     <div style={styles.infoContainer} className="info-container-mobile">
                                         <h4 style={styles.productName} className="product-name-mobile">{item.nom_produit}</h4>
                                         <p style={styles.productDesc} className="product-desc-mobile">{item.description}</p>
@@ -114,7 +128,7 @@ const Catalogue = () => {
                                     </div>
                                 </div>
 
-                                {/* QUICK ACTIONS / FOOTER */}
+                                {/* ACTIONS RAPIDES : Choix quantité et ajout panier sans quitter la liste */}
                                 <div style={styles.quickAction} className="quick-action-mobile">
                                     {!isOutOfStock ? (
                                         <>
@@ -157,6 +171,7 @@ const Catalogue = () => {
                     })}
                 </div>
 
+                {/* BOUTON D'EXPANSION DE SECTION */}
                 {list.length > threshold && searchTerm === "" && filter === "Tous" && (
                     <div style={styles.viewMoreContainer}>
                         <button className="view-more-btn" style={styles.viewMoreBtn} onClick={() => setExpandedSections(prev => ({...prev, [sectionKey]: !isExpanded}))}>
@@ -184,7 +199,6 @@ const Catalogue = () => {
                     .catalogue-card:hover { transform: translateY(-12px); border-color: #C9A24D; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
                     .catalogue-card:hover .main-img { transform: scale(1.1); transition: 0.6s ease; }
                     
-                    /* STYLE RUPTURE IDENTIQUE PROMO */
                     .card-out-of-stock { opacity: 0.6; filter: grayscale(0.9); pointer-events: none; }
                     .promo-overlay {
                         position: absolute; top: 0; left: 0; width: 100%; height: 240px; 
@@ -229,6 +243,7 @@ const Catalogue = () => {
                     `}
                 </style>
 
+                {/* FILTRES PAR BULLES (Navigation par univers) */}
                 <div style={styles.filterArea}>
                     <h3 style={styles.filterTitle}>Notre Univers</h3>
                     <div style={styles.bubbleGroup} className="bubble-group-mobile">
@@ -250,6 +265,7 @@ const Catalogue = () => {
                     </div>
                 </div>
 
+                {/* APPELS AUX SECTIONS DYNAMIQUES */}
                 {renderSection("Nos offres et promotions", p => p.numero_promotion && p.numero_promotion !== "NO_PROMO", "promo")}
                 {renderSection("Nos cafés", p => p.categorie === "Café", "cafe")}
                 {renderSection("Nos thés", p => p.categorie === "Thé", "the")}
@@ -259,6 +275,7 @@ const Catalogue = () => {
     );
 };
 
+// --- STYLES OBJETS (Style Inline) ---
 const styles = {
     section: { width: "100%", padding: "20px 0" },
     titleSection: { marginLeft: "5%", fontFamily: "'Playfair Display', serif", color: "#373735", fontSize: "2.5rem", marginBottom: "40px", fontWeight: '900' },

@@ -1,9 +1,17 @@
 import React, { useState } from "react";
 import { FiStar, FiHeart } from "react-icons/fi";
 
+/**
+ * COMPOSANT : AvisClients
+ * ROLE : Affiche une section de témoignages clients sous forme de cartes interactives.
+ */
 const AvisClients = () => {
+    // --- ÉTATS (States) ---
+    // Stocke l'ID de la carte survolée pour appliquer l'effet de zoom et d'ombre portée
     const [hoveredId, setHoveredId] = useState(null);
 
+    // --- DONNÉES (Data) ---
+    // Simulation de données provenant d'une base de données ou d'une API
     const avis = [
         {
             id: 1,
@@ -27,15 +35,13 @@ const AvisClients = () => {
 
     return (
         <section style={styles.section}>
-            {/* Injection du Responsive sans toucher aux objets styles */}
+            {/* INJECTION CSS : Gère le responsive design (passage de 3 à 2 puis 1 colonne) */}
             <style>
                 {`
                 @media (max-width: 992px) {
-                    .avis-container {
-                        gap: 20px !important;
-                    }
+                    .avis-container { gap: 20px !important; }
                     .avis-card {
-                        width: calc(50% - 20px) !important; /* 2 colonnes sur tablette */
+                        width: calc(50% - 20px) !important;
                         min-width: 300px !important;
                     }
                 }
@@ -58,15 +64,21 @@ const AvisClients = () => {
             </style>
 
             <h2 style={styles.titleSection} className="avis-title">Avis récents</h2>
+
+            {/* GRILLE D'AFFICHAGE */}
             <div style={styles.container} className="avis-container">
+                {/* RENDU DYNAMIQUE DES CARTES D'AVIS */}
                 {avis.map((item) => {
+                    // Calcul booléen pour savoir si cette carte précise est survolée
                     const isHovered = hoveredId === item.id;
+
                     return (
                         <div
-                            key={item.id}
+                            key={item.id} // Identifiant unique pour le rééquilibrage du Virtual DOM
                             className="avis-card"
                             style={{
                                 ...styles.card,
+                                // Styles conditionnels (Ternaires) basés sur l'état 'isHovered'
                                 transform: isHovered ? "translateY(-12px)" : "translateY(0)",
                                 boxShadow: isHovered ? "0 20px 40px rgba(0,0,0,0.5)" : "0 10px 20px rgba(0,0,0,0.3)",
                                 border: isHovered ? "1px solid #C9A24D" : "1px solid transparent"
@@ -74,11 +86,14 @@ const AvisClients = () => {
                             onMouseEnter={() => setHoveredId(item.id)}
                             onMouseLeave={() => setHoveredId(null)}
                         >
+                            {/* DÉCORATION : Icônes de notation */}
                             <div style={styles.starsContainer}>
                                 {[...Array(3)].map((_, i) => (
                                     <FiHeart key={i} style={styles.icon} />
                                 ))}
                             </div>
+
+                            {/* CONTENU DE L'AVIS */}
                             <h3 style={styles.userName}>{item.nom}</h3>
                             <p style={styles.comment}>"{item.commentaire}"</p>
                         </div>
@@ -89,6 +104,7 @@ const AvisClients = () => {
     );
 };
 
+// --- STYLES (Objets de configuration CSS-in-JS) ---
 const styles = {
     section: {
         width: "100%",

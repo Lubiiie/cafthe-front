@@ -1,8 +1,14 @@
 import React from 'react';
 
+/**
+ * COMPOSANT : CGV
+ * ROLE : Affiche les Conditions Générales de Vente.
+ * Assure la conformité légale de la plateforme e-commerce CafThé.
+ */
 const CGV = () => {
     return (
         <div style={styles.mainWrapper}>
+            {/* INJECTION CSS : Gère la lisibilité du texte sur tous les formats d'écran */}
             <style>
                 {`
                 @media (max-width: 768px) {
@@ -36,15 +42,19 @@ const CGV = () => {
                 }
                 `}
             </style>
-            <main style={styles.contentArea}>
+
+            <main style={styles.contentArea} role="main">
                 <div style={styles.pageContainer} className="cgv-container">
+                    {/* TITRE PRINCIPAL : Utilise H1 pour le SEO et la hiérarchie sémantique */}
                     <h1 style={styles.mainTitle} className="cgv-title">Conditions Générales de Vente</h1>
 
                     <div style={styles.legalNotice}>
+                        {/* INTRODUCTION : Mise en avant via une bordure gauche (Style Citation) */}
                         <p style={styles.intro} className="cgv-intro">
                             Les présentes Conditions Générales de Vente régissent l'ensemble des transactions effectuées sur le site e-commerce <strong>CafThé</strong>. Toute commande passée sur le site implique l'adhésion entière et sans réserve du client aux présentes CGV.
                         </p>
 
+                        {/* SECTION 1 : OBJET */}
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="cgv-subtitle">1. Objet</h2>
                             <p style={styles.text} className="cgv-text">
@@ -52,6 +62,7 @@ const CGV = () => {
                             </p>
                         </section>
 
+                        {/* SECTION 2 : CATALOGUE */}
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="cgv-subtitle">2. Produits et Catalogue</h2>
                             <ul style={styles.list} className="cgv-list">
@@ -61,6 +72,7 @@ const CGV = () => {
                             </ul>
                         </section>
 
+                        {/* SECTION 3 : LOGIQUE MÉTIER DE COMMANDE */}
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="cgv-subtitle">3. Processus de Commande</h2>
                             <p style={styles.text} className="cgv-text">Pour valider une commande, l'utilisateur doit suivre le parcours suivant :</p>
@@ -73,6 +85,7 @@ const CGV = () => {
                             </ul>
                         </section>
 
+                        {/* SECTION 4 : PAIEMENT */}
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="cgv-subtitle">4. Prix et Paiement</h2>
                             <p style={styles.text} className="cgv-text">
@@ -80,6 +93,7 @@ const CGV = () => {
                             </p>
                         </section>
 
+                        {/* SECTION 5 : DROIT DE RÉTRACTATION (Point légal critique) */}
                         <section style={styles.section}>
                             <h2 style={styles.subTitle} className="cgv-subtitle">5. Droit de Rétractation</h2>
                             <p style={styles.text} className="cgv-text">
@@ -93,16 +107,17 @@ const CGV = () => {
     );
 };
 
+// --- STYLES ---
 const styles = {
     mainWrapper: {
-        backgroundColor: '#373735',
+        backgroundColor: '#373735', // Couleur sombre identique au Header/Footer pour la cohérence
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
     },
     contentArea: {
         flex: 1,
-        paddingTop: '120px',
+        paddingTop: '120px', // Espace suffisant pour ne pas être caché par le Header fixe
         paddingBottom: '80px',
         display: 'flex',
         justifyContent: 'center',
@@ -126,13 +141,13 @@ const styles = {
     legalNotice: {
         color: '#373735',
         fontFamily: "'Lato', sans-serif",
-        lineHeight: '1.8',
+        lineHeight: '1.8', // Améliore le confort de lecture pour les longs textes
     },
     intro: {
         fontSize: '1.15rem',
         marginBottom: '40px',
         fontStyle: 'italic',
-        borderLeft: '4px solid #C9A24D',
+        borderLeft: '4px solid #C9A24D', // Rappel de la charte graphique (Doré)
         paddingLeft: '20px',
     },
     section: {

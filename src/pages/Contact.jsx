@@ -3,17 +3,29 @@ import { useLocation, Link } from "react-router-dom";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : Contact
+ * ROLE : Regroupe la FAQ interactive et le formulaire de contact avec gestion RGPD.
+ * LOGIQUE : Utilise l'ancrage dynamique pour scroller vers des sections spécifiques via l'URL.
+ */
 const Contact = () => {
-    const [openIndex, setOpenIndex] = useState(null);
-    const [rgpdAccepted, setRgpdAccepted] = useState(false);
+    // --- ÉTATS LOCAUX ---
+    const [openIndex, setOpenIndex] = useState(null); // Gère l'affichage des réponses FAQ (accordéon)
+    const [rgpdAccepted, setRgpdAccepted] = useState(false); // État de la checkbox obligatoire pour le formulaire
     const location = useLocation();
 
+    // --- DONNÉES STATIQUES ---
     const faqData = [
         { q: "Quels sont les délais de livraison ?", a: "Vos commandes sont préparées sous 24h. Comptez 2 à 4 jours ouvrés." },
         { q: "Comment suivre ma commande ?", a: "Un numéro de suivi vous est envoyé par mail dès l'expédition." },
         { q: "Puis-je modifier ma commande ?", a: "Tant qu'elle n'est pas expédiée, contactez-nous au plus vite." }
     ];
 
+    // --- EFFET D'ANCRAGE (Smooth Scroll) ---
+    /**
+     * Surveille l'URL pour détecter un paramètre "section" (ex: ?section=faq).
+     * Si trouvé, scroll automatiquement vers l'élément correspondant avec un effet fluide.
+     */
     useEffect(() => {
         const params = new URLSearchParams(location.search);
         const section = params.get("section");
@@ -30,6 +42,7 @@ const Contact = () => {
 
     return (
         <>
+            {/* SEO : Optimisation des métadonnées pour la page d'assistance */}
             <Helmet>
                 <title>Contact & FAQ | CafThé - Nous sommes à votre écoute</title>
                 <meta name="description" content="Une question sur nos cafés, nos thés ou votre commande ? Consultez notre FAQ ou contactez l'équipe CafThé directement via notre formulaire." />
@@ -97,6 +110,7 @@ const Contact = () => {
                     <p style={styles.heroSubtitle}>Consultez notre FAQ ou contactez-nous directement.</p>
                 </header>
 
+                {/* SECTION : FAQ (Accordéon interactif) */}
                 <section id="faq" style={styles.sectionDark} className="section-dark-res">
                     <div style={styles.container} className="container-res">
                         <div style={styles.contentRow} className="content-row-res">
@@ -116,6 +130,7 @@ const Contact = () => {
                                                 <span className="question-text" style={styles.questionText}>{item.q}</span>
                                                 {openIndex === index ? <FiChevronUp color="#C9A24D" /> : <FiChevronDown color="#C9A24D" />}
                                             </div>
+                                            {/* Rendu conditionnel de la réponse selon l'index actif */}
                                             {openIndex === index && <div style={styles.faqAnswer}>{item.a}</div>}
                                         </div>
                                     ))}
@@ -128,6 +143,7 @@ const Contact = () => {
                     </div>
                 </section>
 
+                {/* SECTION : FORMULAIRE DE CONTACT */}
                 <section id="message" style={styles.sectionDark} className="section-dark-res">
                     <div style={styles.container} className="container-res">
                         <div style={styles.contentRowReverse} className="content-row-reverse-res">
@@ -155,6 +171,7 @@ const Contact = () => {
                                         aria-label="Votre message"
                                     ></textarea>
 
+                                    {/* CONFORMITÉ RGPD : Consentement obligatoire pour soumettre */}
                                     <div className="checkbox-container" style={styles.rgpdContainer}>
                                         <label style={styles.checkboxLabel}>
                                             <input
@@ -196,6 +213,7 @@ const Contact = () => {
     );
 };
 
+// --- CONFIGURATION DES STYLES ---
 const styles = {
     pageWrapper: { backgroundColor: "#E9E3E3", minHeight: "100vh", paddingTop: "120px" },
     heroSection: { maxWidth: "900px", margin: "0 auto 80px auto", textAlign: "center", padding: "0 20px" },

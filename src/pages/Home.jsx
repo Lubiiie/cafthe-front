@@ -6,18 +6,24 @@ import HistoireEngagements from "../components/HistoireEngagements";
 import Assistance from "../components/Assistance";
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : Home
+ * ROLE : Page d'accueil (Landing Page). Elle sert de chef d'orchestre en assemblant
+ * les différentes sections de présentation et de marketing.
+ */
 const Home = () => {
     return (
         <>
+            {/* SEO : Optimisation du référencement pour la page la plus importante du site */}
             <Helmet>
                 <title>CafThé | Cafés d'Exception & Thés Bio en Ligne</title>
                 <meta name="description" content="Découvrez CafThé, votre boutique spécialisée en cafés de spécialité et thés bio. Livraison offerte dès 45€ d'achats. Torréfaction artisanale." />
             </Helmet>
 
             <div style={styles.pageContainer} className="home-responsive-wrapper">
+                {/* STYLE INJECTÉ : Garantit que la page ne "déborde" jamais sur les petits écrans */}
                 <style>
                     {`
-                    /* Optimisation globale pour le scroll et l'affichage mobile */
                     .home-responsive-wrapper {
                         overflow-x: hidden; 
                         width: 100%;
@@ -28,28 +34,34 @@ const Home = () => {
                             width: 100% !important;
                         }
                     }
-
-                    @media (max-width: 480px) {
-                        .home-responsive-wrapper {
-                            padding: 0;
-                        }
-                    }
                     `}
                 </style>
 
+                {/* --- ASSEMBLAGE DES COMPOSANTS (Composition) --- */}
+
+                {/* 1. Accroche visuelle et CTA principal */}
                 <Hero />
+
+                {/* 2. Section dynamique récupérant les promos via l'API */}
                 <Promotions />
+
+                {/* 3. Preuve sociale pour rassurer le futur client */}
                 <AvisClients />
+
+                {/* 4. Storytelling et valeurs de la marque */}
                 <HistoireEngagements />
+
+                {/* 5. Liens d'aide et support client */}
                 <Assistance />
             </div>
         </>
     );
 };
 
+// --- STYLES DE STRUCTURE ---
 const styles = {
     pageContainer: {
-        backgroundColor: '#E9E3E3',
+        backgroundColor: '#E9E3E3', // Couleur de fond neutre pour l'unité visuelle
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column'

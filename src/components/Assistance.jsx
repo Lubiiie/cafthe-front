@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * COMPOSANT : Assistance
+ * ROLE : Affiche deux accès rapides (FAQ et Contact) sous forme de cercles interactifs.
+ */
 const Assistance = () => {
+    // --- ÉTATS (States) ---
+    // Gère l'ID de l'élément survolé pour appliquer les effets de style (scale, couleur, ombre)
     const [hovered, setHovered] = useState(null);
+
+    // --- NAVIGATION ---
     const navigate = useNavigate();
 
+    // --- DONNÉES (Data) ---
+    // Centralisation des liens pour faciliter la maintenance et éviter la répétition de code (DRY)
     const liens = [
         {
             id: "aide",
@@ -20,60 +30,71 @@ const Assistance = () => {
         }
     ];
 
+    // --- FONCTIONS (Handlers) ---
+    /**
+     * Gère la navigation programmée vers une section spécifique
+     * @param {string} path - Le chemin de destination
+     */
     const handleNavigation = (path) => {
         navigate(path);
-        window.scrollTo(0, 0);
+        window.scrollTo(0, 0); // Force le retour en haut de page après changement de route
     };
 
     return (
         <section style={styles.section}>
-            {/* Injection du Responsive sans toucher aux objets styles */}
+            {/* INJECTION CSS : Gère l'adaptabilité (Responsive) du composant */}
             <style>
                 {`
                 @media (max-width: 768px) {
                     .assistance-container {
-                        gap: 40px !important; /* On réduit le gap de 100px à 40px */
+                        gap: 40px !important;
                         flex-direction: row !important;
                     }
                     .assistance-circle {
-                        width: 130px !important; /* Cercles un peu plus petits sur mobile */
+                        width: 130px !important;
                         height: 130px !important;
                     }
                     .assistance-text {
-                        font-size: 1.4rem !important; /* Texte ajusté pour mobile */
+                        font-size: 1.4rem !important;
                     }
                 }
 
                 @media (max-width: 480px) {
                     .assistance-container {
-                        flex-direction: column !important; /* Empilement sur très petits écrans */
+                        flex-direction: column !important;
                         gap: 50px !important;
                     }
                 }
                 `}
             </style>
 
+            {/* STRUCTURE PRINCIPALE */}
             <div style={styles.container} className="assistance-container">
+                {/* RENDU DYNAMIQUE : On boucle sur le tableau 'liens' */}
                 {liens.map((item) => {
                     const isHovered = hovered === item.id;
                     return (
                         <div
-                            key={item.id}
+                            key={item.id} // Clé unique obligatoire pour React lors d'un .map()
                             style={styles.itemWrapper}
                             onMouseEnter={() => setHovered(item.id)}
                             onMouseLeave={() => setHovered(null)}
                             onClick={() => handleNavigation(item.path)}
                         >
+                            {/* CERCLE GRAPHIQUE */}
                             <div
                                 className="assistance-circle"
                                 style={{
                                     ...styles.circle,
+                                    // Style dynamique basé sur l'état 'hovered'
                                     transform: isHovered ? "scale(1.1)" : "scale(1)",
                                     boxShadow: isHovered ? "0 10px 20px rgba(0,0,0,0.2)" : "0 4px 10px rgba(0,0,0,0.1)"
                                 }}
                             >
                                 <img src={item.image} alt={item.titre} style={styles.icon} />
                             </div>
+
+                            {/* TEXTE ASSOCIÉ */}
                             <span
                                 className="assistance-text"
                                 style={{
@@ -92,13 +113,14 @@ const Assistance = () => {
     );
 };
 
+// --- STYLES  ---
 const styles = {
     section: {
         width: "100%",
         backgroundColor: "#E9E3E3",
         padding: "60px 0",
         boxSizing: "border-box",
-        overflow: "hidden" // Sécurité anti-débordement
+        overflow: "hidden"
     },
     container: {
         display: "flex",
@@ -129,8 +151,8 @@ const styles = {
         boxSizing: "border-box"
     },
     icon: {
-        width: "80%",      // L'icône prendra 80% de la place dans le cercle
-        height: "80%",     // Elle restera centrée sans déborder
+        width: "80%",
+        height: "80%",
         objectFit: "contain",
         transition: "transform 0.3s ease"
     },

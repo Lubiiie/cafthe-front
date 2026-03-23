@@ -3,14 +3,25 @@ import { useNavigate } from "react-router-dom";
 import { FiChevronLeft, FiChevronRight, FiPlus, FiMinus, FiShoppingBag } from "react-icons/fi";
 import { useCard } from "../context/CardContext.jsx";
 
+/**
+ * COMPOSANT : Promotions
+ * ROLE : Affiche un carrousel horizontal des produits ayant une promotion active.
+ */
 const Promotions = () => {
-    const [promos, setPromos] = useState([]);
-    const [quantities, setQuantities] = useState({});
+    // --- ÉTATS (States) ---
+    const [promos, setPromos] = useState([]); // Liste des produits filtrés
+    const [quantities, setQuantities] = useState({}); // Objet stockant les quantités sélectionnées par ID produit
+
+    // --- REFS & NAVIGATION ---
+    // useRef permet d'accéder directement à l'élément du DOM pour manipuler le défilement (scroll)
     const scrollRef = useRef(null);
     const navigate = useNavigate();
     const { addToCart } = useCard();
     const apiUrl = "http://localhost:3000";
 
+    // --- EFFETS (Side Effects) ---
+    /** * Récupère tous les produits et filtre ceux qui possèdent un badge promotionnel
+     */
     useEffect(() => {
         const fetchPromos = async () => {
             try {
@@ -18,6 +29,7 @@ const Promotions = () => {
                 const data = await response.json();
                 const list = Array.isArray(data) ? data : (data.produits || []);
 
+                // Filtrage logique : on ne garde que les produits avec une promo valide
                 const filtered = list.filter(p =>
                     p.numero_promotion &&
                     p.numero_promotion !== "NO_PROMO"
@@ -31,6 +43,10 @@ const Promotions = () => {
         fetchPromos();
     }, []);
 
+    // --- GESTION DES QUANTITÉS ---
+    /**
+     * Modifie la quantité avec vérification des limites de stock
+     */
     const handleQtyChange = (id, delta, stockDisponible) => {
         setQuantities(prev => {
             const current = parseInt(prev[id], 10) || 1;
@@ -42,34 +58,32 @@ const Promotions = () => {
         });
     };
 
-    const handleInputChange = (id, value, stockDisponible) => {
-        if (value === "") {
-            setQuantities(prev => ({ ...prev, [id]: "" }));
-            return;
-        }
-        const val = parseInt(value, 10);
-        if (!isNaN(val)) {
-            const safeVal = Math.max(1, Math.min(val, stockDisponible));
-            setQuantities(prev => ({ ...prev, [id]: safeVal }));
-        }
-    };
-
+    // --- LOGIQUE DU CARROUSEL ---
+    /**
+     * Aligne le défilement horizontal via la Ref 'scrollRef'
+     */
     const scroll = (direction) => {
         const { current } = scrollRef;
         if (current) {
-            const scrollAmount = 350;
-            current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+            const scrollAmount = 350; // Distance de défilement en pixels
+            current.scrollBy({
+                left: direction === 'left' ? -scrollAmount : scrollAmount,
+                behavior: 'smooth'
+            });
         }
     };
 
+    // Rendu nul si aucune promotion n'est disponible (évite d'afficher une section vide)
     if (promos.length === 0) return null;
 
     return (
         <section style={styles.container}>
             <style>{`
+                /* EFFETS VISUELS ET RESPONSIVE */
                 .promo-card { transition: all 0.4s ease; border: 2px solid #373735; flex: 0 0 auto; position: relative; }
                 .promo-card:hover { border-color: #C9A24D; transform: translateY(-8px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
                 
+                /* GESTION RUPTURE DE STOCK */
                 .promo-out-of-stock { opacity: 0.6; filter: grayscale(0.9); pointer-events: none; }
                 .promo-overlay {
                     position: absolute; top: 0; left: 0; width: 100%; height: 200px; 
@@ -80,33 +94,23 @@ const Promotions = () => {
                     background-color: #E63946; color: white; padding: 6px 15px;
                     font-family: 'Playfair Display', serif; font-weight: 900;
                     font-size: 16px; transform: rotate(-12deg); border: 2px solid white;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
                 }
 
-                .add-btn-promo:hover { background-color: #FFF !important; transform: scale(1.1); color: #373735 !important; }
-                .arrow-btn:hover { color: #C9A24D !important; transform: scale(1.2); }
                 .hide-scrollbar::-webkit-scrollbar { display: none; }
-                .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-
-                /* AJOUT RESPONSIVE UNIQUEMENT */
+                
                 @media (max-width: 768px) {
-                    .promo-main-title { font-size: 1.8rem !important; text-align: center; margin-left: 0 !important; }
-                    .promo-card { width: 280px !important; }
-                    .promo-arrow { display: none !important; } /* On swipe sur mobile */
-                    .promo-slider-wrapper { padding: 0 15px !important; }
+                    .promo-main-title { font-size: 1.8rem !important; }
+                    .promo-arrow { display: none !important; } /* On privilégie le swipe tactile sur mobile */
                 }
             `}</style>
 
             <h2 style={styles.mainTitle} className="promo-main-title">Nos offres et promotions</h2>
 
             <div style={styles.sliderWrapper} className="promo-slider-wrapper">
-                <FiChevronLeft
-                    className="arrow-btn promo-arrow"
-                    style={styles.arrow}
-                    onClick={() => scroll('left')}
-                    aria-label="Promotions précédentes"
-                />
+                {/* BOUTON GAUCHE */}
+                <FiChevronLeft className="arrow-btn promo-arrow" style={styles.arrow} onClick={() => scroll('left')} />
 
+                {/* CONTENEUR DEFILEMENT (Utilise la Ref) */}
                 <div style={styles.carouselContainer} ref={scrollRef} className="hide-scrollbar">
                     {promos.map((item) => {
                         const itemId = item.numero_produit;
@@ -115,8 +119,10 @@ const Promotions = () => {
 
                         return (
                             <div key={itemId} style={styles.card} className={`promo-card ${isOutOfStock ? "promo-out-of-stock" : ""}`}>
+                                {/* ZONE CLIQUABLE (Vers détails produit) */}
                                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }} onClick={() => !isOutOfStock && navigate(`/produit/${itemId}`)}>
 
+                                    {/* VISUEL RUPTURE */}
                                     {isOutOfStock && (
                                         <div className="promo-overlay">
                                             <span className="promo-overlay-text">RUPTURE</span>
@@ -124,15 +130,10 @@ const Promotions = () => {
                                     )}
 
                                     <div style={styles.imageArea}>
-                                        <div style={{
-                                            ...styles.stockBadge,
-                                            backgroundColor: isOutOfStock ? "#666" : "#2A9D8F"
-                                        }}>
+                                        <div style={{ ...styles.stockBadge, backgroundColor: isOutOfStock ? "#666" : "#2A9D8F" }}>
                                             {isOutOfStock ? "Indisponible" : `Stock : ${item.stock}`}
                                         </div>
-
                                         {!isOutOfStock && <div style={styles.badge}>{item.numero_promotion}</div>}
-
                                         <img src={`${apiUrl}/images/${item.image}`} alt={item.nom_produit} style={styles.img} />
                                     </div>
 
@@ -143,42 +144,30 @@ const Promotions = () => {
                                     </div>
                                 </div>
 
+                                {/* ZONE ACTION RAPIDE (Ajout panier) */}
                                 <div style={styles.quickAction}>
                                     {!isOutOfStock ? (
                                         <>
                                             <div style={styles.qtySelector}>
-                                                <button
-                                                    style={styles.qtyBtn}
-                                                    aria-label="Diminuer la quantité"
-                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}
-                                                >
+                                                <button style={styles.qtyBtn} onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, -1, item.stock); }}>
                                                     <FiMinus/>
                                                 </button>
                                                 <input
                                                     type="text"
                                                     style={styles.qtyInput}
                                                     value={quantities[itemId] || 1}
-                                                    aria-label="Quantité"
+                                                    readOnly // Lecture seule pour forcer l'usage des boutons +/-
                                                     onClick={(e) => e.stopPropagation()}
-                                                    onChange={(e) => handleInputChange(itemId, e.target.value, item.stock)}
-                                                    onBlur={() => {
-                                                        if (!quantities[itemId]) setQuantities(prev => ({ ...prev, [itemId]: 1 }));
-                                                    }}
                                                 />
-                                                <button
-                                                    style={styles.qtyBtn}
-                                                    aria-label="Augmenter la quantité"
-                                                    onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}
-                                                >
+                                                <button style={styles.qtyBtn} onClick={(e) => { e.stopPropagation(); handleQtyChange(itemId, 1, item.stock); }}>
                                                     <FiPlus/>
                                                 </button>
                                             </div>
                                             <button
                                                 className="add-btn-promo"
                                                 style={styles.addToCart}
-                                                aria-label={`Ajouter ${item.nom_produit} au panier`}
                                                 onClick={(e) => {
-                                                    e.stopPropagation();
+                                                    e.stopPropagation(); // Empêche le clic de déclencher la navigation vers le produit
                                                     addToCart({ ...item, id_produit: itemId }, currentQty);
                                                 }}
                                             >
@@ -196,17 +185,14 @@ const Promotions = () => {
                     })}
                 </div>
 
-                <FiChevronRight
-                    className="arrow-btn promo-arrow"
-                    style={styles.arrow}
-                    onClick={() => scroll('right')}
-                    aria-label="Promotions suivantes"
-                />
+                {/* BOUTON DROIT */}
+                <FiChevronRight className="arrow-btn promo-arrow" style={styles.arrow} onClick={() => scroll('right')} />
             </div>
         </section>
     );
 };
 
+// --- STYLES ---
 const styles = {
     container: { padding: "60px 0", backgroundColor: "#E9E3E3", overflow: "hidden" },
     mainTitle: { marginLeft: "5%", fontFamily: "'Playfair Display', serif", fontSize: "2.25rem", color: "#373735", marginBottom: "40px", fontWeight: "900" },
@@ -215,8 +201,8 @@ const styles = {
     arrow: { fontSize: "45px", color: "#373735", cursor: "pointer", transition: "0.3s", flexShrink: 0 },
     card: { width: "320px", height: "500px", backgroundColor: "#373735", borderRadius: "25px", overflow: "hidden", display: "flex", flexDirection: "column", cursor: "pointer" },
     imageArea: { height: "200px", backgroundColor: "#FFF", position: "relative", overflow: "hidden" },
-    badge: { position: "absolute", top: "15px", right: "15px", backgroundColor: "#C9A24D", color: "#373735", padding: "5px 12px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "900", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
-    stockBadge: { position: "absolute", top: "15px", left: "15px", color: "white", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", zIndex: 5, boxShadow: "0 2px 5px rgba(0,0,0,0.2)" },
+    badge: { position: "absolute", top: "15px", right: "15px", backgroundColor: "#C9A24D", color: "#373735", padding: "5px 12px", borderRadius: "8px", fontSize: "0.85rem", fontWeight: "900", zIndex: 5 },
+    stockBadge: { position: "absolute", top: "15px", left: "15px", color: "white", padding: "4px 10px", borderRadius: "8px", fontSize: "0.8rem", fontWeight: "bold", zIndex: 5 },
     img: { width: "100%", height: "100%", objectFit: "cover" },
     infoArea: { padding: "25px", color: "#E9E3E3", flexGrow: 1, display: "flex", flexDirection: "column", gap: "10px" },
     prodName: { color: "#C9A24D", fontSize: "1.5rem", fontFamily: "'Playfair Display', serif", margin: "0", fontWeight: "700" },

@@ -4,43 +4,55 @@ import { useAuth } from "../context/AuthContext";
 import { useCard } from "../context/CardContext";
 import { FiUser, FiMapPin, FiPackage, FiLogOut, FiSave, FiEdit2, FiX, FiTrash2 } from 'react-icons/fi';
 
+/**
+ * COMPOSANT : CompteClient
+ * ROLE : Interface de gestion utilisateur (Profil, Commandes, Sécurité)
+ */
 const Compte = () => {
+    // --- HOOKS ET NAVIGATION ---
     const navigate = useNavigate();
-    const { logout } = useAuth();
-    const { addToCart } = useCard();
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const [orders, setOrders] = useState([]);
-    const [showAllOrders, setShowAllOrders] = useState(false);
+    const { logout } = useAuth(); // Récupère la fonction de déconnexion globale
+    const { addToCart } = useCard(); // Pour la fonction "Recommander"
 
-    const [isEditing, setIsEditing] = useState(false);
+    // --- ÉTATS LOCAUX ---
+    const [user, setUser] = useState(null); // Données du client
+    const [loading, setLoading] = useState(true);
+    const [orders, setOrders] = useState([]); // Historique des achats
+    const [showAllOrders, setShowAllOrders] = useState(false); // Toggle d'affichage
+    const [isEditing, setIsEditing] = useState(false); // Bascule entre mode lecture et mode édition
+
+    // État du formulaire pour les modifications
     const [formData, setFormData] = useState({
         prenom: "", nom: "", email: "", telephone: "", adresse: "", cp: "", ville: ""
     });
 
-    const [showToast, setShowToast] = useState(false);
+    const [showToast, setShowToast] = useState(false); // Notification de succès
     const [toastMessage, setToastMessage] = useState("");
-    const [hoveredBtn, setHoveredBtn] = useState(null);
+    const [hoveredBtn, setHoveredBtn] = useState(null); // Gestion des effets de survol
 
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+    // --- CHARGEMENT DES DONNÉES ---
     useEffect(() => {
         const fetchUserData = async () => {
             const storedUserId = localStorage.getItem('userId');
             const storedToken = localStorage.getItem('token');
 
+            // Sécurité : redirection si non connecté
             if (!storedUserId || !storedToken) {
                 navigate('/login');
                 return;
             }
 
             try {
+                // Récupération du profil
                 const userRes = await fetch(`${apiUrl}/api/clients/me`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
                 if (userRes.ok) {
                     const userData = await userRes.json();
                     setUser(userData.client);
+                    // On remplit le formulaire avec les données actuelles
                     setFormData({
                         prenom: userData.client.prenom_client || "",
                         nom: userData.client.nom_client || "",
@@ -52,6 +64,7 @@ const Compte = () => {
                     });
                 }
 
+                // Récupération des commandes
                 const orderRes = await fetch(`${apiUrl}/api/clients/my-orders`, {
                     headers: { 'Authorization': `Bearer ${storedToken}` }
                 });
@@ -69,6 +82,9 @@ const Compte = () => {
         fetchUserData();
     }, [navigate, apiUrl]);
 
+    // --- ACTIONS DU PROFIL ---
+
+    /** Enregistre les modifications via une requête PUT */
     const handleUpdateProfile = async () => {
         const storedToken = localStorage.getItem('token');
         try {
@@ -85,6 +101,7 @@ const Compte = () => {
                 setToastMessage("Profil mis à jour !");
                 setShowToast(true);
                 setIsEditing(false);
+                // Mise à jour de l'état local pour refléter les changements
                 setUser({
                     ...user,
                     prenom_client: formData.prenom,
@@ -102,6 +119,7 @@ const Compte = () => {
         }
     };
 
+    /** Désactivation du compte (Soft Delete) */
     const handleDeleteAccount = async () => {
         const confirmDelete = window.confirm("Supprimer votre compte ? Cette action est irréversible.");
         if (confirmDelete) {
@@ -127,6 +145,7 @@ const Compte = () => {
         window.location.href = "/";
     };
 
+    /** Ajoute à nouveau les produits d'une ancienne commande au panier */
     const handleReorder = async (orderId) => {
         const storedToken = localStorage.getItem('token');
         try {
@@ -331,9 +350,9 @@ const styles = {
     daSectionBox: { padding: '40px', backgroundColor: '#373735', color: '#E9E3E3', borderRadius: '16px' },
     sectionHeader: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px', borderBottom: '1px solid rgba(201, 162, 77, 0.2)', paddingBottom: '15px' },
     daSectionTitle: { fontFamily: "'Playfair Display', serif", color: '#C9A24D', fontSize: '1.5rem', display: 'flex', alignItems: 'center', gap: '15px' },
-    formContainer: { display: 'flex', flexDirection: 'column', gap: '20px' },
-    formRow: { display: 'flex', gap: '25px', flexWrap: 'wrap' },
-    formGroup: { flex: 1, minWidth: '250px' },
+    formContainer: { display: "flex", flexDirection: "column", gap: "20px" },
+    formRow: { display: "flex", gap: "25px", flexWrap: "wrap" },
+    formGroup: { flex: 1, minWidth: "250px" },
     label: { display: 'block', fontSize: '0.85rem', color: '#C9A24D', marginBottom: '8px', textTransform: 'uppercase', letterSpacing: '1.5px', fontWeight: '600' },
     staticText: { fontSize: '1.1rem', margin: 0, padding: '8px 0', color: '#E9E3E3' },
     input: { width: '100%', padding: '14px 18px', borderRadius: '8px', border: '1px solid rgba(201, 162, 77, 0.4)', backgroundColor: 'rgba(255, 255, 255, 0.03)', color: '#E9E3E3', fontSize: '1rem', outline: 'none', boxSizing: 'border-box' },

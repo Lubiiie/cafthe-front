@@ -4,19 +4,28 @@ import { FiPlus, FiMinus, FiShoppingBag, FiTruck, FiShield, FiRotateCcw } from "
 import { useCard } from "../context/CardContext.jsx";
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : ProductDetails
+ * ROLE : Affiche la fiche détaillée d'un produit spécifique et gère l'ajout au panier.
+ */
 const ProductDetails = () => {
-    const { id } = useParams();
+    // --- RÉCUPÉRATION DES PARAMÈTRES ET DU CONTEXTE ---
+    const { id } = useParams(); // Récupère l'ID du produit depuis l'URL
+    const { addToCart } = useCard();
+
+    // --- ÉTATS LOCAUX ---
     const [produit, setProduit] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [quantity, setQuantity] = useState(1);
-    const { addToCart } = useCard();
+    const [quantity, setQuantity] = useState(1); // Quantité sélectionnée par l'utilisateur
     const apiUrl = "http://localhost:3000";
 
+    // --- CHARGEMENT DES DONNÉES DU PRODUIT ---
     useEffect(() => {
         const fetchProduit = async () => {
             try {
                 const response = await fetch(`${apiUrl}/api/produits/${id}`);
                 const data = await response.json();
+                // Gestion de la réponse API (produit direct ou imbriqué)
                 setProduit(data.produit ? data.produit : data);
             } catch (err) {
                 console.error("Erreur Fetch BDD:", err);
@@ -27,6 +36,10 @@ const ProductDetails = () => {
         fetchProduit();
     }, [id]);
 
+    // --- GESTION DES QUANTITÉS ---
+    /**
+     * Valide la saisie manuelle pour ne pas dépasser le stock disponible
+     */
     const handleInputChange = (e) => {
         const val = parseInt(e.target.value, 10);
         if (isNaN(val) || val < 1) {
@@ -147,6 +160,7 @@ const ProductDetails = () => {
                                         <FiPlus />
                                     </button>
                                 </div>
+                                {/* Appel de la fonction globale pour l'ajout au panier */}
                                 <button
                                     style={styles.addBtn}
                                     className="add-btn"

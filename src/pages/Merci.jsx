@@ -4,16 +4,27 @@ import { FiCheckCircle, FiPackage, FiMail, FiArrowRight } from 'react-icons/fi';
 import { useCard } from "../context/CardContext";
 import { Helmet } from 'react-helmet-async';
 
+/**
+ * COMPOSANT : Merci
+ * ROLE : Page de confirmation de commande après un paiement réussi.
+ * FONCTION : Remise à zéro du panier et affichage des messages de rassurance.
+ */
 const Merci = () => {
-    const { clearCart } = useCard();
-    const [isHovered, setIsHovered] = useState(null);
+    // --- CONSOMMATION DU CONTEXTE ---
+    const { clearCart } = useCard(); // Récupère la fonction pour vider le panier
+    const [isHovered, setIsHovered] = useState(null); // État local pour gérer les effets de survol JS
 
+    /**
+     * Hook d'effet qui se déclenche une seule fois au montage de la page.
+     * C'est ici que l'on vide définitivement le panier car la transaction est validée.
+     */
     useEffect(() => {
         clearCart();
-    }, []);
+    }, []); // Le tableau vide [] assure que l'action ne se répète pas si l'utilisateur rafraîchit la page
 
     return (
         <>
+            {/* SEO : Configuration des balises de tête pour la page de succès */}
             <Helmet>
                 <title>Merci pour votre commande | CafThé</title>
                 <meta name="description" content="Votre commande a été validée avec succès. Merci de votre confiance." />
@@ -21,6 +32,7 @@ const Merci = () => {
             </Helmet>
 
             <div style={styles.page}>
+                {/* STYLES RESPONSIVE : Injectés via une balise style pour supporter les Media Queries */}
                 <style>
                     {`
                     @media (max-width: 768px) {
@@ -51,8 +63,10 @@ const Merci = () => {
                     }
                     `}
                 </style>
+
                 <div style={styles.container}>
                     <div style={styles.card} className="merci-card">
+                        {/* VISUEL : Icône de confirmation */}
                         <div style={styles.iconWrapper}>
                             <FiCheckCircle style={styles.successIcon} />
                         </div>
@@ -64,24 +78,20 @@ const Merci = () => {
 
                         <div style={styles.divider} />
 
+                        {/* GRILLE D'INFORMATION : Rassurance client sur la suite du processus */}
                         <div style={styles.infoGrid}>
-                            <div
-                                style={styles.infoItem}
-                                className="info-item-mobile"
-                            >
+                            <div style={styles.infoItem} className="info-item-mobile">
                                 <FiMail style={styles.infoIcon} />
                                 <p style={styles.infoText}>Un mail de confirmation vient de vous être envoyé.</p>
                             </div>
 
-                            <div
-                                style={styles.infoItem}
-                                className="info-item-mobile"
-                            >
+                            <div style={styles.infoItem} className="info-item-mobile">
                                 <FiPackage style={styles.infoIcon} />
                                 <p style={styles.infoText}>Nous préparons votre colis avec le plus grand soin.</p>
                             </div>
                         </div>
 
+                        {/* NAVIGATION : Lien vers le catalogue pour relancer l'expérience utilisateur */}
                         <div style={styles.actionBox} className="action-box-mobile">
                             <Link
                                 to="/catalogue"
@@ -104,6 +114,7 @@ const Merci = () => {
     );
 };
 
+// --- CONFIGURATION DES STYLES (Style Object) ---
 const styles = {
     page: {
         backgroundColor: '#373735',

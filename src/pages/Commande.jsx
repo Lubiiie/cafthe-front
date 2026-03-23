@@ -4,33 +4,47 @@ import { useCard } from "../context/CardContext";
 import { FiMapPin, FiShoppingBag, FiInfo, FiCheckCircle, FiChevronRight, FiTrash2 } from 'react-icons/fi';
 import { useNavigate, Link } from 'react-router-dom';
 
+/**
+ * COMPOSANT : Commande
+ * ROLE : Gestion du tunnel d'achat (Checkout).
+ * FONCTIONNALITÉS : Choix du mode de livraison, intégration Mondial Relay, récapitulatif panier et paiement PayPal.
+ */
 const Commande = () => {
+    // --- CONSOMMATION DU CONTEXTE PANIER ---
     const { cart, getSubTotal, removeFromCart, updateQuantity } = useCard();
     const navigate = useNavigate();
 
-    const [deliveryMethod, setDeliveryMethod] = useState('mondial_relay');
-    const [selectedRelay, setSelectedRelay] = useState(null);
-    const [cgvAccepted, setCgvAccepted] = useState(false);
+    // --- ÉTATS LOCAUX ---
+    const [deliveryMethod, setDeliveryMethod] = useState('mondial_relay'); // Méthode par défaut
+    const [selectedRelay, setSelectedRelay] = useState(null); // Infos du point relais choisi
+    const [cgvAccepted, setCgvAccepted] = useState(false); // État de la checkbox légale
     const [isHovered, setIsHovered] = useState(null);
 
     const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
+    // --- SÉCURITÉ : Redirection si panier vide ---
     useEffect(() => {
         if (cart.length === 0) {
             navigate('/catalogue');
         }
     }, [cart, navigate]);
 
+    // --- LOGIQUE MONDIAL RELAY ---
+    /**
+     * Initialise le widget de sélection de point relais.
+     * Utilise la bibliothèque externe jQuery chargée dans l'index.html.
+     */
     const initMondialRelay = () => {
         if (window.jQuery && window.jQuery("#Zone_Widget").MR_ParcelShopPicker) {
             window.jQuery("#Zone_Widget").MR_ParcelShopPicker({
                 Target: "#Target_Widget",
-                Brand: "BDTEST  ",
+                Brand: "BDTEST  ", // Identifiant test
                 Country: "FR",
                 PostCode: "41000",
                 ColLivMod: "24R",
                 NbResults: "7",
                 OnParcelShopSelected: (data) => {
+                    // Capture des données sélectionnées dans le widget
                     setSelectedRelay({
                         id: data.ID,
                         nom: data.Nom,
@@ -41,11 +55,16 @@ const Commande = () => {
         }
     };
 
+    // --- CALCULS DES MONTANTS FINAUX ---
     const subtotal = getSubTotal();
-    const isFreeRelay = subtotal >= 45;
+    const isFreeRelay = subtotal >= 45; // Seuil de gratuité
     const deliveryFees = deliveryMethod === 'mondial_relay' ? (isFreeRelay ? 0 : 4.90) : 0;
     const totalTTC = subtotal + deliveryFees;
 
+    // --- VALIDATION FINALE (POST-PAIEMENT) ---
+    /**
+     * Enregistre la commande en base de données après approbation PayPal.
+     */
     const handlePaymentSuccess = async (details) => {
         const token = localStorage.getItem('token');
 
@@ -76,10 +95,11 @@ const Commande = () => {
                 alert("Erreur lors de la validation : " + (errorData.message || "Vérifiez votre connexion"));
             }
         } catch (error) {
-            console.error("Erreur réseau (le serveur est peut-être éteint) :", error);
+            console.error("Erreur réseau :", error);
         }
     };
 
+    // Condition de déblocage du paiement : CGV cochées + Point relais choisi (si Mondial Relay)
     const canPay = cgvAccepted && (deliveryMethod === 'click_collect' || selectedRelay);
 
     return (
@@ -116,7 +136,7 @@ const Commande = () => {
                     .action-btn-responsive {
                         width: 100% !important;
                     }
-                    .total-row-responsive {
+                    .total-price-res {
                         font-size: 1.4rem !important;
                     }
                 }
@@ -141,10 +161,12 @@ const Commande = () => {
                 </header>
 
                 <div style={styles.mainGrid} className="main-grid-responsive">
+                    {/* COLONNE GAUCHE : CHOIX DU MODE DE LIVRAISON */}
                     <div style={styles.leftCol} className="left-col-responsive">
                         <section style={styles.sectionBox} className="section-box-responsive">
                             <h2 style={styles.sectionTitle}><FiMapPin /> Livraison</h2>
 
+                            {/* OPTION : MONDIAL RELAY */}
                             <div
                                 style={{
                                     ...styles.methodCard,
@@ -170,7 +192,6 @@ const Commande = () => {
                                 <button
                                     onClick={(e) => { e.stopPropagation(); initMondialRelay(); }}
                                     className="action-btn-responsive"
-                                    aria-label={selectedRelay ? "Modifier le point relais sélectionné" : "Choisir un point relais sur la carte"}
                                     style={{
                                         ...styles.actionBtn,
                                         backgroundColor: isHovered === 'btn-relay' ? '#d9b35a' : '#C9A24D',
@@ -188,6 +209,7 @@ const Commande = () => {
 
                             <div style={styles.divider} />
 
+                            {/* OPTION : CLICK & COLLECT */}
                             <div
                                 style={{
                                     ...styles.methodCard,
@@ -212,6 +234,7 @@ const Commande = () => {
                         </section>
                     </div>
 
+                    {/* COLONNE DROITE : RÉCAPITULATIF ET PAIEMENT */}
                     <div style={styles.rightCol} className="right-col-responsive">
                         <section style={styles.sectionBox} className="section-box-responsive">
                             <h2 style={styles.sectionTitle}>Récapitulatif de votre commande</h2>
@@ -231,7 +254,6 @@ const Commande = () => {
                                                 <div style={styles.qtyContainer}>
                                                     <button
                                                         onClick={() => updateQuantity(itemId, -1)}
-                                                        aria-label={`Diminuer la quantité de ${item.nom_produit}`}
                                                         style={{...styles.qtyBtn, opacity: isHovered === `minus-${itemId}` ? 0.7 : 1}}
                                                         onMouseEnter={() => setIsHovered(`minus-${itemId}`)}
                                                         onMouseLeave={() => setIsHovered(null)}
@@ -239,7 +261,6 @@ const Commande = () => {
                                                     <span style={styles.qtyVal}>{item.quantite}</span>
                                                     <button
                                                         onClick={() => updateQuantity(itemId, 1)}
-                                                        aria-label={`Augmenter la quantité de ${item.nom_produit}`}
                                                         style={{...styles.qtyBtn, opacity: isHovered === `plus-${itemId}` ? 0.7 : 1}}
                                                         onMouseEnter={() => setIsHovered(`plus-${itemId}`)}
                                                         onMouseLeave={() => setIsHovered(null)}
@@ -249,7 +270,6 @@ const Commande = () => {
                                             <div style={styles.articlePriceBlock}>
                                                 <p style={styles.articlePrice}>{(item.prix_ttc * item.quantite).toFixed(2)}€</p>
                                                 <FiTrash2
-                                                    aria-label={`Supprimer ${item.nom_produit} de la commande`}
                                                     style={{
                                                         ...styles.deleteIcon,
                                                         color: isHovered === `trash-${itemId}` ? '#ff4d4d' : '#ff6b6b',
@@ -278,7 +298,7 @@ const Commande = () => {
                                         {deliveryMethod === 'click_collect' ? "0,00 €" : (isFreeRelay ? "OFFERT" : "4,90 €")}
                                     </span>
                                 </div>
-                                <div style={styles.totalRow} className="total-row-responsive">
+                                <div style={styles.totalRow} className="total-price-res">
                                     <span>TOTAL TTC</span>
                                     <span>{totalTTC.toFixed(2)} €</span>
                                 </div>
@@ -295,12 +315,12 @@ const Commande = () => {
                                         checked={cgvAccepted}
                                         onChange={() => setCgvAccepted(!cgvAccepted)}
                                         style={styles.checkbox}
-                                        aria-label="Accepter les conditions générales de vente"
                                     />
                                     <span>J'accepte les <Link to="/cgv" style={styles.cgvLink}>CGV</Link></span>
                                 </label>
                             </div>
 
+                            {/* INTÉGRATION PAYPAL */}
                             <div style={{
                                 ...styles.paypalWrapper,
                                 opacity: canPay ? 1 : 0.2,
@@ -326,6 +346,7 @@ const Commande = () => {
     );
 };
 
+// --- STYLES ORIGINAUX ---
 const styles = {
     page: { backgroundColor: '#E9E3E3', minHeight: '100vh', paddingTop: '140px', paddingBottom: '80px', fontFamily: "'Inter', sans-serif" },
     container: { maxWidth: '1100px', margin: '0 auto', padding: '0 20px' },

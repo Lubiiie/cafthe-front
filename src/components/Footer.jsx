@@ -1,23 +1,35 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * COMPOSANT : Footer
+ * ROLE : Fournit la navigation secondaire, les informations légales et le retour en haut de page.
+ */
 const Footer = () => {
+    // --- NAVIGATION ---
     const navigate = useNavigate();
 
+    // --- LOGIQUE DE SCROLL ---
+    /** Remonte l'utilisateur en haut de la fenêtre avec un effet fluide */
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // --- GESTION DES LIENS DE NAVIGATION ---
+
+    /** Navigue vers le catalogue en appliquant un filtre d'URL */
     const filterTo = (cat) => {
         navigate(`/catalogue?filter=${cat}`);
-        // Petit délai pour laisser le catalogue charger les produits
+        // Timeout nécessaire pour laisser le temps au DOM de se mettre à jour avant le scroll
         setTimeout(() => window.scrollTo(0, 0), 100);
     };
 
+    /** Navigue vers une section spécifique de la page contact (via Query Params) */
     const goToContact = (section) => {
         navigate(`/contact?section=${section}`);
     };
 
+    /** Navigation standard vers une page avec reset instantané de la position du scroll */
     const goToPage = (path) => {
         navigate(path);
         setTimeout(() => {
@@ -25,7 +37,10 @@ const Footer = () => {
         }, 50);
     };
 
-    // Gestion de la touche "Entrée" pour l'accessibilité au clavier
+    // --- ACCESSIBILITÉ (A11y) ---
+    /** * Permet d'exécuter l'action au clavier (touche Entrée)
+     * Indispensable car les liens sont des balises <span> et non <a>
+     */
     const handleKeyDown = (e, callback) => {
         if (e.key === 'Enter') {
             callback();
@@ -34,6 +49,7 @@ const Footer = () => {
 
     return (
         <footer style={styles.footer}>
+            {/* INJECTION CSS : Gère les animations de hover et les Media Queries complexes */}
             <style>
                 {`
                 .footer-link { transition: all 0.3s ease; outline: none; }
@@ -62,8 +78,10 @@ const Footer = () => {
                 `}
             </style>
 
+            {/* SECTION 1 : NAVIGATION PRINCIPALE DU FOOTER */}
             <div style={styles.navSection}>
                 <div style={styles.contentWrapper} className="footer-content">
+                    {/* COLONNE PRODUITS */}
                     <div style={styles.column} className="footer-column">
                         <h4 style={styles.title}>Nos produits</h4>
                         <span role="button" tabIndex="0" onClick={() => filterTo("Café")} onKeyDown={(e) => handleKeyDown(e, () => filterTo("Café"))} style={styles.link} className="footer-link" aria-label="Voir nos cafés">Cafés</span>
@@ -72,32 +90,40 @@ const Footer = () => {
                         <span role="button" tabIndex="0" onClick={() => filterTo("Tous")} onKeyDown={(e) => handleKeyDown(e, () => filterTo("Tous"))} style={styles.link} className="footer-link" aria-label="Voir toutes nos offres">Nos offres</span>
                     </div>
 
+                    {/* COLONNE À PROPOS */}
                     <div style={styles.column} className="footer-column">
                         <h4 style={styles.title}>À propos</h4>
                         <span role="button" tabIndex="0" onClick={() => goToPage("/nos-engagements")} onKeyDown={(e) => handleKeyDown(e, () => goToPage("/nos-engagements"))} style={styles.link} className="footer-link" aria-label="Découvrir nos engagements">Nos engagements</span>
                         <span role="button" tabIndex="0" onClick={() => goToPage("/notre-histoire")} onKeyDown={(e) => handleKeyDown(e, () => goToPage("/notre-histoire"))} style={styles.link} className="footer-link" aria-label="Lire notre histoire">Notre histoire</span>
                     </div>
 
+                    {/* COLONNE CONTACT */}
                     <div style={styles.column} className="footer-column">
                         <h4 style={styles.title}>Contact</h4>
                         <span role="button" tabIndex="0" onClick={() => goToContact("faq")} onKeyDown={(e) => handleKeyDown(e, () => goToContact("faq"))} style={styles.link} className="footer-link" aria-label="Consulter la foire aux questions">FAQ</span>
                         <span role="button" tabIndex="0" onClick={() => goToContact("message")} onKeyDown={(e) => handleKeyDown(e, () => goToContact("message"))} style={styles.link} className="footer-link" aria-label="Nous envoyer un message">Besoin d’aide</span>
                     </div>
 
+                    {/* LOGO SECONDAIRE */}
                     <div style={styles.logoContainer} className="footer-column">
                         <img src="/logo2.webp" alt="CafThé Logo" style={styles.logoBig} className="logo-big" />
                     </div>
                 </div>
             </div>
 
+            {/* SECTION 2 : BARRE LÉGALE & RETOUR HAUT */}
             <div style={styles.legalBar}>
                 <div style={styles.legalWrapper} className="legal-wrapper">
                     <div style={styles.legalLeft} className="legal-left">
                         <img src="/logo1.webp" alt="Icone CafThé" style={styles.logoSmall} />
                     </div>
+
+                    {/* BOUTON RETOUR EN HAUT */}
                     <div style={styles.legalCenter}>
                         <span role="button" tabIndex="0" onClick={scrollToTop} onKeyDown={(e) => handleKeyDown(e, scrollToTop)} style={styles.scrollTop} className="scroll-btn" aria-label="Retourner en haut de la page">Haut de page ↑</span>
                     </div>
+
+                    {/* LIENS JURIDIQUES */}
                     <div style={styles.legalRight} className="legal-right">
                         <span role="button" tabIndex="0" onClick={() => goToPage("/mentions-legales")} onKeyDown={(e) => handleKeyDown(e, () => goToPage("/mentions-legales"))} style={styles.legalLink} className="legal-link" aria-label="Consulter les mentions légales">Mentions légales</span>
                         <span role="button" tabIndex="0" onClick={() => goToPage("/cgv")} onKeyDown={(e) => handleKeyDown(e, () => goToPage("/cgv"))} style={styles.legalLink} className="legal-link" aria-label="Voir les conditions générales de vente">CGV</span>
@@ -110,6 +136,7 @@ const Footer = () => {
     );
 };
 
+// --- STYLES ---
 const styles = {
     footer: { width: "100%", display: "flex", flexDirection: "column", margin: 0, padding: 0, boxSizing: "border-box" },
     navSection: { backgroundColor: "#E9E3E3", width: "100%", padding: "60px 0" },

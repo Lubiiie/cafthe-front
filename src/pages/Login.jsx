@@ -27,7 +27,6 @@ const Login = () => {
             const response = await fetch(`${cleanBaseUrl}/api/clients/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                credentials: "include",
                 body: JSON.stringify({
                     email_client: email,
                     mdp_client: motDePasse,
@@ -59,13 +58,14 @@ const Login = () => {
         <>
             <Helmet>
                 <title>Connexion | CafThé</title>
-                <meta name="description" content="Connectez-vous à votre compte CafThé pour suivre vos commandes et gérer vos informations personnelles." />
+                <meta name="description" content="Connectez-vous à votre compte CafThé pour suivre vos commandes." />
                 <meta name="robots" content="noindex, follow" />
             </Helmet>
 
             <div style={styles.overlay} className="login-overlay-responsive">
                 <style>
                     {`
+                    /* --- TON CSS RESPONSIVE REGROUPÉ ICI --- */
                     @media (max-width: 920px) {
                         .login-overlay-responsive {
                             padding-top: 100px !important; 
@@ -99,6 +99,7 @@ const Login = () => {
                     }
                     `}
                 </style>
+
                 <div style={styles.modal} className="login-modal">
                     <div style={styles.header} className="login-header">
                         <h1 style={styles.mainTitle} className="login-title">Se connecter</h1>
@@ -108,19 +109,69 @@ const Login = () => {
                             aria-label="Fermer la fenêtre de connexion"
                         />
                     </div>
+
                     <div style={styles.darkSection} className="login-dark-section">
                         {errorMsg && <p style={styles.error}>{errorMsg}</p>}
+
                         <form onSubmit={handleSubmit} style={styles.form}>
-                            <input type="email" placeholder="Votre email" value={email} onChange={(e) => setEmail(e.target.value)} style={styles.input} className="login-input" required aria-label="Adresse email" />
-                            <input type="password" placeholder="Mot de passe" value={motDePasse} onChange={(e) => setMotDePasse(e.target.value)} style={styles.input} className="login-input" required aria-label="Mot de passe" />
+                            <input
+                                type="email"
+                                placeholder="Votre email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                style={styles.input}
+                                className="login-input"
+                                required
+                            />
+                            <input
+                                type="password"
+                                placeholder="Mot de passe"
+                                value={motDePasse}
+                                onChange={(e) => setMotDePasse(e.target.value)}
+                                style={styles.input}
+                                className="login-input"
+                                required
+                            />
+
                             <div style={styles.forgotRow} className="login-forgot-row">
-                                <span style={{...styles.forgotLink, color: isForgotHovered ? "#C9A24D" : "#E9E3E3"}} onMouseEnter={() => setIsForgotHovered(true)} onMouseLeave={() => setIsForgotHovered(false)} onClick={() => navigate("/forgot-password")}>Mot de passe oublié ?</span>
-                                <button type="submit" className="login-btn-res" style={{...styles.loginBtn, backgroundColor: isLoginHovered ? "#C9A24D" : "#E9E3E3", color: isLoginHovered ? "#FFF" : "#C9A24D"}} onMouseEnter={() => setIsLoginHovered(true)} onMouseLeave={() => setIsLoginHovered(false)}>Se connecter</button>
+                                <span
+                                    style={{...styles.forgotLink, color: isForgotHovered ? "#C9A24D" : "#E9E3E3"}}
+                                    onMouseEnter={() => setIsForgotHovered(true)}
+                                    onMouseLeave={() => setIsForgotHovered(false)}
+                                    onClick={() => navigate("/forgot-password")}
+                                >
+                                    Mot de passe oublié ?
+                                </span>
+
+                                <button
+                                    type="submit"
+                                    className="login-btn-res"
+                                    style={{
+                                        ...styles.loginBtn,
+                                        backgroundColor: isLoginHovered ? "#C9A24D" : "#E9E3E3",
+                                        color: isLoginHovered ? "#FFF" : "#C9A24D"
+                                    }}
+                                    onMouseEnter={() => setIsLoginHovered(true)}
+                                    onMouseLeave={() => setIsLoginHovered(false)}
+                                >
+                                    Se connecter
+                                </button>
                             </div>
                         </form>
                     </div>
+
                     <div style={styles.footer}>
-                        <p style={styles.footerText}>Vous n’avez pas de compte ? <br style={{display: window.innerWidth < 480 ? 'block' : 'none'}} /> <span style={{...styles.createAccount, color: isCreateHovered ? "#C9A24D" : "#373735"}} onMouseEnter={() => setIsCreateHovered(true)} onMouseLeave={() => setIsCreateHovered(false)} onClick={() => navigate("/register")}>Créer un compte</span></p>
+                        <p style={styles.footerText}>
+                            Vous n’avez pas de compte ? <br style={{display: window.innerWidth < 480 ? 'block' : 'none'}} />
+                            <span
+                                style={{...styles.createAccount, color: isCreateHovered ? "#C9A24D" : "#373735"}}
+                                onMouseEnter={() => setIsCreateHovered(true)}
+                                onMouseLeave={() => setIsCreateHovered(false)}
+                                onClick={() => navigate("/register")}
+                            >
+                                Créer un compte
+                            </span>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -128,6 +179,7 @@ const Login = () => {
     );
 };
 
+// --- TES STYLES DE BASE (OBJETS JS) ---
 const styles = {
     overlay: { width: "100%", backgroundColor: "#E9E3E3", height: "100vh", display: "flex", justifyContent: "center", alignItems: "center" },
     modal: { width: "900px", backgroundColor: "#E9E3E3", borderRadius: "8px", overflow: "hidden", position: "relative", boxShadow: "0 20px 40px rgba(0,0,0,0.4)" },
